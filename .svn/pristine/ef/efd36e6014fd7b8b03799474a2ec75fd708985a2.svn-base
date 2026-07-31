@@ -1,0 +1,8 @@
+var class_menu_manager =
+[
+    [ "HideMainOptions", "class_menu_manager.html#ac9a753ff9dfec33005dcc927be376d1b", null ],
+    [ "OnMainOptionSelected", "class_menu_manager.html#a6886012ee4a776b8587eff717875f297", null ],
+    [ "ShowMainOptions", "class_menu_manager.html#aed41bf29362cc8c0895014eab88e2b7f", null ],
+    [ "mainOptions", "class_menu_manager.html#a7902bdd33ec615b5b09f7a79654349d8", null ],
+    [ "OnExitMainMenu", "class_menu_manager.html#a90a4f60f60aa1d5830d0ee001d38b93d", null ]
+];

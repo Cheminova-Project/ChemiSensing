@@ -1,0 +1,8 @@
+var class_login_management =
+[
+    [ "GetPassword", "class_login_management.html#a4cda7263f2394037da943691249300fe", null ],
+    [ "GetUsername", "class_login_management.html#a4f4f1f5421e4e47d960dbee60e40a12c", null ],
+    [ "autoLogin", "class_login_management.html#a2a5814a65ee8c8a199c246758cfff2e7", null ],
+    [ "password", "class_login_management.html#aa28aee9113bf03af740e29ab2307ea67", null ],
+    [ "username", "class_login_management.html#a7e41e09a3d35ce47724bb4e4974a608b", null ]
+];

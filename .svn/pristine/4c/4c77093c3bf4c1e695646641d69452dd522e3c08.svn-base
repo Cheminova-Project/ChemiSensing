@@ -1,0 +1,80 @@
+using Unity.Netcode;
+using UnityEngine;
+using UnityEngine.InputSystem.XR;
+
+/// <summary>
+/// Assumes client authority
+/// </summary>
+
+[RequireComponent(typeof(NetworkedPlayerCharacter))]
+/// <summary>
+/// Clase que maneja el comportamiento del personaje en VR.
+/// Extiende GeneralCharacter para personalizar la gestión de objetos del personaje
+/// según si es el jugador local o un jugador remoto.
+public class VRCharacter : GeneralCharacter
+{
+    protected override void Awake()
+    {
+        base.Awake();
+    }
+    public override void ManageCharacterObjects()
+    {
+        if (m_NetworkedPlayerCharacter.IsLocalPlayer)
+        {
+            //Cosas que hacer cuando es el jugador local
+        }
+        else
+        {
+            //Cosas que hacer cuando no es el jugador local
+            var trackedposedrivers_inputsystem = GetComponentsInChildren<TrackedPoseDriver>();
+            var trackedposedrivers = GetComponentsInChildren<UnityEngine.SpatialTracking.TrackedPoseDriver>();
+            
+            int trackedPoseDriversCount = trackedposedrivers_inputsystem.Length + trackedposedrivers.Length;
+
+            foreach (var driver in trackedposedrivers_inputsystem)
+            {
+                trackedPoseDriversCount++;
+                driver.enabled = false;
+            }
+                
+            foreach (var driver in trackedposedrivers)
+            {
+                trackedPoseDriversCount++;
+                driver.enabled = false;
+            }
+            
+            var cameras = GetComponentsInChildren<Camera>(true);
+            foreach (var cam in cameras)
+            {
+                cam.enabled = false;
+                if (cam.gameObject.CompareTag("MainCamera"))
+                    cam.gameObject.tag = "Untagged"; 
+            }
+            
+            var audioListeners = GetComponentsInChildren<AudioListener>(true);
+            foreach (var listener in audioListeners)
+                listener.enabled = false;
+            
+            Debug.Log("TrackedPoseDrivers count: " + trackedPoseDriversCount);
+            DisableXRScriptsInChildren();
+        }
+        
+        base.ManageCharacterObjects();
+    }
+    
+    void DisableXRScriptsInChildren()
+    {
+        // Obtiene todos los MonoBehaviour en los hijos, incluyendo desactivados
+        MonoBehaviour[] allScripts = GetComponentsInChildren<MonoBehaviour>(true);
+
+        foreach (var script in allScripts)
+        {
+            var ns = script.GetType().Namespace;
+            if (ns != null && script != null && ns.Contains("UnityEngine.XR.Interaction.Toolkit"))
+            {
+                script.enabled = false;
+                //Debug.Log($"Desactivado: {script.GetType().Name} en {script.gameObject.name}");
+            }
+        }
+    }
+}

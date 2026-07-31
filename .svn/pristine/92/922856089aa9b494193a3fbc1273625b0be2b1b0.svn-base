@@ -1,0 +1,20 @@
+:root {
+
+}
+
+.texture-item {
+    height: 100px;
+    border-radius: 15px;
+    margin: 5px;
+    border-width: 0px;
+    border-color: rgba(10, 4, 4, 1);
+    background-color: #E0E0E0;
+}
+
+.texture-item:hover {
+    border-width: 2px;
+    border-color: rgb(100, 100, 100);
+    background-color: #E0E0E0; 
+}
+
+

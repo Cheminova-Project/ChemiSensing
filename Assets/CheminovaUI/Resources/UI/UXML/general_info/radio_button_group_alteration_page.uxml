@@ -1,0 +1,13 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/CheminovaUI/Resources/UI/USS/radio_button_group_alteration_page.uss?fileID=7433441132597879392&amp;guid=5694b425f8bde0d43b2e1baff7a086e9&amp;type=3#radio_button_group_alteration_page" />
+    <engine:VisualElement name="visual-element-rbutton-group" class="bloque-contenedor" style="-unity-font-definition: resource(&apos;UI/Fonts/Mulish-VariableFont_wght&apos;);">
+        <engine:Label text="Label" name="label-title" class="titulo-bloque" />
+        <engine:VisualElement name="visual-element-rbutton" class="bloque-radio-buttons">
+            <engine:RadioButton text="Radio Button 1" name="radio-button-1" class="radio-button" />
+            <engine:RadioButton text="Radio Button 2" name="radio-button-2" class="radio-button" />
+            <engine:RadioButton text="Radio Button 3" name="radio-button-3" class="radio-button" />
+            <engine:RadioButton text="Radio Button 4" name="radio-button-4" class="radio-button" />
+            <engine:RadioButton text="Radio Button 5" name="radio-button-5" class="radio-button" />
+        </engine:VisualElement>
+    </engine:VisualElement>
+</engine:UXML>

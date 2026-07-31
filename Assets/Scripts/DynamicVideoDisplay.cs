@@ -1,0 +1,314 @@
+using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.Video;
+using TMPro;
+
+/// <summary>
+/// Controlador de reproducción de video dinámico con interfaz de usuario.
+/// Gestiona la reproducción, pausa, timeline y visualización de videos desde URLs.
+/// </summary>
+[RequireComponent(typeof(VideoPlayer))]
+public class DynamicVideoDisplay : MonoBehaviour
+{
+    [Header("UI Target")]
+    /// <summary>
+    /// Imagen donde se renderiza el video
+    /// </summary>
+    public RawImage rawImage;
+    
+    /// <summary>
+    /// Ajustador de relación de aspecto para mantener proporciones del video
+    /// </summary>
+    public AspectRatioFitter aspectRatioFitter;
+
+    [Header("Video Controls")]
+    /// <summary>
+    /// Botón para reproducir/pausar el video
+    /// </summary>
+    public Button playPauseButton;
+    
+    /// <summary>
+    /// Icono mostrado cuando el video puede ser reproducido
+    /// </summary>
+    public Sprite playIcon;
+    
+    /// <summary>
+    /// Icono mostrado cuando el video puede ser pausado
+    /// </summary>
+    public Sprite pauseIcon;
+    
+    /// <summary>
+    /// Slider para mostrar y controlar la línea de tiempo del video
+    /// </summary>
+    public Slider timelineSlider;
+    
+    /// <summary>
+    /// Texto que muestra el tiempo actual de reproducción
+    /// </summary>
+    public TextMeshProUGUI currentTimeText;
+    
+    /// <summary>
+    /// Texto que muestra el tiempo restante del video
+    /// </summary>
+    public TextMeshProUGUI timeLeftText;
+
+    private VideoPlayer videoPlayer;
+    private RenderTexture dynamicRenderTexture;
+    private bool isDragging;
+
+    /// <summary>
+    /// Inicializa el componente y configura listeners
+    /// </summary>
+    void Awake()
+    {
+        videoPlayer = GetComponent<VideoPlayer>();
+        videoPlayer.playOnAwake = false;
+
+        if (playPauseButton != null)
+            playPauseButton.onClick.AddListener(TogglePlayPause);
+        if (timelineSlider != null)
+            timelineSlider.onValueChanged.AddListener(OnSliderValueChanged);
+    }
+
+    /// <summary>
+    /// Actualiza la interfaz cada frame con el progreso del video
+    /// </summary>
+    void Update()
+    {
+        if (!videoPlayer.isPrepared || videoPlayer.frameCount <= 0)
+            return;
+        
+        if (!isDragging && timelineSlider != null)
+        {
+            double time = Mathf.Clamp((float)videoPlayer.time, 0f, (float)videoPlayer.length);
+            timelineSlider.value = (float)(time / videoPlayer.length);
+        }
+
+        UpdateTimeTexts();
+        UpdatePlayPauseIcon();
+    }
+
+    /// <summary>
+    /// Prepara el VideoPlayer para reproducción
+    /// </summary>
+    public void PrepareVideoPlayer()
+    {
+        videoPlayer.prepareCompleted += OnVideoPrepared;
+        videoPlayer.Prepare();
+    }
+    
+    /// <summary>
+    /// Carga un video desde una URL
+    /// </summary>
+    /// <param name="url">URL del video a cargar</param>
+    public void LoadVideoURL(string url)
+    {
+        if (videoPlayer == null)
+            videoPlayer = GetComponent<VideoPlayer>();
+
+        // Limpiar video anterior antes de cargar el nuevo
+        videoPlayer.Stop();
+        ClearRenderTexture();
+
+        // Ocultar la imagen mientras se carga el nuevo video
+        if (rawImage != null)
+            rawImage.enabled = false;
+
+        videoPlayer.source = VideoSource.Url;
+        videoPlayer.url = url;
+
+        PrepareVideoPlayer();
+    }
+    
+    void OnVideoPrepared(VideoPlayer vp)
+    {
+        int videoWidth = vp.texture.width;
+        int videoHeight = vp.texture.height;
+
+        // Release and recreate RenderTexture if needed
+        if (dynamicRenderTexture != null)
+        {
+            dynamicRenderTexture.Release();
+            Destroy(dynamicRenderTexture);
+        }
+
+        dynamicRenderTexture = new RenderTexture(videoWidth, videoHeight, 0, RenderTextureFormat.Default);
+        dynamicRenderTexture.Create();
+
+        videoPlayer.targetTexture = dynamicRenderTexture;
+        if (rawImage != null)
+        {
+            rawImage.texture = dynamicRenderTexture;
+            rawImage.enabled = true; // 👁️ Show once video is ready
+        }
+
+        if (aspectRatioFitter != null)
+            aspectRatioFitter.aspectRatio = (float)videoWidth / videoHeight;
+
+        // ✅ Reset timeline and time labels
+        if (timelineSlider != null)
+        {
+            timelineSlider.minValue = 0f;
+            timelineSlider.maxValue = 1f;
+            timelineSlider.value = 0f;
+        }
+
+        if (currentTimeText != null) currentTimeText.text = "00:00";
+        if (timeLeftText != null) timeLeftText.text = "- 00:00";
+
+        // ▶️ Start playing the video
+        videoPlayer.Play();
+    }
+
+    void TogglePlayPause()
+    {
+        if (!videoPlayer.isPrepared)
+            return;
+
+        if (videoPlayer.isPlaying)
+            videoPlayer.Pause();
+        else
+            videoPlayer.Play();
+    }
+
+    void OnSliderValueChanged(float value)
+    {
+        if (!videoPlayer.isPrepared || !isDragging) 
+            return;
+
+        double newTime = value * videoPlayer.length;
+        newTime = Mathf.Clamp((float)newTime, 0f, (float)videoPlayer.length - 0.01f);
+        videoPlayer.time = newTime;
+    }
+
+    public void StartDrag() => isDragging = true;
+
+    public void EndDrag()
+    {
+        isDragging = false;
+
+        if (!videoPlayer.isPrepared)
+            return;
+
+        double newTime = timelineSlider.value * videoPlayer.length;
+        newTime = Mathf.Clamp((float)newTime, 0f, (float)videoPlayer.length - 0.01f);
+        videoPlayer.time = newTime;
+    }
+
+    void UpdateTimeTexts()
+    {
+        if (!videoPlayer.isPrepared)
+            return;
+
+        float current = Mathf.Clamp((float)videoPlayer.time, 0f, (float)videoPlayer.length);
+        float total = (float)videoPlayer.length;
+        float remaining = Mathf.Max(0f, total - current);
+
+        if (currentTimeText != null)
+            currentTimeText.text = FormatTime(current);
+        if (timeLeftText != null)
+            timeLeftText.text = "- " + FormatTime(remaining);
+    }
+
+    void UpdatePlayPauseIcon()
+    {
+        if (!videoPlayer.isPrepared || playPauseButton == null)
+            return;
+
+        playPauseButton.image.sprite = videoPlayer.isPlaying ? pauseIcon : playIcon;
+    }
+
+    string FormatTime(float time)
+    {
+        int minutes = Mathf.FloorToInt(time / 60f);
+        int seconds = Mathf.FloorToInt(time % 60f);
+        return $"{minutes:00}:{seconds:00}";
+    }
+
+    public void CloseVideoPlayer()
+    {
+        if (videoPlayer != null && videoPlayer.isPlaying)
+        {
+            videoPlayer.Stop();
+            ClearRenderTexture();
+        }
+    }
+
+    public VideoPlayer GetVideoPlayer()
+    {
+        return videoPlayer;
+    }
+
+    private void ClearRenderTexture()
+    {
+        if (dynamicRenderTexture == null)
+            return;
+
+        RenderTexture activeRT = RenderTexture.active;
+        RenderTexture.active = dynamicRenderTexture;
+        GL.Clear(true, true, Color.clear);
+        RenderTexture.active = activeRT;
+    }
+
+    // 🧩 NEW: Reset everything to initial clean state
+    public void ResetVideoPlayer()
+    {
+        // Stop and clear video
+        if (videoPlayer != null)
+        {
+            videoPlayer.Stop();
+            videoPlayer.clip = null;
+            videoPlayer.url = string.Empty;
+            videoPlayer.targetTexture = null;
+            videoPlayer.prepareCompleted -= OnVideoPrepared;
+        }
+
+        // Destroy render texture
+        if (dynamicRenderTexture != null)
+        {
+            dynamicRenderTexture.Release();
+            Destroy(dynamicRenderTexture);
+            dynamicRenderTexture = null;
+        }
+
+        // Reset RawImage
+        if (rawImage != null)
+        {
+            rawImage.texture = null;
+            rawImage.enabled = false;
+        }
+
+        // Reset UI
+        if (timelineSlider != null)
+        {
+            timelineSlider.value = 0f;
+        }
+
+        if (currentTimeText != null)
+            currentTimeText.text = "00:00";
+        if (timeLeftText != null)
+            timeLeftText.text = "- 00:00";
+
+        if (playPauseButton != null && playIcon != null)
+            playPauseButton.image.sprite = playIcon;
+
+        if (aspectRatioFitter != null)
+            aspectRatioFitter.aspectRatio = 1f;
+
+        isDragging = false;
+    }
+
+    void OnDestroy()
+    {
+        if (dynamicRenderTexture != null)
+        {
+            dynamicRenderTexture.Release();
+            Destroy(dynamicRenderTexture);
+        }
+
+        if (videoPlayer != null)
+        {
+            videoPlayer.prepareCompleted -= OnVideoPrepared;
+        }
+    }
+}

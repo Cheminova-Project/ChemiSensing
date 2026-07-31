@@ -1,0 +1,12 @@
+var class_municipality_response =
+[
+    [ "MunicipalityResponse", "class_municipality_response.html#a1743dac7223a7fd735631f9ec5372ee2", null ],
+    [ "error", "class_municipality_response.html#a2218e74e614751938e28f803a95f6c70", null ],
+    [ "items", "class_municipality_response.html#ae0e04684476a4c3d6450941c45a9d9ed", null ],
+    [ "next_page", "class_municipality_response.html#a7a2d6b7c8afd073e0d4c1f720fba21ee", null ],
+    [ "page", "class_municipality_response.html#ad74ab53f7284e82b93ddd5794f28be24", null ],
+    [ "pages", "class_municipality_response.html#ac175153b93b3a934825711453bfcff9d", null ],
+    [ "per_page", "class_municipality_response.html#a7d0f95d6f75b1482bae172924dc570b9", null ],
+    [ "prev_page", "class_municipality_response.html#a3592d7f6594aaaadea553bf9bd9fd694", null ],
+    [ "total", "class_municipality_response.html#aac88b23cf3315de02832b7a14c8c4762", null ]
+];

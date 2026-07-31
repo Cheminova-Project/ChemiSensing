@@ -1,0 +1,47 @@
+var namespace_transform_handles =
+[
+    [ "Utils", "namespace_transform_handles_1_1_utils.html", "namespace_transform_handles_1_1_utils" ],
+    [ "ConeColliderController", "class_transform_handles_1_1_cone_collider_controller.html", null ],
+    [ "TorusColliderController", "class_transform_handles_1_1_torus_collider_controller.html", null ],
+    [ "Ghost", "class_transform_handles_1_1_ghost.html", "class_transform_handles_1_1_ghost" ],
+    [ "Handle", "class_transform_handles_1_1_handle.html", "class_transform_handles_1_1_handle" ],
+    [ "HandleBase", "class_transform_handles_1_1_handle_base.html", "class_transform_handles_1_1_handle_base" ],
+    [ "PositionAxis", "class_transform_handles_1_1_position_axis.html", "class_transform_handles_1_1_position_axis" ],
+    [ "PositionHandle", "class_transform_handles_1_1_position_handle.html", "class_transform_handles_1_1_position_handle" ],
+    [ "PositionPlane", "class_transform_handles_1_1_position_plane.html", "class_transform_handles_1_1_position_plane" ],
+    [ "RotationAxis", "class_transform_handles_1_1_rotation_axis.html", "class_transform_handles_1_1_rotation_axis" ],
+    [ "RotationHandleNew", "class_transform_handles_1_1_rotation_handle_new.html", "class_transform_handles_1_1_rotation_handle_new" ],
+    [ "RotationHandleOld", "class_transform_handles_1_1_rotation_handle_old.html", "class_transform_handles_1_1_rotation_handle_old" ],
+    [ "ScaleAxis", "class_transform_handles_1_1_scale_axis.html", "class_transform_handles_1_1_scale_axis" ],
+    [ "ScaleGlobal", "class_transform_handles_1_1_scale_global.html", "class_transform_handles_1_1_scale_global" ],
+    [ "ScaleHandle", "class_transform_handles_1_1_scale_handle.html", "class_transform_handles_1_1_scale_handle" ],
+    [ "TransformHandleManager", "class_transform_handles_1_1_transform_handle_manager.html", "class_transform_handles_1_1_transform_handle_manager" ],
+    [ "TransformGroup", "class_transform_handles_1_1_transform_group.html", "class_transform_handles_1_1_transform_group" ],
+    [ "PosRotScale", "struct_transform_handles_1_1_pos_rot_scale.html", "struct_transform_handles_1_1_pos_rot_scale" ],
+    [ "HandleAxes", "namespace_transform_handles.html#a785db3785275f19aac902d0f0fd38281", [
+      [ "X", "namespace_transform_handles.html#a785db3785275f19aac902d0f0fd38281a02129bb861061d1a052c592e2dc6b383", null ],
+      [ "Y", "namespace_transform_handles.html#a785db3785275f19aac902d0f0fd38281a57cec4137b614c87cb4e24a3d003a3e0", null ],
+      [ "Z", "namespace_transform_handles.html#a785db3785275f19aac902d0f0fd38281a21c2e59531c8710156d34a3c30ac81d5", null ],
+      [ "XY", "namespace_transform_handles.html#a785db3785275f19aac902d0f0fd38281a74c53bcd3dcb2bb79993b2fec37d362a", null ],
+      [ "XZ", "namespace_transform_handles.html#a785db3785275f19aac902d0f0fd38281a27db3b98d01e664c17a6620b222c6469", null ],
+      [ "YZ", "namespace_transform_handles.html#a785db3785275f19aac902d0f0fd38281affa4ba973372c3650fd0881abeca6512", null ],
+      [ "XYZ", "namespace_transform_handles.html#a785db3785275f19aac902d0f0fd38281ae65075d550f9b5bf9992fa1d71a131be", null ]
+    ] ],
+    [ "HandleType", "namespace_transform_handles.html#a304e7860e8f00e0ba9cbbe1a05736527", [
+      [ "Position", "namespace_transform_handles.html#a304e7860e8f00e0ba9cbbe1a05736527a52f5e0bc3859bc5f5e25130b6c7e8881", null ],
+      [ "Rotation", "namespace_transform_handles.html#a304e7860e8f00e0ba9cbbe1a05736527af1a42bd417390fc63b030a519624607a", null ],
+      [ "Scale", "namespace_transform_handles.html#a304e7860e8f00e0ba9cbbe1a05736527a85a7cd587d6142dbfc1a4de05af7b75d", null ],
+      [ "PositionRotation", "namespace_transform_handles.html#a304e7860e8f00e0ba9cbbe1a05736527a5ce4f717f403d64c4a45383f88139679", null ],
+      [ "PositionScale", "namespace_transform_handles.html#a304e7860e8f00e0ba9cbbe1a05736527a7185bfe409f52f8d3ec295e6bf6ff328", null ],
+      [ "RotationScale", "namespace_transform_handles.html#a304e7860e8f00e0ba9cbbe1a05736527a10b253ef31cec1f8d234d75579e5507e", null ],
+      [ "All", "namespace_transform_handles.html#a304e7860e8f00e0ba9cbbe1a05736527ab1c94ca2fbc3e78fc30069c8d0f01680", null ]
+    ] ],
+    [ "Origin", "namespace_transform_handles.html#abeafe6bbe831f80dd938cc7309ab2afd", [
+      [ "Pivot", "namespace_transform_handles.html#abeafe6bbe831f80dd938cc7309ab2afda6b8f027b6b033c58af1a92b1a46fa902", null ],
+      [ "Center", "namespace_transform_handles.html#abeafe6bbe831f80dd938cc7309ab2afda4f1f6016fc9f3f2353c0cc7c67b292bd", null ]
+    ] ],
+    [ "SnappingType", "namespace_transform_handles.html#abe33c915ad05225e4629266160c12596", [
+      [ "Absolute", "namespace_transform_handles.html#abe33c915ad05225e4629266160c12596ab51ca26c6c89cfc9bec338f7a0d3e0c8", null ],
+      [ "Relative", "namespace_transform_handles.html#abe33c915ad05225e4629266160c12596a2ca9469819fb0fb61ff98e914a7ccca0", null ]
+    ] ]
+];

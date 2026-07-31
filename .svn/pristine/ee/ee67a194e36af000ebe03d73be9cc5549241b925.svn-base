@@ -1,0 +1,15 @@
+var class_x_r_fade =
+[
+    [ "Awake", "class_x_r_fade.html#ad6377894a8ced7d25716e6c7ccfe2054", null ],
+    [ "Fade", "class_x_r_fade.html#a8daf3472ab049b756e10053b3e676d8f", null ],
+    [ "FadeIn", "class_x_r_fade.html#a6b0dd8156c36f3a0c67ea257b44a5404", null ],
+    [ "FadeOut", "class_x_r_fade.html#a677a0ead0b5222eff7e872db032e1dd7", null ],
+    [ "FadeOut", "class_x_r_fade.html#ae211328ede6b0baa60ff08d87bf12e8f", null ],
+    [ "OnDestroy", "class_x_r_fade.html#a70160da799ec7ac763099932e47a3aa4", null ],
+    [ "OnDisable", "class_x_r_fade.html#a7abe7b54436f7a168cb74882e1157bc9", null ],
+    [ "autoFadeIn", "class_x_r_fade.html#a321b5c08ddbe89418c769143e2849a25", null ],
+    [ "canvasGroup", "class_x_r_fade.html#a0717a105a1fca2d1ef4279eabfd5d15a", null ],
+    [ "defaultDuration", "class_x_r_fade.html#a694bcd215c256cb3944035cb2478868e", null ],
+    [ "startBlack", "class_x_r_fade.html#ab946443f42a968b1759784056d099509", null ],
+    [ "Instance", "class_x_r_fade.html#a94385e37b1c5732ed44d7c189bcbd501", null ]
+];

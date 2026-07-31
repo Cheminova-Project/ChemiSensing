@@ -1,0 +1,308 @@
+using System.Collections.Generic;
+using GLTFast;
+using Unity.Netcode;
+using UnityEngine;
+using UnityEngine.Events;
+
+/// <summary>
+/// Controlador para gestionar la inspección y manipulación de objetos en la escena.
+/// Permite mostrar información y controlar el estado del objeto inspeccionado.
+/// </summary>
+public class InspectedObjectController : MonoBehaviour
+{
+    /// <summary>
+    /// Instancia estática del controlador de objeto inspeccionado.
+    /// </summary>
+    public static InspectedObjectController Instance { get; private set; }
+    public float ModelMinScale { get; private set; } = 0.25f;
+    public float ModelMaxScale { get; private set; } = 4f;
+
+    /// <summary>
+    /// Evento que se dispara cuando el controlador de objeto inspeccionado se inicializa.
+    /// </summary>
+    public static UnityAction OnInspectedObjectControllerInitialized;
+
+    [SerializeField]
+    private List<Behaviour> behavioursToEnableWhenGLTFLoaded;
+
+    /// <summary>
+    /// Evento que se dispara cuando un objeto inspeccionado es cargado.
+    /// </summary>
+    public UnityAction OnInspectedObjectLoaded;
+
+    [SerializeField]
+    private Material baseMaterial;
+
+    [SerializeField]
+    private Transform targetObjectToCopyMesh;
+
+    /// <summary>
+    /// Evento que se dispara cuando los datos de instancia 3D son descargados.
+    /// </summary>
+    public UnityAction onThreeDInstanceDataDownloaded;
+
+    private void Awake()
+    {
+        // Configurar el singleton
+        if (Instance != null && Instance != this)
+        {
+            Debug.LogWarning("Ya existe una instancia de InspectedObjectController. Destruyendo duplicado.");
+            Destroy(this.gameObject);
+            return;
+        }
+
+        Instance = this;
+        OnInspectedObjectControllerInitialized?.Invoke();
+    }
+
+    /// <summary>
+    /// Obtiene el objeto actualmente inspeccionado.
+    /// </summary>
+    /// <returns>El GameObject que está siendo inspeccionado.</returns>
+    public GameObject GetInspectedObject()
+    {
+        return gameObject;
+    }
+
+    private void Start()
+    {
+        if (NetworkManager.Singleton && NetworkManager.Singleton.IsServer)
+            return;
+
+        // Inicialmente desactivamos los behaviours
+        foreach (var behaviour in behavioursToEnableWhenGLTFLoaded)
+        {
+            if (behaviour != null)
+                behaviour.enabled = false;
+        }
+
+        LoadGltfModel();
+    }
+
+    private void LoadGltfModel()
+    {
+        //Obtenemos la url
+        E3DModelData e3DModelData = GlobalVariables.Instance.GetSelectedE3DModelData();
+        StartCoroutine(E3DModelDB.GetThreeDInstanceListFromE3DModel(LoadGltf, e3DModelData.id));
+    }
+
+    private void LoadGltf(ThreeDInstanceResponse response, bool listSuccess)
+    {
+        var threDList = response.items;
+
+        //TODO: ESTO TIENE QUE SER SELECCIÓN
+
+        if (threDList.Count == 0 || threDList == null)
+        {
+            Debug.LogError("No 3D instances found for the selected E3D model.");
+            return;
+        }
+
+        //Buscamos en threDList aquel con .detail_level == "low poly", si no, tomamos el primero
+        ThreeDInstanceData selectedInstance = null;
+        foreach (var instance in threDList)
+        {
+            if (instance.detail_level == "low poly")
+            {
+                selectedInstance = instance;
+                break;
+            }
+        }
+
+        if (selectedInstance == null)
+        {
+            foreach (var instance in threDList)
+            {
+                if (instance.detail_level == "medium poly")
+                {
+                    selectedInstance = instance;
+                    break;
+                }
+            }
+        }
+
+        if (selectedInstance == null)
+        {
+            selectedInstance = threDList[0];
+        }
+        
+        GlobalVariables.Instance.SetSelected3DInstanceData(selectedInstance);
+        onThreeDInstanceDataDownloaded?.Invoke();
+        DownloadGltfObject(selectedInstance.id);
+    }
+
+    void DownloadGltfObject(int id)
+    {
+        CustomMaterialGenerator generator = new CustomMaterialGenerator(baseMaterial);
+        // Configuración de importación
+        var importSettings = new ImportSettings
+        {
+            GenerateMipMaps = false,
+            AnisotropicFilterLevel = 0,
+            NodeNameMethod = NameImportMethod.Original,
+            AnimationMethod = AnimationMethod.None,
+        };
+
+        // Configuración de instanciación
+        var instantiationSettings = new InstantiationSettings
+        {
+            Mask = ComponentType.Mesh,
+            Layer = 14,
+            SkinUpdateWhenOffscreen = false,
+            SceneObjectCreation = SceneObjectCreation.Never,
+        };
+        
+        
+        StartCoroutine(ThreeDInstanceDB.DownloadAndImportGlft(OnGLTFLoaded,
+            id,
+            transform,
+            importSettings,
+            instantiationSettings,
+            generator));
+        
+        /*
+        StartCoroutine(ThreeDInstanceDB.DownloadAndImportGlft(OnGLTFLoaded,
+        id,
+        transform,
+        importSettings,
+        instantiationSettings,
+        null));
+        */
+        
+    }
+
+    private void OnGLTFLoaded(bool success)
+    {
+        foreach (var behaviour in behavioursToEnableWhenGLTFLoaded)
+            if (behaviour != null)
+                behaviour.enabled = true;
+
+        // Clonar todos los Meshes y Materials del GLTF cargado al objeto objetivo
+        var gltfRenderers = gameObject.GetComponentsInChildren<MeshRenderer>();
+        var gltfFilters = gameObject.GetComponentsInChildren<MeshFilter>();
+
+        if (gltfRenderers.Length == 0 || gltfFilters.Length == 0)
+        {
+            Debug.LogError("El modelo GLTF no tiene Meshes.");
+            return;
+        }
+
+        if (gltfFilters.Length > 1 || gltfRenderers.Length > 1)
+        {
+            Debug.LogError("El modelo GLTF tiene múltiples Meshes. Se combinarán en un solo objeto.");
+        }
+
+        //Borraremos los objetos que no tengan meshfilter ni meshrenderer
+        foreach (Transform child in gameObject.transform)
+        {
+            if (child.GetComponent<MeshFilter>() == null && child.GetComponent<MeshRenderer>() == null && child != targetObjectToCopyMesh)
+            {
+                Destroy(child.gameObject);
+            }
+        }
+        var instancedGltfMeshFilter = gltfFilters[0];
+        var instancedGltfMeshRenderer = gltfRenderers[0];
+
+        MeshFilter sourceFilter = instancedGltfMeshFilter;
+        MeshRenderer sourceRenderer = instancedGltfMeshRenderer;
+        GameObject sourceGO = sourceFilter.gameObject;
+        GameObject copyToGO = targetObjectToCopyMesh.gameObject;
+        targetObjectToCopyMesh.name = sourceFilter.gameObject.name;
+        copyToGO.transform.SetParent(targetObjectToCopyMesh.transform, false);
+        //copyToGO.transform.localPosition = sourceFilter.transform.localPosition;
+        //copyToGO.transform.localRotation = sourceFilter.transform.localRotation;
+        //copyToGO.transform.localScale = sourceFilter.transform.localScale;
+
+        MeshFilter newFilter = copyToGO.AddComponent<MeshFilter>();
+        newFilter.sharedMesh = sourceFilter.sharedMesh;
+
+        MeshRenderer newRenderer = copyToGO.AddComponent<MeshRenderer>();
+
+        // Log de materiales y texturas
+        List<Material> materials = new List<Material>();
+
+        for (int m = 0; m < sourceRenderer.materials.Length; m++)
+        {
+            var mat = sourceRenderer.materials[m];
+            materials.Add(new Material(mat));
+        }
+
+        newRenderer.materials = materials.ToArray();
+
+        // Activar colisionador
+        MeshCollider meshCollider = copyToGO.AddComponent<MeshCollider>();
+        meshCollider.convex = false;
+
+        MeshCollider convexMeshCollider = gameObject.GetComponent<MeshCollider>();
+        convexMeshCollider.sharedMesh = sourceFilter.sharedMesh;
+        convexMeshCollider.convex = true;
+
+        Destroy(sourceGO);
+        
+        NetworkAudio.LocalGLTFLoaded = true;
+        
+        NetworkAudio[] allAudio = FindObjectsOfType<NetworkAudio>(true);
+        foreach (NetworkAudio netAudio in allAudio)
+            netAudio.InitializeAudioChannel();
+        
+        AutoFitModel(gameObject);
+        
+        OnInspectedObjectLoaded?.Invoke();
+        XRFade.Instance?.FadeIn();
+    }
+    
+    public void AutoFitModel(GameObject modelInstance)
+    {
+        if (modelInstance == null) return;
+
+        Transform targetTransform = modelInstance.transform;
+        Renderer[] renderers = targetTransform.GetComponentsInChildren<Renderer>();
+        if (renderers.Length == 0) return;
+
+        Vector3 originalPosition = targetTransform.position;
+        Quaternion originalRot = targetTransform.rotation;
+        Vector3 currentScaleBeforeMeasuring = targetTransform.localScale; 
+        
+        targetTransform.localScale = Vector3.one;
+        targetTransform.rotation = Quaternion.identity;
+
+        Bounds bounds = renderers[0].bounds;
+        for (int i = 1; i < renderers.Length; i++)
+            bounds.Encapsulate(renderers[i].bounds);
+        
+        targetTransform.rotation = originalRot;
+        targetTransform.position = originalPosition;
+
+        // Tamaño real del modelo en metros
+        float maxDimension = Mathf.Max(bounds.size.x, bounds.size.y, bounds.size.z);
+        if (maxDimension <= 0.0001f)
+        {
+            targetTransform.localScale = currentScaleBeforeMeasuring;
+            return;
+        }
+
+        ModelMinScale = Mathf.Clamp(0.05f / maxDimension, 0.25f, 1.0f);
+        
+        ModelMaxScale = Mathf.Clamp(5.0f / maxDimension, 1.0f, 4.0f);
+
+        NetworkedRulerSync localSync = null;
+        if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsConnectedClient)
+        {
+            GameObject userGO = LocalRegistry.Instance.GetPlayerGameObject(NetworkManager.Singleton.LocalClientId);
+            if (userGO != null)
+                localSync = userGO.GetComponentInChildren<NetworkedRulerSync>();
+        }
+
+        bool alreadyInitializedInServer = localSync != null && localSync.isModelScaleInitialized.Value;
+
+        if (!alreadyInitializedInServer)
+        {
+            targetTransform.localScale = Vector3.one;
+            
+            if (localSync != null)
+                localSync.RequestMarkScaleAsInitialized();
+        }
+        else
+            targetTransform.localScale = currentScaleBeforeMeasuring;
+    }
+}

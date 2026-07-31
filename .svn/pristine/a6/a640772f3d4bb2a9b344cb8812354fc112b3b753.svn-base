@@ -1,0 +1,12 @@
+var class_u_i_document_pointer_feedback =
+[
+    [ "ConvertUIPositionToWorldPosition", "class_u_i_document_pointer_feedback.html#a2f6d96bef57e8ca637a1b619bc775786", null ],
+    [ "OnDestroy", "class_u_i_document_pointer_feedback.html#ada1d0d2868417d1d081a024d12f16ae9", null ],
+    [ "OnPointerLeave", "class_u_i_document_pointer_feedback.html#a981bd258f9683691917adda6b08506e9", null ],
+    [ "OnPointerMove", "class_u_i_document_pointer_feedback.html#aa4fd1d87358619a81b0172c4735a8d6a", null ],
+    [ "RegisterCallbacks", "class_u_i_document_pointer_feedback.html#ac302683a105524d10e0c48962771972c", null ],
+    [ "Start", "class_u_i_document_pointer_feedback.html#a03121e50f0962e5f498810d526789bd7", null ],
+    [ "UnregisterCallbacks", "class_u_i_document_pointer_feedback.html#a1462abdac53f696996379e1bd720b503", null ],
+    [ "isPointerOverUI", "class_u_i_document_pointer_feedback.html#a50382ce12a2b3f9b8651843b8a8925d0", null ],
+    [ "uiDocument", "class_u_i_document_pointer_feedback.html#ae68eab03da9d8ed0c28c1a7b98c6886d", null ]
+];

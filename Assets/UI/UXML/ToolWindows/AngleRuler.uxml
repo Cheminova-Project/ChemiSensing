@@ -1,0 +1,24 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/USS/utils.uss?fileID=7433441132597879392&amp;guid=03b52ca0672e26748b8fdddb1dcce61b&amp;type=3#utils"/>
+    <Style src="project://database/Assets/UI/USS/segments.uss?fileID=7433441132597879392&amp;guid=2a52f25032bb499e9395f9105ca5fb65&amp;type=3#segments"/>
+    <ui:VisualElement name="Background" style="flex-grow: 1; background-color: rgb(255, 249, 249); width: 100%; height: 100%; flex-shrink: 0; min-width: 100%; max-width: 100%; max-height: 100%; min-height: 100%;">
+        <ui:VisualElement name="Header" style="flex-grow: 0; height: 10%; width: 100%; background-color: rgba(18, 171, 195, 0.87); min-height: 80px; color: rgb(18, 171, 195);">
+            <ui:Label text="Angle info" name="header-text" style="height: 100%; width: 100%; color: rgb(0, 0, 0); -unity-text-align: middle-center; font-size: 50px; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0;"/>
+        </ui:VisualElement>
+        <ui:ScrollView name="angles-container" mode="Vertical" touch-scroll-behavior="Clamped" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Auto" style="flex-grow: 1; width: 100%; margin-top: 0; -unity-text-align: middle-left; padding-top: 5px; padding-right: 5px; padding-bottom: 5px; padding-left: 5px;">
+            <ui:VisualElement name="Header" style="flex-grow: 0; flex-direction: row; height: 100px; width: 100%; min-height: 80px; max-height: 120px; align-content: center; justify-content: center; background-color: rgb(18, 171, 195); padding-top: 20px; padding-bottom: 20px; display: none;">
+                <AutoSizeLabel name="START" text="START" group="headers" min-font-size="30" style="width: 18%; height: 100%; -unity-text-align: upper-center; -unity-font-style: bold;"/>
+                <AutoSizeLabel name="VERTEX" text="VERTEX" group="headers" min-font-size="30" style="width: 18%; height: 100%; -unity-text-align: upper-center; -unity-font-style: bold;"/>
+                <AutoSizeLabel name="END" text="END" group="headers" min-font-size="30" style="width: 18%; height: 100%; -unity-text-align: upper-center; -unity-font-style: bold;"/>
+                <AutoSizeLabel name="ANGLE" text="ANGLE" group="headers" min-font-size="30" style="width: 16%; height: 100%; -unity-text-align: upper-center; -unity-font-style: bold;"/>
+                <AutoSizeLabel name="OPTION" text="OPTIONS" group="headers" min-font-size="30" style="width: 30%; height: 100%; -unity-text-align: upper-center; -unity-font-style: bold;"/>
+            </ui:VisualElement>
+        </ui:ScrollView>
+        <ui:Button name="add-angle-button" class="rounded-button" style="width: 90%; background-image: url(&quot;project://database/Assets/Images/Icons/add_segment.png?fileID=21300000&amp;guid=f242618fb3a3c97438dd88bf8f6f60bc&amp;type=3#add_segment&quot;); background-position-y: top 0; -unity-background-scale-mode: scale-to-fit; background-position-x: right 25px; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; min-height: 50px; height: 75px; max-height: 100px; margin-left: 5%; margin-right: 5%; margin-bottom: 20px; margin-top: 10px;">
+            <AutoSizeLabel text="Add angle" name="add-angle-label" group="buttons" min-font-size="30" max-font-size="50" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; width: 100%; height: 100%; -unity-font-style: normal;"/>
+        </ui:Button>
+        <ui:Button name="delete-points-button" class="rounded-button" style="width: 90%; background-image: url(&quot;project://database/Assets/Images/Icons/delete.png?fileID=21300000&amp;guid=c14ceb17f8f5e5a43bf255afdf677f7c&amp;type=3#delete&quot;); background-position-y: top 0; -unity-background-scale-mode: scale-to-fit; background-position-x: right 30px; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; min-height: 50px; height: 75px; max-height: 100px; margin-left: 5%; margin-right: 5%; margin-bottom: 20px; margin-top: 10px; background-color: rgb(250, 69, 44);">
+            <AutoSizeLabel name="delete-points-label" text="Delete points" group="buttons" min-font-size="30" max-font-size="50" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; width: 100%; height: 100%; -unity-font-style: normal;"/>
+        </ui:Button>
+    </ui:VisualElement>
+</ui:UXML>

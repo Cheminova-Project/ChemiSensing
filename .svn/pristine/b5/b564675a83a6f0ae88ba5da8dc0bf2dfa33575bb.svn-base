@@ -1,0 +1,31 @@
+using UnityEngine;
+
+namespace Unity.Netcode
+{
+    public enum ConnectMode
+    {
+        LOCAL, 
+        REMOTE
+    }
+    /// <summary>
+    /// Configuración del servidor de red para la aplicación.
+    /// </summary>
+    public class NetworkServerConfiguration : MonoBehaviourSingleton<NetworkServerConfiguration>
+    {
+        public string getMatchmakingServerIP()
+        {
+            if(connectMode == ConnectMode.LOCAL)
+            {
+                return localIP;
+            }
+            else
+            {
+                return remoteIP;
+            }
+        }
+        
+        public ConnectMode connectMode = ConnectMode.REMOTE;
+        public string remoteIP = "147.156.222.157";
+        public string localIP = "127.0.0.1";
+    }
+}

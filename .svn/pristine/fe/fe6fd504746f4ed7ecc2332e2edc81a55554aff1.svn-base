@@ -1,0 +1,10 @@
+var class_v_r_world_menu_manager =
+[
+    [ "Start", "class_v_r_world_menu_manager.html#a57e662f670652d00ec49b7024e87015e", null ],
+    [ "ToggleActive", "class_v_r_world_menu_manager.html#a3074bcb2ec7f5dc1386688063622f258", null ],
+    [ "isActive", "class_v_r_world_menu_manager.html#a765a247fef40c7ff4c1fd2d82fd419b1", null ],
+    [ "mainCamera", "class_v_r_world_menu_manager.html#ab5c2b0048149c59c0941b2ab9c96d0a3", null ],
+    [ "offset", "class_v_r_world_menu_manager.html#a2ab8155ac358bf37ae2675b73dc09aee", null ],
+    [ "startActive", "class_v_r_world_menu_manager.html#a1a11b9dadc6ccb005d9aef5d11a3de33", null ],
+    [ "targetObject", "class_v_r_world_menu_manager.html#aa1c02092ee77355308187829bed1e839", null ]
+];

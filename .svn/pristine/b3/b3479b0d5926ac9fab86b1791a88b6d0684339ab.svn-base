@@ -1,0 +1,9 @@
+var class_site_post =
+[
+    [ "description", "class_site_post.html#af440c14573bfc8cff17b0e1789010fad", null ],
+    [ "icon", "class_site_post.html#afd820d607ae75ebcd6137265589b17d3", null ],
+    [ "id_country", "class_site_post.html#a876381b9f0441be5fcb103257ed3872c", null ],
+    [ "latitude", "class_site_post.html#a8cf781072678dfabe4310019c4fed39a", null ],
+    [ "longitude", "class_site_post.html#a5514bf6e64f236740bc801db2af16fc2", null ],
+    [ "name", "class_site_post.html#a30669e9f03501168816b7517fcaf3c6f", null ]
+];

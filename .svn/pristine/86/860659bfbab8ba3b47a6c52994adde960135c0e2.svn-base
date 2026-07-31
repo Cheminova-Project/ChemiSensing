@@ -1,0 +1,54 @@
+using System;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+
+/// <summary>
+/// Gestiona la selección de objetos E3D en la interfaz de usuario.
+/// Permite seleccionar, resaltar y manipular elementos E3D.
+/// </summary>
+public class E3DSelectionHandler : MonoBehaviour
+{
+    /// <summary>
+    /// Referencia al objeto seleccionado.
+    /// </summary>
+    public object selectedObject;
+
+    public E3DListUI e3DListUI;
+    public SceneField sceneToLoadAfterSelection;
+
+    private void Awake()
+    {
+        E3DListUI.onE3DModelSelected += OnE3DModelSelected;
+    }
+
+    public void OnE3DModelSelected(E3DModelData e3DModelData)
+    {
+        if (e3DModelData == null)
+        {
+            Debug.LogWarning("E3DModelData is null. Cannot handle selection.");
+            return;
+        }
+
+        // Aquí puedes manejar la selección del modelo E3D
+        Debug.Log($"E3D Model Selected: {e3DModelData.name}");
+        
+        string sceneName = System.IO.Path.GetFileNameWithoutExtension(sceneToLoadAfterSelection.ScenePath);
+        if(sceneName == null || sceneName.Length == 0)
+        {
+            Debug.LogError("Scene name is empty or null. Please check the sceneToLoadAfterSelection field.");
+            return;
+        }
+        
+        var loadOperation = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Single);
+        loadOperation.completed += (asyncOperation) =>
+        {
+            // Aquí puedes realizar acciones después de que la escena se haya cargado
+            Debug.Log(sceneName + " loaded successfully.");
+            
+            // Guardar el modelo seleccionado en RoomsManager
+            GlobalVariables.Instance.SetSelectedE3DModelData(e3DModelData);
+            Destroy(this);
+        };
+        
+    }
+}

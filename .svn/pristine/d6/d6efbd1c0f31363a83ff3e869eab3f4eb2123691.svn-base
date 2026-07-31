@@ -1,0 +1,24 @@
+var class_double_state_button =
+[
+    [ "ButtonState", "class_double_state_button.html#a7931ae10a71c329c7bcd8ec87b260c3d", [
+      [ "First", "class_double_state_button.html#a7931ae10a71c329c7bcd8ec87b260c3da7fb55ed0b7a30342ba6da306428cae04", null ],
+      [ "Second", "class_double_state_button.html#a7931ae10a71c329c7bcd8ec87b260c3dac22cf8376b1893dcfcef0649fe1a7d87", null ]
+    ] ],
+    [ "IsDisabledState", "class_double_state_button.html#a2894b42ff4a3281049935f70b014e5ab", null ],
+    [ "IsSecondState", "class_double_state_button.html#a4430463307f18965d9120628ea70d78f", null ],
+    [ "OnButtonClick", "class_double_state_button.html#ae750a566d93b568f208b78c1b76e4df8", null ],
+    [ "OnDestroy", "class_double_state_button.html#a63ffaac5061c8dc5e02249ba8b5fa2c5", null ],
+    [ "OnDisable", "class_double_state_button.html#a61887bda66724c652d654d8c92a25237", null ],
+    [ "OnPointerClick", "class_double_state_button.html#a3ce88244bcd5060cd7f6b67f1d5f8991", null ],
+    [ "SetState", "class_double_state_button.html#a68f39469a28db5c59fd3f25fba5ddd78", null ],
+    [ "SetState", "class_double_state_button.html#a0a0be04cd4df309608155fa5c7f7658b", null ],
+    [ "Start", "class_double_state_button.html#a88a5095e12b0bc35abac73b4375506c4", null ],
+    [ "UpdateVisual", "class_double_state_button.html#a59ff1affd942ea163f5514f84f6ff9c0", null ],
+    [ "m_currentState", "class_double_state_button.html#a3facbb6cc102614e468fe324dbc5c5eb", null ],
+    [ "m_firstStateSprite", "class_double_state_button.html#a62750f9ccdee67e4953c030de07f7897", null ],
+    [ "m_image", "class_double_state_button.html#a71c71586db78d1f9dc88744d5ada206b", null ],
+    [ "m_isBooleanButton", "class_double_state_button.html#a813fbbd7856dd6e1a5bfe70bdbb8cc4e", null ],
+    [ "m_secondStateSprite", "class_double_state_button.html#aeaa9ce7845764ccbd3e39f3d5866c1c3", null ],
+    [ "onFirstState", "class_double_state_button.html#a78f8d7bcbc823320a0cab86adef20499", null ],
+    [ "onSecondState", "class_double_state_button.html#a3b258a605fcc11df38bab2d4f9acf1d2", null ]
+];

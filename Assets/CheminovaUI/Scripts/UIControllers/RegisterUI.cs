@@ -1,0 +1,173 @@
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UIElements;
+using System;
+
+public class RegisterUI : MonoBehaviour
+{
+    /// <summary>
+    /// Opciones de roles disponibles para el usuario.
+    /// </summary>
+    [SerializeField] private List<string> roleOptions = new List<string>();
+    
+    // Campos del formulario
+    private IntegerField activeField;
+    private IntegerField activityStartField;
+    private TextField affiliationField;
+    private TextField emailField;
+    private IntegerField idCountryField;
+    private TextField nameField;
+    private TextField passwordField;
+    private TextField professionField;
+    private DropdownField roleField;
+    private TextField surnameField;
+    private TextField usernameField;
+    private Button registerButton;
+    private Label passwordErrorLabel;
+    
+    /// <summary>
+    /// Callback que se ejecuta al recibir la respuesta del registro.
+    /// </summary>
+    /// <param name="data">Datos del usuario registrado.</param>
+    /// <param name="success">Indica si el registro fue exitoso.</param>
+    private void OnRegister(UserData data, bool success)
+    {
+        if (success)
+        {
+            // User data
+        }
+        else
+        {
+            Debug.LogWarning("Error when registering.");
+        }
+    }
+    
+    /// <summary>
+    /// Inicializa los campos del formulario y los eventos del botón de registro.
+    /// </summary>
+    void OnEnable()
+    {
+        var loginUIDocumentRoot = GetComponent<UIDocument>().rootVisualElement;
+
+        activeField = loginUIDocumentRoot.Q<IntegerField>("activeField");
+        activityStartField = loginUIDocumentRoot.Q<IntegerField>("activity-start-field");
+        affiliationField = loginUIDocumentRoot.Q<TextField>("affiliation-field");
+        nameField = loginUIDocumentRoot.Q<TextField>("name-field");
+        emailField = loginUIDocumentRoot.Q<TextField>("email-field");
+        idCountryField = loginUIDocumentRoot.Q<IntegerField>("id-country-field");
+        passwordField = loginUIDocumentRoot.Q<TextField>("password-field");
+        professionField = loginUIDocumentRoot.Q<TextField>("profession-field");
+        roleField = loginUIDocumentRoot.Q<DropdownField>("role-field");
+        surnameField = loginUIDocumentRoot.Q<TextField>("surname-field");
+        usernameField = loginUIDocumentRoot.Q<TextField>("username-field");
+        registerButton = loginUIDocumentRoot.Q<Button>("continue-button");
+        passwordErrorLabel = loginUIDocumentRoot.Q<Label>("password-error");
+        
+        // Get custom labels from EnumMember attribute
+        roleOptions = HelpFunctions.GetEnumMemberLabels<UserRole>();
+
+        // Set the dropdown's choices to the custom labels
+        roleField.choices = roleOptions;
+        
+        ShowCredentialsError(false);
+        
+        if (registerButton != null)
+            registerButton.clicked += OnRegisterClicked;
+        else
+            Debug.LogWarning("Continue button not found.");
+    }
+    
+    /// <summary>
+    /// Evento al hacer clic en el botón de registro. Recoge los datos y llama al registro.
+    /// </summary>
+    void OnRegisterClicked()
+    {
+        int active = activeField.value;
+        int activityStart = activityStartField.value;
+        string affiliation = affiliationField?.value;
+        string name = nameField?.value;
+        string email = emailField?.value;
+        int idCountry = idCountryField.value;
+        string password = passwordField?.value;
+        string profession = professionField?.value;
+        UserRole role = GetUserRoleFromLabel(roleField?.value);
+        string surname = surnameField?.value;
+        string username = usernameField?.value;
+
+        RegisterWithCredentials(active, activityStart, affiliation, email, idCountry,
+            name, password, profession, role, surname, username);
+    }
+    
+    /// <summary>
+    /// Muestra u oculta el mensaje de error de credenciales.
+    /// </summary>
+    /// <param name="visible">Si es true, muestra el error.</param>
+    /// <param name="err">Mensaje de error a mostrar.</param>
+    public void ShowCredentialsError(bool visible, string err = "Unrecognized error")
+    {
+        passwordErrorLabel.text = err;
+        passwordErrorLabel.style.display =visible? DisplayStyle.Flex : DisplayStyle.None;
+    }
+    
+    /// <summary>
+    /// Llama al registro de usuario con las credenciales proporcionadas.
+    /// </summary>
+    /// <param name="active">Estado de actividad.</param>
+    /// <param name="activityStart">Fecha de inicio de actividad.</param>
+    /// <param name="affiliation">Afiliación del usuario.</param>
+    /// <param name="email">Correo electrónico.</param>
+    /// <param name="idCountry">ID del país.</param>
+    /// <param name="name">Nombre.</param>
+    /// <param name="password">Contraseña.</param>
+    /// <param name="profession">Profesión.</param>
+    /// <param name="role">Rol del usuario.</param>
+    /// <param name="surname">Apellido.</param>
+    /// <param name="username">Nombre de usuario.</param>
+    public void RegisterWithCredentials(int active, int activityStart, string affiliation, string email,
+        int idCountry, string name, string password, string profession, UserRole role, string surname, string username)
+    {
+       //Debug.Log("Trying to register user");
+        StartCoroutine(RegisterDB.Register(OnRegister, active, activityStart, affiliation, email,
+            idCountry, name, password, profession, role, surname, username));
+    }
+    
+    /// <summary>
+    /// Lógica tras un registro exitoso.
+    /// </summary>
+    public void OnSuccessfulRegister()
+    {
+       //Debug.Log("Successful register.");
+        ShowCredentialsError(false);
+    }
+    
+    /// <summary>
+    /// Lógica tras un registro fallido.
+    /// </summary>
+    /// <param name="err">Mensaje de error.</param>
+    public void OnFailedRegister(string err = "Unrecognized error")
+    {
+       //Debug.Log("User register failed.");
+        ShowCredentialsError(true, err);
+    }
+    
+    /// <summary>
+    /// Convierte la etiqueta seleccionada en el dropdown al valor del enum UserRole.
+    /// </summary>
+    /// <param name="selectedLabel">Etiqueta seleccionada.</param>
+    /// <returns>Valor del enum UserRole correspondiente.</returns>
+    private UserRole GetUserRoleFromLabel(string selectedLabel)
+    {
+        var customLabels = HelpFunctions.GetEnumMemberLabels<UserRole>();
+
+        // Find the corresponding enum value
+        for (int i = 0; i < customLabels.Count; i++)
+        {
+            if (customLabels[i] == selectedLabel)
+            {
+                return (UserRole)Enum.GetValues(typeof(UserRole)).GetValue(i);
+            }
+        }
+
+        return UserRole.admin; // Default if no match is found
+    }
+}

@@ -1,0 +1,22 @@
+var class_mono_behaviour_singleton_1_g =
+[
+    [ "Awake", "class_mono_behaviour_singleton-1-g.html#a1a42216804031b395d04eff5f5665a26", null ],
+    [ "CreateNewInstance", "class_mono_behaviour_singleton-1-g.html#a9626256ed39470086547e16bc7bd65a4", null ],
+    [ "FindExistingInstance", "class_mono_behaviour_singleton-1-g.html#a4ca0a7c19cb4feb948f1c3a48ef5c742", null ],
+    [ "NotifyInstanceRepeated", "class_mono_behaviour_singleton-1-g.html#a18040459c29945fad98bfe43a694f56e", null ],
+    [ "OnDestroy", "class_mono_behaviour_singleton-1-g.html#a3f54e9ea0464a2a097122e4b0f12afa2", null ],
+    [ "Print", "class_mono_behaviour_singleton-1-g.html#ab69ace52c7198d073f0c504886d4fbc9", null ],
+    [ "PrintError", "class_mono_behaviour_singleton-1-g.html#a5d1887dab71482d76f2d374f1c957714", null ],
+    [ "PrintLog", "class_mono_behaviour_singleton-1-g.html#ad56020a5dc0398999d494ad7730f3b4b", null ],
+    [ "PrintWarn", "class_mono_behaviour_singleton-1-g.html#a67c8b27a256ce7417dbe2302b8aeb1b4", null ],
+    [ "SingletonAwakened", "class_mono_behaviour_singleton-1-g.html#a189bf7aa899ac50e1846027a6fd558ca", null ],
+    [ "SingletonDestroyed", "class_mono_behaviour_singleton-1-g.html#a51eff6c601d01e0f0afd69de5f00675e", null ],
+    [ "SingletonStarted", "class_mono_behaviour_singleton-1-g.html#a30ca8953ac7ddf5cbff660f599661a32", null ],
+    [ "Start", "class_mono_behaviour_singleton-1-g.html#aee2edcbc44e19ffcfea8351faf2b6cc1", null ],
+    [ "_instance", "class_mono_behaviour_singleton-1-g.html#ab7f666508f7403f8a97939584b576452", null ],
+    [ "PrintTrace", "class_mono_behaviour_singleton-1-g.html#a61d3473859c4e47a2b7baf81b8a7c192", null ],
+    [ "Instance", "class_mono_behaviour_singleton-1-g.html#a7e684a41e17246c287f3d60dce1d2cbe", null ],
+    [ "IsAwakened", "class_mono_behaviour_singleton-1-g.html#a731408fe85f26cbd84bdff73dd4515e0", null ],
+    [ "IsDestroyed", "class_mono_behaviour_singleton-1-g.html#a3ee523b01c4263c71d272386a0621fbc", null ],
+    [ "IsStarted", "class_mono_behaviour_singleton-1-g.html#a689227d8f59e7e425d1089e148367501", null ]
+];

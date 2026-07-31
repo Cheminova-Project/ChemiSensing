@@ -1,0 +1,13 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/CheminovaUI/Resources/UI/USS/checkboxes_group_alteration_page.uss?fileID=7433441132597879392&amp;guid=4224a4c091c5c7c4a8c02664e4b3f0f9&amp;type=3#checkboxes_group_alteration_page" />
+    <engine:VisualElement name="checkboxes-group" class="bloque-contenedor" style="-unity-font-definition: resource(&apos;UI/Fonts/Mulish-VariableFont_wght&apos;);">
+        <engine:Label text="Label" name="label-header-name" class="titulo-bloque" />
+        <engine:VisualElement name="visual-element-checkboxes" class="bloque-checkboxes">
+            <engine:Toggle text="Checkbox 1" name="Checkbox1" class="checkbox-item" />
+            <engine:Toggle text="Checkbox 2" name="Checkbox2" class="checkbox-item" />
+            <engine:Toggle text="Checkbox 3" name="Checkbox3" class="checkbox-item" />
+            <engine:Toggle text="Checkbox 4" name="Checkbox4" class="checkbox-item" />
+            <engine:Toggle text="Checkbox 5" name="Checkbox5" class="checkbox-item" />
+        </engine:VisualElement>
+    </engine:VisualElement>
+</engine:UXML>

@@ -1,0 +1,22 @@
+var class_session_prefs =
+[
+    [ "Awake", "class_session_prefs.html#a673dd58da159c132fbe24b57c6e25fba", null ],
+    [ "DeleteAll", "class_session_prefs.html#ab3d0524dee8305d077446e79b06a5f65", null ],
+    [ "DeleteKey", "class_session_prefs.html#a3a790b917caabdf7b6ece5d7539c154e", null ],
+    [ "GetAllData", "class_session_prefs.html#a7af5aa7383283c4d5f941071e007f6b7", null ],
+    [ "GetAllKeys", "class_session_prefs.html#a6bd384be7af244f6b6fb08f023903ebf", null ],
+    [ "GetFloat", "class_session_prefs.html#a2e27907ccf4cd665d709704c3ec7ee30", null ],
+    [ "GetInt", "class_session_prefs.html#a9b6478a3326e3207161e45cf4056443f", null ],
+    [ "GetString", "class_session_prefs.html#ac8671d9b9f4a457a3f3c65bbb8038557", null ],
+    [ "HasKey", "class_session_prefs.html#a2d7064fe4766cad1823e513955fef799", null ],
+    [ "OnDestroy", "class_session_prefs.html#a912ceb79d67b98a6926f6087939fc12c", null ],
+    [ "PrintAllData", "class_session_prefs.html#a0a92bb549acc71862afb9cb4d7021ce8", null ],
+    [ "SetFloat", "class_session_prefs.html#a3f65d6f09d1c83820ab88b9ff16ec965", null ],
+    [ "SetInt", "class_session_prefs.html#ad0f9762a152320853511b6524106f9c6", null ],
+    [ "SetString", "class_session_prefs.html#a934567bd7f0cee30ed19aaaadbf27385", null ],
+    [ "string", "class_session_prefs.html#ac887def7a087aa8326876dc1d89dca2f", null ],
+    [ "_instance", "class_session_prefs.html#a2802a5ea0e90c607b7e206467536f2e8", null ],
+    [ "_sessionData", "class_session_prefs.html#ae3c40a1e315f7f6c913ba8fbb2180b05", null ],
+    [ "Instance", "class_session_prefs.html#ae1183c2f0508ad225ecbd7bc0b5d3e5c", null ],
+    [ "KeyCount", "class_session_prefs.html#a8831cde0446dea53e17bd0a12c8bded2", null ]
+];

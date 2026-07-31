@@ -1,0 +1,388 @@
+using UnityEngine;
+using UnityEngine.UIElements;
+using UnityEngine.XR.Interaction.Toolkit.Utilities;
+
+/// <summary>
+/// Manages spawning and positioning of the global XR keyboard for UIToolkit text fields.
+/// </summary>
+public class GlobalKeyboard : MonoBehaviour
+{
+    public static GlobalKeyboard instance { get; private set; }
+    
+    [SerializeField]
+    OfflineCustomSpawner offlineCustomSpawner;
+
+    [SerializeField, Tooltip("The prefab with the XR Keyboard component to automatically instantiate.")]
+    GameObject m_KeyboardPrefab;
+
+    /// <summary>
+    /// The prefab with the XR Keyboard component to automatically instantiate.
+    /// </summary>
+    public GameObject keyboardPrefab
+    {
+        get => m_KeyboardPrefab;
+        set => m_KeyboardPrefab = value;
+    }
+
+    /// <summary>
+    /// The parent Transform to instantiate the Keyboard Prefab under.
+    /// </summary>
+    public Transform playerRoot
+    {
+        get => m_PlayerRoot;
+        set => m_PlayerRoot = value;
+    }
+
+    [HideInInspector]
+    [SerializeField]
+    MonoBehaviour m_Keyboard;
+
+    /// <summary>
+    /// Global keyboard instance (debe tener un componente XRKeyboard).
+    /// </summary>
+    public MonoBehaviour keyboard
+    {
+        get => m_Keyboard;
+        set => m_Keyboard = value;
+    }
+
+    [SerializeField, Tooltip("Position offset from the camera to place the keyboard.")]
+    Vector3 m_KeyboardOffset;
+
+    /// <summary>
+    /// Position offset from the camera to place the keyboard.
+    /// </summary>
+    public Vector3 keyboardOffset
+    {
+        get => m_KeyboardOffset;
+        set => m_KeyboardOffset = value;
+    }
+
+    Transform m_CameraTransform;
+
+    /// <summary>
+    /// Transform of the camera. If left empty, this will default to Camera.main.
+    /// </summary>
+    public Transform cameraTransform
+    {
+        get => m_CameraTransform;
+        set => m_CameraTransform = value;
+    }
+
+    [SerializeField, Tooltip("If true, the keyboard will be repositioned to the starting position if it is out of view when Show Keyboard is called.")]
+    bool m_RepositionOutOfViewKeyboardOnOpen = true;
+
+    /// <summary>
+    /// If true, the keyboard will be repositioned to the starting position if it is out of view when Show Keyboard is called.
+    /// </summary>
+    public bool repositionOutOfViewKeyboardOnOpen
+    {
+        get => m_RepositionOutOfViewKeyboardOnOpen;
+        set => m_RepositionOutOfViewKeyboardOnOpen = value;
+    }
+
+    [SerializeField, Tooltip("Threshold for the dot product when determining if the keyboard is out of view and should be repositioned. The lower the threshold, the wider the field of view."), Range(0f, 1f)]
+    float m_FacingKeyboardThreshold = 0.15f;
+
+    /// <summary>
+    /// Threshold for the dot product when determining if the keyboard is out of view and should be repositioned. The lower the threshold, the wider the field of view.
+    /// </summary>
+    public float facingKeyboardThreshold
+    {
+        get => m_FacingKeyboardThreshold;
+        set => m_FacingKeyboardThreshold = value;
+    }
+
+    private TextField m_CurrentTextField;
+    private bool m_IsKeyboardActive = false;
+    private string m_LastKeyboardText = "";
+    private MonoBehaviour m_KeyboardInstance; // Referencia directa al componente XRKeyboard
+
+    Transform m_PlayerRoot;
+
+    public void Initialize(GameObject player = null)
+    {
+        m_PlayerRoot = player.transform;
+        m_CameraTransform = m_PlayerRoot.GetComponentInChildren<Camera>()?.transform;
+        if (m_CameraTransform == null)
+        {
+            Debug.LogError("GlobalKeyboard could not find Camera in player hierarchy.", this);
+            return;
+        }
+
+        if (m_KeyboardPrefab != null)
+        {
+            var keyboardGO = Instantiate(m_KeyboardPrefab, m_PlayerRoot);
+            m_Keyboard = keyboardGO.GetComponent<MonoBehaviour>();
+            m_KeyboardInstance = m_Keyboard; // Guardar referencia al componente
+            keyboardGO.SetActive(false);
+        }
+
+        RegisterUIDocument();
+        
+        UIDocumentManager.Instance.onContextSwitched.AddListener(() => RegisterUIDocument());
+    }
+
+    /// <summary>
+    /// Registra los campos de texto del UIDocument para detectar selecciones.
+    /// </summary>
+    private void RegisterUIDocument()
+    {
+        var uiDocument = GetComponent<UIDocument>();
+        if (uiDocument != null && uiDocument.rootVisualElement != null)
+            RegisterTextFieldsRecursive(uiDocument.rootVisualElement);
+        else
+            Debug.LogWarning("[GlobalKeyboard] RegisterUIDocument: UIDocument not found or root is null");
+    }
+
+    /// <summary>
+    /// Registra recursivamente todos los TextFields en el árbol visual.
+    /// </summary>
+    private void RegisterTextFieldsRecursive(VisualElement element)
+    {
+        if (element is TextField textField)
+        {
+            textField.RegisterCallback<FocusInEvent>(OnTextFieldFocus);
+            textField.RegisterCallback<FocusOutEvent>(OnTextFieldBlur);
+        }
+
+        foreach (var child in element.Children())
+        {
+            RegisterTextFieldsRecursive(child);
+        }
+    }
+
+    /// <summary>
+    /// Llamado cuando un TextField obtiene el foco.
+    /// </summary>
+    private void OnTextFieldFocus(FocusInEvent evt)
+    {
+        
+        TextField textFieldFallback = null;
+        if (evt.target is TextElement textElement)
+        {
+            //Buscamos en los padres hasta encontrar un TextField
+            VisualElement currentElement = textElement;
+            while (currentElement != null)
+            {
+                if (currentElement is TextField foundTextField)
+                {
+                    textFieldFallback = foundTextField;
+                    break;
+                }
+                currentElement = currentElement.parent;
+            }
+
+            if (textFieldFallback != null)
+            {
+                m_CurrentTextField = textFieldFallback;
+                OpenKeyboard(textFieldFallback.value);
+            }
+        }
+        else if (evt.target is TextField textField) 
+        {
+            m_CurrentTextField = textField;
+            OpenKeyboard(textField.value);
+        }
+        else
+        {
+            Debug.LogWarning($"[GlobalKeyboard] Focused element is not a TextField or TextElement: {evt.target?.GetType().Name}", this);
+        }
+    }
+
+    /// <summary>
+    /// Llamado cuando un TextField pierde el foco.
+    /// </summary>
+    private void OnTextFieldBlur(FocusOutEvent evt)
+    {
+        //CloseKeyboard();
+        //m_CurrentTextField = null;
+    }
+    
+    /// <summary>
+    /// See <see cref="MonoBehaviour"/>.
+    /// </summary>
+    void Awake()
+    {
+        if (instance != null && instance != this)
+        {
+            Destroy(this);
+            return;
+        }
+
+        instance = this;
+    }
+
+    void Start()
+    {
+        if (offlineCustomSpawner != null)
+        {
+            offlineCustomSpawner.onVRPlayerSpawned.AddListener((player) => Initialize(player));
+        }
+        else
+        {
+            Initialize();
+        }
+    }
+
+    void OnDestroy()
+    {
+        if (offlineCustomSpawner != null)
+        {
+            offlineCustomSpawner.onVRPlayerSpawned.RemoveListener((player) => Initialize(player));
+        }
+
+        UIDocumentManager.Instance.onContextSwitched.RemoveListener(() => RegisterUIDocument());
+    }
+
+    void Update()
+    {
+        // Si el teclado está activo, sincronizar el texto del XRKeyboard con el TextField
+        if (m_IsKeyboardActive && m_CurrentTextField != null && m_KeyboardInstance != null)
+        {
+            // Obtener si el teclado sigue abierto
+            bool isOpen = false;
+            var isOpenProperty = m_KeyboardInstance.GetType().GetProperty("isOpen");
+            if (isOpenProperty != null)
+            {
+                isOpen = (bool)isOpenProperty.GetValue(m_KeyboardInstance, null);
+            }
+
+            if (isOpen)
+            {
+                // Obtener el texto actual del XRKeyboard
+                var textProperty = m_KeyboardInstance.GetType().GetProperty("text");
+                if (textProperty != null)
+                {
+                    string currentKeyboardText = (string)textProperty.GetValue(m_KeyboardInstance, null) ?? "";
+                    
+                    // Si el texto cambió, actualizar el TextField
+                    if (currentKeyboardText != m_LastKeyboardText)
+                    {
+                        m_CurrentTextField.value = currentKeyboardText;
+                        m_LastKeyboardText = currentKeyboardText;
+                    }
+                }
+            }
+            else
+                m_IsKeyboardActive = false;
+        }
+    }
+
+
+    /// <summary>
+    /// Abre el teclado global con texto inicial (automático desde TextField o manual).
+    /// </summary>
+    /// <param name="initialText">Texto inicial a mostrar en el teclado.</param>
+    public virtual void OpenKeyboard(string initialText = "")
+    {
+        if (keyboard == null)
+        {
+            Debug.LogError("[GlobalKeyboard] Keyboard is null!");
+            return;
+        }
+        
+        // Comprobar si el teclado ya está abierto o si debe reposicionarse
+        bool isOpen = false;
+        var isOpenProperty = keyboard.GetType().GetProperty("isOpen");
+        if (isOpenProperty != null)
+        {
+            isOpen = (bool)isOpenProperty.GetValue(keyboard, null);
+        }
+        var shouldPositionKeyboard = !isOpen || (m_RepositionOutOfViewKeyboardOnOpen && IsKeyboardOutOfView());
+        
+        // Abrir teclado con el texto inicial usando reflexión
+        var openMethod = keyboard.GetType().GetMethod("Open", new System.Type[] { typeof(string) });
+        if (openMethod != null)
+        {
+            openMethod.Invoke(keyboard, new object[] { initialText });
+            m_IsKeyboardActive = true; // Marcar teclado como activo
+        }
+        else
+        {
+            Debug.LogError("[GlobalKeyboard] Could not find Open(string) method on keyboard!");
+        }
+
+        // Posicionar el teclado frente al usuario si está cerrado
+        if (shouldPositionKeyboard)
+        {
+            PositionKeyboard(m_CameraTransform);
+        }
+    }
+
+    /// <summary>
+    /// Cierra el teclado global y actualiza el TextField actual.
+    /// </summary>
+    public virtual void CloseKeyboard()
+    {
+        if (keyboard == null)
+            return;
+
+        // Obtener el texto del teclado
+        var keyboardText = (string)keyboard.GetType().GetProperty("text")?.GetValue(keyboard, null) ?? "";
+
+        // Actualizar el TextField con el texto del teclado si existe
+        if (m_CurrentTextField != null)
+        {
+            m_CurrentTextField.value = keyboardText;
+        }
+
+        // Cerrar teclado
+        keyboard.GetType().GetMethod("Close", System.Type.EmptyTypes)?.Invoke(keyboard, null);
+        
+        m_IsKeyboardActive = false;
+        m_CurrentTextField = null;
+    }
+
+    /// <summary>
+    /// Reposition <see cref="keyboard"/> to starting position if it is out of view. Keyboard will only reposition if is active and enabled.
+    /// </summary>
+    /// <remarks>
+    /// Field if view is defined by the <see cref="facingKeyboardThreshold"/>, and the starting position
+    /// is defined by the <see cref="keyboardOffset"/> in relation to the camera.
+    /// </remarks>
+    public void RepositionKeyboardIfOutOfView()
+    {
+        if (IsKeyboardOutOfView())
+        {
+            bool isOpen = false;
+            var isOpenProperty = keyboard.GetType().GetProperty("isOpen");
+            if (isOpenProperty != null)
+            {
+                isOpen = (bool)isOpenProperty.GetValue(keyboard, null);
+            }
+            
+            if (isOpen)
+                PositionKeyboard(m_CameraTransform);
+        }
+    }
+
+    void PositionKeyboard(Transform target)
+    {
+        var position = target.position +
+            target.right * m_KeyboardOffset.x +
+            target.forward * m_KeyboardOffset.z +
+            Vector3.up * m_KeyboardOffset.y;
+        keyboard.transform.position = position;
+        FaceKeyboardAtTarget(m_CameraTransform);
+    }
+
+    void FaceKeyboardAtTarget(Transform target)
+    {
+        var forward = (keyboard.transform.position - target.position).normalized;
+        BurstMathUtility.OrthogonalLookRotation(forward, Vector3.up, out var newTarget);
+        keyboard.transform.rotation = newTarget;
+    }
+
+    bool IsKeyboardOutOfView()
+    {
+        if (m_CameraTransform == null || keyboard == null)
+        {
+            Debug.LogWarning("Camera or keyboard reference is null. Unable to determine if keyboard is out of view.", this);
+            return false;
+        }
+
+        var dotProduct = Vector3.Dot(m_CameraTransform.forward, (keyboard.transform.position - m_CameraTransform.position).normalized);
+        return dotProduct < m_FacingKeyboardThreshold;
+    }
+}

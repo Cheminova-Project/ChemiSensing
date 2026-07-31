@@ -1,0 +1,253 @@
+using Unity.Netcode;
+using UnityEngine;
+using UnityEngine.UIElements;
+using UnityEngine.InputSystem;
+
+/// <summary>
+/// Gestiona los atajos de teclado en PC para cambiar rápidamente de herramienta.
+/// Utiliza el New Input System de Unity para compatibilidad con XR e incluye protección de Mutex y apertura en cadena.
+/// </summary>
+public class KeyboardShortcutManager : MonoBehaviour
+{
+    private ToolMenuController menuController;
+
+    void Start()
+    {
+        menuController = ToolMenuController.Instance != null ? ToolMenuController.Instance : FindFirstObjectByType<ToolMenuController>();
+        
+        if (menuController == null)
+        {
+            Debug.LogError("[ShortcutManager] No se pudo encontrar ToolMenuController en la escena. Atajos desactivados.");
+            enabled = false;
+        }
+    }
+
+    void Update()
+    {
+        if (PlatformController.Instance != null && PlatformController.Instance.GetPlayerCharacterType() != PlayerCharacterType.Desktop)
+            return;
+
+        if (Keyboard.current == null || IsUserTypingInUI())
+            return;
+        
+        if (Keyboard.current.qKey.wasPressedThisFrame || 
+            Keyboard.current.eKey.wasPressedThisFrame || 
+            Keyboard.current.rKey.wasPressedThisFrame)
+        {
+            var manipulableObj = FindFirstObjectByType<ManipulableObject>();
+            if (manipulableObj != null)
+            {
+                var netObj = manipulableObj.GetComponent<NetworkObject>();
+                if (netObj != null && netObj.IsSpawned)
+                {
+                    ulong currentOwner = netObj.OwnerClientId;
+                    ulong myId = NetworkManager.Singleton.LocalClientId;
+
+                    if (currentOwner != ulong.MaxValue && currentOwner != NetworkManager.ServerClientId && currentOwner != myId)
+                    {
+                        string ownerName = LocalRegistry.Instance != null ? LocalRegistry.Instance.GetClientUsername(currentOwner) : "Another user";
+                        
+                        if (ToolMessageHandler.Instance != null)
+                        {
+                            ToolMessageHandler.Instance.ShowMessage($"{ownerName} is currently manipulating the model. Shortcut blocked.", 3.5f, MessageType.Error);
+                        }
+                        return; 
+                    }
+                }
+            }
+
+            if (Keyboard.current.qKey.wasPressedThisFrame)
+                SimulateToolClick("manipulation-move");
+            
+            if (Keyboard.current.rKey.wasPressedThisFrame)
+                SimulateToolClick("manipulation-rotate");
+            
+            if (Keyboard.current.eKey.wasPressedThisFrame)
+                SimulateToolClick("manipulation-scale");
+        }
+
+        if (Keyboard.current.gKey.wasPressedThisFrame)
+            SimulateToolClick("tools-annotations");
+
+        if (Keyboard.current.lKey.wasPressedThisFrame)
+            SimulateToolClick("tools-laser");
+        
+        if (Keyboard.current.mKey.wasPressedThisFrame)
+            SimulateToolClick("tools-measure-ruler");
+        
+        if (Keyboard.current.nKey.wasPressedThisFrame)
+            SimulateToolClick("tools-measure-angle");
+        
+        if (Keyboard.current.fKey.wasPressedThisFrame)
+            SimulateToolClick("visualization-modes");
+
+        if (Keyboard.current.tKey.wasPressedThisFrame)
+        {
+            var textureManager = FindFirstObjectByType<TextureManager>();
+            if (textureManager != null)
+            {
+                ulong currentTexOwner = textureManager.textureToolLockOwner.Value;
+                ulong myId = NetworkManager.Singleton.LocalClientId;
+
+                if (currentTexOwner != ulong.MaxValue && currentTexOwner != myId)
+                {
+                    string ownerName = LocalRegistry.Instance != null ? LocalRegistry.Instance.GetClientUsername(currentTexOwner) : "Another user";
+                    
+                    if (ToolMessageHandler.Instance != null)
+                    {
+                        ToolMessageHandler.Instance.ShowMessage($"{ownerName} is currently using the Texture Tool. Shortcut blocked.", 3.5f, MessageType.Error);
+                    }
+                    return; 
+                }
+            }
+
+            SimulateToolClick("visualization-textures");
+        }
+        
+        /*if (Keyboard.current.yKey.wasPressedThisFrame)
+            SimulateToolClick("reset_model");*/
+        
+        if (Keyboard.current.escapeKey.wasPressedThisFrame)
+        {
+            TriggerBackOrClose();
+        }
+    }
+
+    /// <summary>
+    /// Busca el botón/toggle de la herramienta en la UI y simula un clic físico sobre él.
+    /// Si la herramienta está en un submenú, abre todos los padres en cadena secuencial.
+    /// </summary>
+    private void SimulateToolClick(string toolId)
+    {
+        if (menuController == null)
+            return;
+        UIDocument doc = menuController.GetUIDocument();
+        
+        if (doc == null || doc.rootVisualElement == null)
+            return;
+
+        Toggle toolToggle = doc.rootVisualElement.Q<Toggle>(toolId);
+
+        if (toolToggle == null)
+        {
+            ReturnToRootMenu();
+            
+            string[] parentsToOpen = null;
+            
+            switch (toolId)
+            {
+                case "manipulation-move":
+                case "manipulation-rotate":
+                case "manipulation-scale":
+                    parentsToOpen = new string[] { "manipulation" }; 
+                    break;
+                    
+                case "tools-annotations":
+                case "tools-laser":
+                    parentsToOpen = new string[] { "tools" }; 
+                    break;
+
+                case "tools-measure-angle":
+                case "tools-measure-ruler":
+                    parentsToOpen = new string[] { "tools", "tools-measure" }; 
+                    break;
+
+                case "visualization-textures":
+                case "visualization-modes":
+                    parentsToOpen = new string[] { "visualization" }; 
+                    break;
+            }
+
+            if (parentsToOpen != null)
+            {
+                foreach (string parentId in parentsToOpen)
+                {
+                    Toggle parentToggle = doc.rootVisualElement.Q<Toggle>(parentId);
+                    if (parentToggle != null)
+                    {
+                        if (!parentToggle.value)
+                            parentToggle.value = true; 
+                    }
+                }
+                
+                toolToggle = doc.rootVisualElement.Q<Toggle>(toolId);
+            }
+        }
+
+        if (toolToggle != null)
+        {
+            if (!toolToggle.enabledSelf)
+            {
+                if (ToolMessageHandler.Instance != null)
+                    ToolMessageHandler.Instance.ShowMessage("This tool is currently disabled.", 3f, MessageType.Error);
+                
+                return;
+            }
+
+            if (!toolToggle.value)
+                toolToggle.value = true;
+        }
+        else
+        {
+            Debug.LogWarning($"[ShortcutManager] Error crítico: No se pudo encontrar la herramienta '{toolId}' tras expandir la jerarquía. Revisa la UI.");
+        }
+    }
+
+    private bool IsUserTypingInUI()
+    {
+        if (menuController == null) return false;
+        UIDocument doc = menuController.GetUIDocument();
+        if (doc == null || doc.rootVisualElement == null) return false;
+
+        Focusable focusedElement = doc.rootVisualElement.panel?.focusController?.focusedElement;
+        if (focusedElement != null)
+        {
+            if (focusedElement is TextField || focusedElement.GetType().Name.Contains("TextField") || focusedElement.GetType().Name.Contains("TextInput"))
+                return true;
+        }
+        return false;
+    }
+
+    private void TriggerBackOrClose()
+    {
+        UIDocument doc = menuController.GetUIDocument();
+        if (doc == null || doc.rootVisualElement == null) return;
+
+        Button backBtn = doc.rootVisualElement.Q<Button>(className: "tool-back-btn");
+        if (backBtn != null)
+        {
+            using (var e = NavigationSubmitEvent.GetPooled())
+            {
+                e.target = backBtn;
+                backBtn.SendEvent(e);
+            }
+        }
+        else
+        {
+            menuController.ForceCloseActiveGroupTool();
+        }
+    }
+    
+    /// <summary>
+    /// Simula hacer clic en el botón "Back" repetidas veces hasta llegar al menú principal.
+    /// </summary>
+    private void ReturnToRootMenu()
+    {
+        UIDocument doc = menuController.GetUIDocument();
+        if (doc == null || doc.rootVisualElement == null) return;
+
+        Button backBtn = doc.rootVisualElement.Q<Button>(className: "tool-back-btn");
+        int safetyLimit = 10; // Evita bucles infinitos por si algo falla
+        
+        while (backBtn != null && safetyLimit > 0)
+        {
+            using (var e = NavigationSubmitEvent.GetPooled())
+            {
+                e.target = backBtn;
+                backBtn.SendEvent(e);
+            }
+            backBtn = doc.rootVisualElement.Q<Button>(className: "tool-back-btn");
+            safetyLimit--;
+        }
+    }
+}

@@ -1,0 +1,289 @@
+using System.Collections;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Text;
+using JetBrains.Annotations;
+using Newtonsoft.Json;
+using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.Networking;
+
+/// <summary>
+/// Proporciona acceso a la API de formularios de alteración.
+/// Gestiona la configuración y la URL base de la API para formularios de alteración.
+/// </summary>
+public static class AlterationFormDB
+{
+    private static APIEndpointConfig config;
+    public static string ApiEndpointUrl => Config != null ? Config.endpointURL : "";
+    private static APIEndpointConfig Config
+    {
+        get
+        {
+            string className = MethodBase.GetCurrentMethod().DeclaringType.Name;
+            if (className == null)
+            {
+                Debug.LogWarning("Couldn't obtained class name.");
+                return null;
+            }
+            else
+            {
+                //Debug.Log("Name of the class: " + className);
+            }
+
+            config = Resources.Load<APIEndpointConfig>("API_URLS_ENDPOINT/" + className);
+            if (config == null)
+            {
+                Debug.LogWarning("No APIBaseConfig found in Resources. Create an asset with that name in Resources.");
+            }
+
+            return config;
+        }
+    }
+    public static string ApiUrl => GlobalManagement.Instance.urlBase + ApiEndpointUrl;
+
+    /// <summary>
+    /// Obtiene la lista de formularios de alteración.
+    /// </summary>
+    /// <param name="onCompleted">Acción a ejecutar cuando se completa la solicitud.</param>
+    /// <param name="page">Número de página para la paginación.</param>
+    /// <param name="perPage">Número de elementos por página.</param>
+    /// <param name="search">Cadena de búsqueda para filtrar resultados.</param>
+    /// <param name="sort">Campo por el cual ordenar los resultados.</param>
+    /// <param name="order">Orden de clasificación (ascendente/descendente).</param>
+    /// <param name="alterationId">Lista de IDs de alteraciones para filtrar.</param>
+    /// <param name="materialId">Lista de IDs de materiales para filtrar.</param>
+    /// <param name="yearFrom">Año de inicio para el filtro por año.</param>
+    /// <param name="yearTo">Año de fin para el filtro por año.</param>
+    public static IEnumerator GetAlterationFormList(UnityAction<AlterationFormResponse, bool> onCompleted,
+        int? page = null, int? perPage = null, [CanBeNull] string search = null,
+        [CanBeNull] string sort = null, [CanBeNull] string order = null, [CanBeNull] List<int> alterationId = null,
+        [CanBeNull] List<int> materialId = null, int? yearFrom = null, int? yearTo = null)
+    {
+        QueryParams queryParams = new QueryParams()
+        {
+            page = page,
+            per_page = perPage,
+            search = search,
+            sort = sort,
+            order = order,
+            alteration_id = alterationId,
+            material_id = materialId,
+            year_from = yearFrom,
+            year_to = yearTo
+        };
+
+        string query = ApiUrl + QueryManagement.ToQueryString(queryParams);
+        //Debug.Log("API URL: " + query);
+        UnityWebRequest request = new UnityWebRequest(query, "GET");
+        request.SetRequestHeader("Authorization", "Bearer " + GlobalManagement.Instance.token);
+        request.SetRequestHeader("Content-Type", "application/json");
+        request.downloadHandler = new DownloadHandlerBuffer();
+        yield return request.SendWebRequest();
+
+        if (request.result == UnityWebRequest.Result.Success)
+        {
+            //Debug.Log("Alteration forms obtained successfully: " + request.downloadHandler.text);
+            AlterationFormResponse alterationFormResponse =
+                JsonConvert.DeserializeObject<AlterationFormResponse>(request.downloadHandler.text);
+
+            if (string.IsNullOrEmpty(alterationFormResponse.error))
+            {
+                //Debug.Log("List of alteration form saved with the size of " + alterationFormResponse.items.Count);
+                onCompleted?.Invoke(alterationFormResponse, true);
+            }
+            else
+            {
+                Debug.LogWarning("Error in server reply: " + alterationFormResponse.error);
+                onCompleted?.Invoke(alterationFormResponse, false);
+            }
+        }
+        else
+        {
+            Debug.LogWarning("Error: " + request.error);
+            Debug.LogWarning("Server reply: " + request.downloadHandler.text);
+            onCompleted?.Invoke(null, false);
+        }
+
+        request.Dispose();
+    }
+
+    /// <summary>
+    /// Crea un nuevo formulario de alteración.
+    /// </summary>
+    /// <param name="onCompleted">Acción a ejecutar cuando se completa la solicitud.</param>
+    /// <param name="name">Nombre del nuevo formulario de alteración.</param>
+    public static IEnumerator PostNewAlterationForm(UnityAction<AlterationFormData, bool> onCompleted, string name)
+    {
+        AlterationFormPost alterationFormPostData = new AlterationFormPost()
+        {
+            name = name
+        };
+
+        string jsonData = JsonConvert.SerializeObject(alterationFormPostData);
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonData);
+
+        UnityWebRequest request = new UnityWebRequest(ApiUrl, "POST");
+        request.SetRequestHeader("Content-Type", "application/json");
+        request.SetRequestHeader("Authorization", "Bearer " + GlobalManagement.Instance.token);
+        request.uploadHandler = new UploadHandlerRaw(bodyRaw);
+        request.downloadHandler = new DownloadHandlerBuffer();
+        yield return request.SendWebRequest();
+
+        if (request.result == UnityWebRequest.Result.Success)
+        {
+            Debug.Log("Successful creation of alteration form: " + request.downloadHandler.text);
+            AlterationFormData alterationFormData =
+                JsonConvert.DeserializeObject<AlterationFormData>(request.downloadHandler.text);
+
+            if (string.IsNullOrEmpty(alterationFormData.error))
+            {
+                Debug.Log("Alteration form added " + alterationFormData.name);
+                onCompleted?.Invoke(alterationFormData, true);
+            }
+            else
+            {
+                Debug.LogWarning("Error in server reply: " + alterationFormData.error);
+                onCompleted?.Invoke(alterationFormData, false);
+            }
+        }
+        else
+        {
+            Debug.LogWarning("Error: " + request.error);
+            Debug.LogWarning("Server reply: " + request.downloadHandler.text);
+            onCompleted?.Invoke(null, false);
+        }
+
+        request.Dispose();
+    }
+
+    /// <summary>
+    /// Elimina un formulario de alteración por su ID.
+    /// </summary>
+    /// <param name="onCompleted">Acción a ejecutar cuando se completa la solicitud.</param>
+    /// <param name="id">ID del formulario de alteración a eliminar.</param>
+    public static IEnumerator DeleteAlterationFormFromApi(UnityAction<ErrorMessage, bool> onCompleted, int id)
+    {
+        UnityWebRequest request = UnityWebRequest.Delete(ApiUrl + "/" + id);
+        request.SetRequestHeader("Authorization", "Bearer " + GlobalManagement.Instance.token);
+        request.SetRequestHeader("Content-Type", "application/json");
+        request.downloadHandler = new DownloadHandlerBuffer();
+        yield return request.SendWebRequest();
+
+        if (request.result == UnityWebRequest.Result.Success)
+        {
+            Debug.Log("Successful elimination of alteration form: " + request.downloadHandler.text);
+            ErrorMessage errorMessage = JsonConvert.DeserializeObject<ErrorMessage>(request.downloadHandler.text);
+
+            if (string.IsNullOrEmpty(errorMessage.error))
+            {
+                Debug.Log("Element deleted");
+                onCompleted?.Invoke(null, true);
+            }
+            else
+            {
+                Debug.LogWarning("Error in server reply: " + errorMessage.error);
+                onCompleted?.Invoke(errorMessage, false);
+            }
+        }
+        else
+        {
+            Debug.LogWarning("Error: " + request.error);
+            Debug.LogWarning("Server reply: " + request.downloadHandler.text);
+            onCompleted?.Invoke(null, false);
+        }
+
+        request.Dispose();
+    }
+
+    /// <summary>
+    /// Obtiene un formulario de alteración por su ID.
+    /// </summary>
+    /// <param name="onCompleted">Acción a ejecutar cuando se completa la solicitud.</param>
+    /// <param name="id">ID del formulario de alteración a obtener.</param>
+    public static IEnumerator GetAlterationFormByID(UnityAction<AlterationFormData, bool> onCompleted, int id)
+    {
+        UnityWebRequest request = new UnityWebRequest(ApiUrl + "/" + id, "GET");
+        request.SetRequestHeader("Authorization", "Bearer " + GlobalManagement.Instance.token);
+        request.SetRequestHeader("Content-Type", "application/json");
+        request.downloadHandler = new DownloadHandlerBuffer();
+        yield return request.SendWebRequest();
+
+        if (request.result == UnityWebRequest.Result.Success)
+        {
+            Debug.Log("Alteration form obtained successfully: " + request.downloadHandler.text);
+            AlterationFormData alterationFormData =
+                JsonConvert.DeserializeObject<AlterationFormData>(request.downloadHandler.text);
+
+            if (string.IsNullOrEmpty(alterationFormData.error))
+            {
+                Debug.Log("Alteration form: " + alterationFormData.name);
+                onCompleted?.Invoke(alterationFormData, true);
+            }
+            else
+            {
+                Debug.LogWarning("Error in server reply: " + alterationFormData.error);
+                onCompleted?.Invoke(alterationFormData, false);
+            }
+        }
+        else
+        {
+            Debug.LogWarning("Error: " + request.error);
+            Debug.LogWarning("Server reply: " + request.downloadHandler.text);
+            onCompleted?.Invoke(null, false);
+        }
+
+        request.Dispose();
+    }
+
+    /// <summary>
+    /// Actualiza un formulario de alteración por su ID.
+    /// </summary>
+    /// <param name="onCompleted">Acción a ejecutar cuando se completa la solicitud.</param>
+    /// <param name="id">ID del formulario de alteración a actualizar.</param>
+    /// <param name="name">Nuevo nombre para el formulario de alteración.</param>
+    public static IEnumerator PutAlterationFormFromApi(UnityAction<AlterationFormData, bool> onCompleted,
+        int id, [CanBeNull] string name = null)
+    {
+        AlterationFormPost alterationFormPutData = new AlterationFormPost()
+        {
+            name = name
+        };
+
+        string jsonData = JsonConvert.SerializeObject(alterationFormPutData);
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonData);
+
+        UnityWebRequest request = new UnityWebRequest(ApiUrl + "/" + id, "PUT");
+        request.SetRequestHeader("Authorization", "Bearer " + GlobalManagement.Instance.token);
+        request.SetRequestHeader("Content-Type", "application/json");
+        request.downloadHandler = new DownloadHandlerBuffer();
+        request.uploadHandler = new UploadHandlerRaw(bodyRaw);
+        yield return request.SendWebRequest();
+
+        if (request.result == UnityWebRequest.Result.Success)
+        {
+            Debug.Log("Alteration form changed successfully: " + request.downloadHandler.text);
+            AlterationFormData alterationFormData =
+                JsonConvert.DeserializeObject<AlterationFormData>(request.downloadHandler.text);
+
+            if (string.IsNullOrEmpty(alterationFormData.error))
+            {
+                Debug.Log("Alteration form changed: " + alterationFormData.name);
+                onCompleted?.Invoke(alterationFormData, true);
+            }
+            else
+            {
+                Debug.LogWarning("Error in server reply: " + alterationFormData.error);
+                onCompleted?.Invoke(alterationFormData, false);
+            }
+        }
+        else
+        {
+            Debug.LogWarning("Error: " + request.error);
+            Debug.LogWarning("Server reply: " + request.downloadHandler.text);
+            onCompleted?.Invoke(null, false);
+        }
+
+        request.Dispose();
+    }
+}

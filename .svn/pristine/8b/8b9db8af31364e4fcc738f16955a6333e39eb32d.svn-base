@@ -1,0 +1,11 @@
+var class_pilot_response =
+[
+    [ "error", "class_pilot_response.html#a711358a3649399e7a4affae830dee682", null ],
+    [ "items", "class_pilot_response.html#ad7bde63136026f658e68f04834d0dc3d", null ],
+    [ "next_page", "class_pilot_response.html#a1a7fbba8d250880773561818fd34dc0d", null ],
+    [ "page", "class_pilot_response.html#aa141a7ea329d3f608aeeef36b74897db", null ],
+    [ "pages", "class_pilot_response.html#a5f5576c68e834c9f8d694d8ec990577f", null ],
+    [ "per_page", "class_pilot_response.html#ae21ec4e36e646f0463769ca5d8db552b", null ],
+    [ "prev_page", "class_pilot_response.html#a154eaf2cda09d75eaf58224f5d1bc5f2", null ],
+    [ "total", "class_pilot_response.html#a95570a4c937bc0d8f87db8a344d81d0e", null ]
+];

@@ -1,0 +1,65 @@
+:root {
+	/* Valores ajustables: aumenta --ruler-dropdown-font-size si sigue quedando pequeño */
+	--ruler-dropdown-font-size: 25px;
+	--ruler-dropdown-hover: #12ABC3;
+	--ruler-dropdown-hover-text: #ffffff;
+	--ruler-dropdown-padding-vertical: 3px;
+	--ruler-dropdown-padding-horizontal: 6px;
+}
+
+/* Contenedor principal del DropdownField */
+/* .unity-popup-field {
+	padding: 0;
+} */
+
+/* Texto mostrado en el campo (valor seleccionado) */
+.unity-popup-field .unity-base-popup-field__text,
+.unity-popup-field .unity-popup-field__input {
+	font-size: var(--ruler-dropdown-font-size);
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+/* Reducir el espacio que ocupa la flecha para dejar más ancho al texto */
+/* .unity-popup-field .unity-base-popup-field__arrow {
+	width: 20px;
+	height: 20px;
+} */
+
+/* Items dentro del popup (lista desplegable) */
+ .unity-popup-window .unity-list-view__item,
+.unity-base-popup-field__popup .unity-list-view__item {
+	font-size: var(--ruler-dropdown-font-size);
+	padding: 4px 8px;
+} 
+
+/* Hover del item — color solicitado */
+/* .unity-popup-window .unity-list-view__item:hover,
+.unity-base-popup-field__popup .unity-list-view__item:hover {
+	background-color: var(--ruler-dropdown-hover);
+	color: var(--ruler-dropdown-hover-text);
+} */
+
+/* Asegurar que el texto dentro del popup use el mismo tamaño */
+.unity-popup-window .unity-base-popup-field__text,
+.unity-base-popup-field__popup .unity-base-popup-field__text {
+	font-size: var(--ruler-dropdown-font-size);
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+} 
+
+
+
+#delete-button{
+    background-color: #EB5757;
+}
+
+#delete-button:hover{
+    background-color: #FF0000;
+}
+
+#delete-button:active{
+    background-color: #B20000;
+}

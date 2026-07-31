@@ -1,0 +1,1128 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using TransformHandles.Utils;
+using Unity.Netcode;
+using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
+using UnityEngine.UIElements;
+using VInspector;
+
+/// <summary>
+/// Gestiona los handles de transformación (posición, rotación, escala) en la escena.
+/// Permite seleccionar y manipular objetos mediante handles interactivos.
+/// </summary>
+namespace TransformHandles
+{
+    public class TransformHandleManager : ToolComponent
+    {
+        [Header("Prefabs")] [SerializeField] private GameObject transformHandlePrefab;
+        [SerializeField] private GameObject ghostPrefab;
+
+        [Header("Settings")] [SerializeField] public LayerMask layerMask;
+        [SerializeField] private Color highlightColor = Color.white;
+
+        [Header("Collaboration Settings")] [SerializeField]
+        private float inactivityTimeoutSeconds = 15f;
+
+        private float _lastInteractionTime;
+        private bool _isManipulatingSomething;
+
+        [Header("Input Actions")] [SerializeField]
+        protected PointerInputActionReferences pointerInputActionReferences;
+
+        [Header("Variables")] [SerializeField] private float maxScale = 4f;
+        [SerializeField] private float minScale = 0.25f;
+
+        [NonSerialized] public Camera mainCamera;
+        private ScreenRaycaster screenRaycaster;
+        private Handle _lastHandle;
+        private Dictionary<Transform, Handle> _handleDictionary;
+
+        private RaycastHit[] _rayHits;
+
+        private Vector3 _handleHitPoint;
+
+        private HandleBase _previousAxis;
+        private HandleBase _draggingHandle;
+        private HandleBase _hoveredHandle;
+
+        private Ghost _interactedGhost;
+        private Handle _interactedHandle;
+
+        private HashSet<Transform> _transformHashSet;
+        private Dictionary<Handle, TransformGroup> _handleGroupMap;
+        private Dictionary<Ghost, TransformGroup> _ghostGroupMap;
+
+        private bool _handleActive;
+        private bool _isInitialized;
+
+        private bool onPointerDown;
+        private bool onPointerUp;
+
+        private Transform lastPointedHandle;
+
+        //Touch position variables
+        private Vector2 pointerPosition;
+        private Vector2 previousPointerPosition;
+
+        //Active touch variables
+        private bool pointerDown;
+
+        public static UnityEvent onManipulationFailed = new UnityEvent();
+
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+
+            if (NetworkManager.Singleton == null)
+            {
+                Debug.LogError(
+                    "NetworkManager.Singleton is null. Ensure that the NetworkManager is properly set up in the scene.");
+                return;
+            }
+
+            GameObject userGameobject =
+                LocalRegistry.Instance.GetPlayerGameObject(NetworkManager.Singleton.LocalClientId);
+            screenRaycaster = userGameobject.GetComponentInChildren<ScreenRaycaster>();
+
+            mainCamera ??= Camera.main;
+            if (mainCamera == null)
+            {
+                Debug.LogError("Main Camera not found. Please assign a camera to the TransformHandleManager.");
+                return;
+            }
+
+            if (InspectedObjectController.Instance != null)
+            {
+                InspectedObjectController.Instance.OnInspectedObjectLoaded += OnModelLoaded;
+
+                var loadedModel = InspectedObjectController.Instance.GetInspectedObject();
+                if (loadedModel != null)
+                    OnModelLoaded();
+            }
+
+            InitializeManager();
+            pointerInputActionReferences.PointerPress.action.Enable();
+            pointerInputActionReferences.PointerPosition.action.Enable();
+            InitInputListeners();
+            _handleDictionary = new Dictionary<Transform, Handle>();
+
+            ManipulableObject.OnManipulationTimeout += HandleExternalTimeout;
+            screenRaycaster.SelectInspectedObject();
+            HideAllHandles();
+
+            if (NetworkManager.Singleton != null)
+                NetworkManager.Singleton.OnClientDisconnectCallback -= OnNetworkDisconnect;
+        }
+
+        private void OnModelLoaded()
+        {
+            if (InspectedObjectController.Instance != null)
+            {
+                minScale = InspectedObjectController.Instance.ModelMinScale;
+                maxScale = InspectedObjectController.Instance.ModelMaxScale;
+
+                Debug.Log(
+                    $"[TransformHandleManager] Límites obtenidos del controlador: Min {minScale}, Max {maxScale}");
+            }
+        }
+
+        protected override void OnDisable()
+        {
+            if (InspectedObjectController.Instance != null)
+                InspectedObjectController.Instance.OnInspectedObjectLoaded -= OnModelLoaded;
+
+            ManipulableObject.OnManipulationTimeout -= HandleExternalTimeout;
+            screenRaycaster.DeselectCurrentTarget();
+            base.OnDisable();
+            DestroyInputListeners();
+        }
+
+        void OnApplicationQuit()
+        {
+            screenRaycaster.DeselectCurrentTarget();
+        }
+
+        private void ResetActivityTimer()
+        {
+            _lastInteractionTime = Time.time;
+        }
+        
+        private void ExitManipulationDueToTimeout()
+        {
+            if (ToolMessageHandler.Instance != null)
+                ToolMessageHandler.Instance.ShowMessage("Manipulation mode released due to inactivity.", 3f,
+                    MessageType.Info);
+
+            if (screenRaycaster != null)
+                screenRaycaster.DeselectCurrentTarget();
+
+            HideAllHandles();
+            ResetToggles();
+
+            onManipulationFailed?.Invoke();
+
+            if (ToolMenuController.Instance != null)
+            {
+                ToolMenuController.Instance.ForceCloseActiveGroupTool();
+                ToolMenuController.Instance.GoBackToPreviousMenu();
+            }
+
+            _isManipulatingSomething = false;
+        }
+
+        private void HandleInactivityTimeout()
+        {
+            Debug.LogWarning("[TransformHandleManager] Timeout de inactividad alcanzado. Soltando objeto.");
+            ExitManipulationDueToTimeout();
+        }
+
+        private void HandleExternalTimeout(ManipulableObject timedOutObj)
+        {
+            if (timedOutObj != null && _handleDictionary.ContainsKey(timedOutObj.transform))
+            {
+                Debug.LogWarning("[TransformHandleManager] Timeout de inactividad de red (objeto) alcanzado. Soltando objeto.");
+                ExitManipulationDueToTimeout();
+            }
+        }
+
+        private void ResetToggles()
+        {
+            if (uIDocument == null) return;
+            var translateToggle = uIDocument.rootVisualElement.Q<Toggle>("manipulation-move");
+            var rotateToggle = uIDocument.rootVisualElement.Q<Toggle>("manipulation-rotate");
+            var scaleToggle = uIDocument.rootVisualElement.Q<Toggle>("manipulation-scale");
+
+            if (translateToggle != null)
+                translateToggle.value = false;
+
+            if (rotateToggle != null)
+                rotateToggle.value = false;
+
+            if (scaleToggle != null)
+                scaleToggle.value = false;
+        }
+
+        private void OnNetworkDisconnect(ulong clientId)
+        {
+            if (clientId == NetworkManager.Singleton.LocalClientId || clientId == 0)
+            {
+                if (_isManipulatingSomething && screenRaycaster != null)
+                {
+                    screenRaycaster.DeselectCurrentTarget();
+                }
+            }
+        }
+
+        protected void DestroyInputListeners()
+        {
+            screenRaycaster.onSelect -= OnObjectSelected;
+            screenRaycaster.onDeselect -= OnObjectDeselected;
+        }
+
+        protected void InitInputListeners()
+        {
+            screenRaycaster.onSelect += OnObjectSelected;
+            screenRaycaster.onDeselect += OnObjectDeselected;
+
+            Toggle translateToggle = uIDocument.rootVisualElement.Q<Toggle>("manipulation-move");
+            Toggle rotateToggle = uIDocument.rootVisualElement.Q<Toggle>("manipulation-rotate");
+            Toggle scaleToggle = uIDocument.rootVisualElement.Q<Toggle>("manipulation-scale");
+
+            if (translateToggle == null || rotateToggle == null || scaleToggle == null)
+                Debug.LogError("One or more toggles not found in the UI Document. Please check the names.");
+
+            translateToggle.RegisterValueChangedCallback(evt =>
+            {
+                ResetActivityTimer();
+
+                if (evt.newValue)
+                    ChangeToPositionHandle();
+                else
+                    HideAllHandles();
+            });
+
+            rotateToggle.RegisterValueChangedCallback(evt =>
+            {
+                ResetActivityTimer();
+
+                if (evt.newValue)
+                    ChangeToRotationHandle();
+                else
+                    HideAllHandles();
+            });
+
+            scaleToggle.RegisterValueChangedCallback(evt =>
+            {
+                ResetActivityTimer();
+
+                if (evt.newValue)
+                    ChangeToScaleHandle();
+                else
+                    HideAllHandles();
+            });
+        }
+
+        public void OnObjectDeselected(Transform deselectedTransform)
+        {
+            if (_lastHandle == null || deselectedTransform == null ||
+                !_handleDictionary.ContainsKey(deselectedTransform))
+            {
+                if (_lastHandle == null)
+                    Debug.LogWarning("OnObjectDeselected: _lastHandle is null.");
+                if (deselectedTransform == null)
+                    Debug.LogWarning("OnObjectDeselected: transform is null.");
+                else
+                    Debug.LogWarning($"OnObjectDeselected: {deselectedTransform.name} not found in handle dictionary.");
+                return;
+            }
+            else
+            {
+                Debug.Log($"OnObjectDeselected: {deselectedTransform.name} found in handle dictionary.");
+            }
+
+
+            var hitTransform = _handleDictionary.Keys.FirstOrDefault();
+
+            var handle = _handleDictionary[hitTransform];
+            if (_lastHandle == handle) _lastHandle = null;
+
+            RemoveTarget(deselectedTransform, handle);
+            DeselectObject(hitTransform);
+
+            var children = hitTransform.GetComponentsInChildren<Transform>();
+            foreach (var child in children)
+            {
+                DeselectObject(child);
+            }
+
+            _handleDictionary.Remove(hitTransform);
+
+            var manipulableObject = hitTransform.gameObject.GetComponent<ManipulableObject>();
+            if (manipulableObject != null)
+                manipulableObject.OnDeselected();
+
+            // Si ya no hay más objetos en el diccionario, detenemos el reloj
+            if (_handleDictionary.Count == 0)
+            {
+                _isManipulatingSomething = false;
+            }
+        }
+
+        private void DeselectObject(Transform hitInfoTransform)
+        {
+            _handleDictionary.Remove(hitInfoTransform);
+
+            var manipulableObject = hitInfoTransform.gameObject.GetComponent<ManipulableObject>();
+            if (manipulableObject != null)
+                manipulableObject.OnDeselected();
+        }
+
+        public void OnObjectSelected(Transform selectedTransform)
+        {
+            if (selectedTransform == null)
+            {
+                Debug.LogError("OnObjectSelected: selectedTransform is null.");
+                return;
+            }
+
+            if (_handleDictionary == null)
+            {
+                Debug.LogError("OnObjectSelected: _handleDictionary is null.");
+                return;
+            }
+
+            var manipulableObject = selectedTransform.gameObject.GetComponentInParent<ManipulableObject>();
+            if (manipulableObject.IsBeingManipulated())
+            {
+                Debug.LogWarning("OnObjectSelected: ManipulableObject is already being manipulated.");
+                if (ToolMessageHandler.Instance != null)
+                {
+                    ToolMessageHandler.Instance.ShowMessage("This object is being manipulated by another user.", 4f,
+                        MessageType.Error);
+                    DisableButtons();
+                }
+
+                onManipulationFailed.Invoke();
+                return;
+            }
+
+            _isManipulatingSomething = true;
+            ResetActivityTimer();
+
+            if (_handleDictionary.ContainsKey(selectedTransform)) return;
+
+            if (_lastHandle == null)
+            {
+                Handle handle = CreateHandle(selectedTransform);
+                handle.OnInteractionStartEvent += OnHandleInteractionStart;
+                handle.OnInteractionEvent += OnHandleInteraction;
+                handle.OnInteractionEndEvent += OnHandleInteractionEnd;
+                handle.OnHandleDestroyedEvent += OnHandleDestroyed;
+                _lastHandle = handle;
+            }
+
+            _handleDictionary.Add(selectedTransform, _lastHandle);
+
+            if (manipulableObject != null)
+                manipulableObject.OnSelected();
+        }
+
+        private void OnHandleInteractionStart(Handle obj)
+        {
+
+        }
+
+        private void OnHandleInteraction(Handle obj)
+        {
+
+        }
+
+        private void OnHandleInteractionEnd(Handle obj)
+        {
+
+        }
+
+        private void OnHandleDestroyed(Handle handle)
+        {
+            handle.OnInteractionStartEvent -= OnHandleInteractionStart;
+            handle.OnInteractionEvent -= OnHandleInteraction;
+            handle.OnInteractionEndEvent -= OnHandleInteractionEnd;
+            handle.OnHandleDestroyedEvent -= OnHandleDestroyed;
+        }
+
+        private void InitializeManager()
+        {
+            if (_isInitialized) return;
+
+            mainCamera = mainCamera == null ? Camera.main : mainCamera;
+
+            _handleGroupMap = new Dictionary<Handle, TransformGroup>();
+            _ghostGroupMap = new Dictionary<Ghost, TransformGroup>();
+            _transformHashSet = new HashSet<Transform>();
+
+            _isInitialized = true;
+        }
+
+        private void DisableButtons()
+        {
+            var translateToggle = uIDocument.rootVisualElement.Q<Toggle>("manipulation-move");
+            var rotateToggle = uIDocument.rootVisualElement.Q<Toggle>("manipulation-rotate");
+            var scaleToggle = uIDocument.rootVisualElement.Q<Toggle>("manipulation-scale");
+
+            translateToggle.SetEnabled(false);
+            rotateToggle.SetEnabled(false);
+            scaleToggle.SetEnabled(false);
+        }
+
+        public Handle CreateHandle(Transform target)
+        {
+            if (_transformHashSet.Contains(target))
+            {
+                Debug.LogWarning($"{target} already has a handle.");
+                return null;
+            }
+
+            var ghost = CreateGhost();
+            ghost.Initialize(this);
+
+            var transformHandle = Instantiate(transformHandlePrefab).GetComponent<Handle>();
+            transformHandle.Initialize(this);
+            transformHandle.minScaleLimit = minScale;
+            transformHandle.maxScaleLimit = maxScale;
+            transformHandle.Enable(ghost.transform);
+
+            var group = new TransformGroup(ghost, transformHandle);
+
+            _handleGroupMap.Add(transformHandle, group);
+            _ghostGroupMap.Add(ghost, group);
+
+            var success = AddTarget(target, transformHandle);
+            if (!success)
+            {
+                DestroyHandle(transformHandle);
+            }
+
+            _handleActive = true;
+
+            return transformHandle;
+        }
+
+        public Handle CreateHandleFromList(List<Transform> targets)
+        {
+            if (targets.Count == 0)
+            {
+                Debug.LogWarning("List is empty.");
+                return null;
+            }
+
+            var ghost = CreateGhost();
+            ghost.Initialize(this);
+
+            var transformHandle = Instantiate(transformHandlePrefab).GetComponent<Handle>();
+            transformHandle.Initialize(this);
+            transformHandle.minScaleLimit = minScale;
+            transformHandle.maxScaleLimit = maxScale;
+            transformHandle.Enable(ghost.transform);
+
+            var group = new TransformGroup(ghost, transformHandle);
+            _handleGroupMap.Add(transformHandle, group);
+            _ghostGroupMap.Add(ghost, group);
+
+            foreach (var target in targets)
+            {
+                if (_transformHashSet.Contains(target))
+                {
+                    Debug.LogWarning($"{target} already has a handle.");
+                    DestroyHandle(transformHandle);
+                    return null;
+                }
+
+                AddTarget(target, transformHandle);
+            }
+
+            _handleActive = true;
+
+            return transformHandle;
+        }
+
+        private Ghost CreateGhost()
+        {
+            Ghost ghost;
+
+            if (ghostPrefab == null)
+            {
+                var ghostObject = new GameObject();
+                ghost = ghostObject.AddComponent<Ghost>();
+            }
+            else
+            {
+                ghost = Instantiate(ghostPrefab).GetComponent<Ghost>();
+            }
+
+            return ghost;
+        }
+
+        public void RemoveHandle(Handle handle)
+        {
+            if (handle == null)
+            {
+                Debug.LogError("Handle is already null");
+                return;
+            }
+
+            if (_handleGroupMap == null) return;
+
+            var group = _handleGroupMap[handle];
+            if (group == null)
+            {
+                Debug.LogError("Group is null");
+                return;
+            }
+
+            _handleGroupMap.Remove(handle);
+            handle.Disable();
+
+            var groupGhost = group.GroupGhost;
+            if (groupGhost != null)
+            {
+                _ghostGroupMap.Remove(groupGhost);
+                group.GroupGhost.Terminate();
+            }
+
+            if (_handleGroupMap.Count == 0) _handleActive = false;
+        }
+
+        private static void DestroyHandle(Handle handle)
+        {
+            DestroyImmediate(handle.gameObject);
+        }
+
+        public void DestroyAllHandles()
+        {
+            foreach (var handle in _handleGroupMap.Keys)
+            {
+                DestroyHandle(handle);
+            }
+        }
+
+        public bool AddTarget(Transform target, Handle handle)
+        {
+            if (_transformHashSet.Contains(target))
+            {
+                Debug.LogWarning($"{target} already has a handle.");
+                return false;
+            }
+
+            if (handle == null)
+            {
+                Debug.LogError("Handle is null");
+                return false;
+            }
+
+            var group = _handleGroupMap[handle];
+            var targetAdded = group.AddTransform(target);
+            if (!targetAdded)
+            {
+                Debug.LogWarning($"{target} is relative to the selected ones.");
+                return false;
+            }
+
+            var averagePosRotScale = group.GetAveragePosRotScale();
+            group.GroupGhost.UpdateGhostTransform(averagePosRotScale);
+
+            _transformHashSet.Add(target);
+
+            return true;
+        }
+
+        public void RemoveTarget(Transform target, Handle handle)
+        {
+            if (!_transformHashSet.Contains(target))
+            {
+                Debug.LogWarning($"{target} doesn't have a handle.");
+                return;
+            }
+
+            if (handle == null)
+            {
+                Debug.LogError("Handle is null");
+                return;
+            }
+
+            _transformHashSet.Remove(target);
+
+            var group = _handleGroupMap[handle];
+            var groupElementsRemoved = group.RemoveTransform(target);
+            if (groupElementsRemoved)
+            {
+                DestroyHandle(handle);
+                return;
+            }
+
+            var averagePosRotScale = group.GetAveragePosRotScale();
+            group.GroupGhost.UpdateGhostTransform(averagePosRotScale);
+        }
+
+        protected virtual void Update()
+        {
+            if (_isManipulatingSomething)
+            {
+                if (Time.time - _lastInteractionTime > inactivityTimeoutSeconds)
+                {
+                    HandleInactivityTimeout();
+                    return;
+                }
+            }
+
+            if (!_handleActive)
+                return;
+
+            _hoveredHandle = null;
+            _handleHitPoint = Vector3.zero;
+            
+            ProcessDirectInput();
+
+            GetHandle(ref _hoveredHandle, ref _handleHitPoint);
+
+            HandleOverEffect(_hoveredHandle);
+
+            PointerInput();
+        }
+        
+        private void ProcessDirectInput()
+        {
+            bool isPressed = false;
+            Vector2 currentInputPos = Vector2.zero;
+
+            if (Mouse.current != null)
+            {
+                isPressed = Mouse.current.leftButton.isPressed;
+                currentInputPos = Mouse.current.position.ReadValue();
+            }
+            else
+            {
+                isPressed = pointerInputActionReferences.PointerPress.action.ReadValue<float>() > 0.5f;
+                currentInputPos = pointerInputActionReferences.PointerPosition.action.ReadValue<Vector2>();
+            }
+
+            if (Touchscreen.current != null && Touchscreen.current.touches.Count > 0)
+            {
+                bool touchDetected = false;
+                foreach (var touch in Touchscreen.current.touches)
+                {
+                    var phase = touch.phase.ReadValue();
+                    if (phase == UnityEngine.InputSystem.TouchPhase.Began ||
+                        phase == UnityEngine.InputSystem.TouchPhase.Moved ||
+                        phase == UnityEngine.InputSystem.TouchPhase.Stationary)
+                    {
+                        if (!touchDetected)
+                        {
+                            isPressed = true;
+                            currentInputPos = touch.position.ReadValue();
+                            touchDetected = true;
+                        }
+                    }
+                }
+            }
+
+            previousPointerPosition = pointerPosition;
+            pointerPosition = new Vector2(
+                Mathf.Clamp(currentInputPos.x, 0, Screen.width),
+                Mathf.Clamp(currentInputPos.y, 0, Screen.height)
+            );
+
+            if (Vector2.Distance(previousPointerPosition, pointerPosition) > 0.1f || isPressed != pointerDown)
+            {
+                ResetActivityTimer();
+            }
+
+            onPointerDown = false;
+            onPointerUp = false;
+
+            if (isPressed && !pointerDown)
+            {
+                onPointerDown = true;
+                pointerDown = true;
+            }
+            else if (!isPressed && pointerDown)
+            {
+                onPointerUp = true;
+                pointerDown = false;
+            }
+        }
+
+        protected virtual void GetHandle(ref HandleBase handle, ref Vector3 hitPoint)
+        {
+            _rayHits = new RaycastHit[16];
+
+            var size = 0;
+            try
+            {
+                var ray = mainCamera.ScreenPointToRay(pointerPosition);
+                size = Physics.RaycastNonAlloc(ray, _rayHits, 1000, layerMask);
+            }
+            catch (MissingReferenceException)
+            {
+                mainCamera = Camera.main;
+                Debug.Log("Camera is null, trying to find main camera");
+
+                if (mainCamera == null)
+                {
+                    Debug.Log("Main camera is null, aborting");
+                    Destroy(gameObject);
+                    return;
+                }
+            }
+
+            if (size == 0)
+            {
+                if (_hoveredHandle == null) return;
+                return;
+            }
+
+            Array.Sort(_rayHits, (x, y) => x.distance.CompareTo(y.distance));
+
+            foreach (var hit in _rayHits)
+            {
+                var hitCollider = hit.collider;
+                if (hitCollider == null) continue;
+                handle = hit.collider.gameObject.GetComponentInParent<HandleBase>();
+
+                if (handle == null)
+                {
+                    _hoveredHandle = null;
+                    continue;
+                }
+                else
+                {
+                    _hoveredHandle = handle;
+                }
+
+                hitPoint = hit.point;
+                return;
+            }
+        }
+
+        protected virtual void HandleOverEffect(HandleBase handleBase)
+        {
+            if (_draggingHandle == null && _previousAxis != null && _previousAxis != handleBase)
+            {
+                _previousAxis.SetDefaultColor();
+            }
+
+            if (handleBase != null && _draggingHandle == null)
+            {
+                handleBase.SetColor(highlightColor);
+            }
+
+            _previousAxis = handleBase;
+        }
+
+        protected virtual void PointerInput()
+        {
+            if (pointerDown && _draggingHandle != null)
+            {
+                _draggingHandle.Interact(previousPointerPosition, pointerPosition);
+                OnInteraction();
+            }
+
+            if (onPointerDown && _hoveredHandle != null)
+            {
+                _draggingHandle = _hoveredHandle;
+                _draggingHandle.StartInteraction(_handleHitPoint, pointerPosition);
+                OnInteractionStart();
+            }
+
+            if (onPointerUp && _draggingHandle != null)
+            {
+                _draggingHandle.EndInteraction();
+                _draggingHandle = null;
+                OnInteractionEnd();
+            }
+        }
+
+        public void ChangeToPositionHandle()
+        {
+            ChangeSpace(Space.World);
+            foreach (var handle in _handleGroupMap.Keys)
+            {
+                ChangeHandleType(handle, HandleType.Position);
+            }
+        }
+
+        public void ChangeToRotationHandle()
+        {
+            ChangeSpace(Space.Self);
+            foreach (var handle in _handleGroupMap.Keys)
+            {
+                ChangeHandleType(handle, HandleType.Rotation);
+            }
+        }
+
+        public void ChangeToScaleHandle()
+        {
+            ChangeSpace(Space.World);
+            foreach (var handle in _handleGroupMap.Keys)
+            {
+                ChangeHandleType(handle, HandleType.Scale);
+            }
+        }
+
+        public void ChangeSpace(Space space)
+        {
+            foreach (var handle in _handleGroupMap.Keys)
+            {
+                ChangeHandleSpace(handle, space);
+            }
+        }
+
+        public void ChangePivot()
+        {
+            foreach (var group in _handleGroupMap.Values)
+            {
+                ChangeHandlePivot(group, !group.IsOriginOnCenter);
+            }
+        }
+
+        protected virtual void OnInteractionStart()
+        {
+            _interactedHandle = _draggingHandle.GetComponentInParent<Handle>();
+            _interactedGhost = _handleGroupMap[_interactedHandle].GroupGhost;
+            _interactedGhost.OnInteractionStart();
+
+            _interactedHandle.InteractionStart();
+        }
+
+        protected virtual void OnInteraction()
+        {
+            _interactedGhost.OnInteraction(_interactedHandle.type);
+
+            _interactedHandle.InteractionStay();
+        }
+
+        protected virtual void OnInteractionEnd()
+        {
+            var group = _handleGroupMap[_interactedHandle];
+            group.UpdateBounds();
+
+            _interactedHandle.InteractionEnd();
+        }
+
+        public static void ChangeHandleType(Handle handle, HandleType type)
+        {
+            if (handle == null)
+            {
+                Debug.LogError("Handle is null");
+                return;
+            }
+
+            handle.ChangeHandleType(type);
+        }
+
+        public void HideAllHandles()
+        {
+            foreach (var handle in _handleGroupMap.Keys)
+            {
+                handle.HidePositionHandle();
+                handle.HideRotationHandle();
+                handle.HideScaleHandle();
+            }
+        }
+
+        public void ChangeHandleSpace(Handle handle, Space space)
+        {
+            if (handle == null)
+            {
+                Debug.LogError("Handle is null");
+                return;
+            }
+
+            handle.ChangeHandleSpace(space);
+
+            var group = _handleGroupMap[handle];
+            group.GroupGhost.UpdateGhostTransform(group.GetAveragePosRotScale());
+        }
+
+        public void ChangeHandlePivot(TransformGroup group, bool originToCenter)
+        {
+            if (group == null)
+            {
+                Debug.LogError("Group is null");
+                return;
+            }
+
+            group.IsOriginOnCenter = originToCenter;
+            group.GroupGhost.UpdateGhostTransform(group.GetAveragePosRotScale());
+        }
+
+        public Vector3 ApplyGroupPosition(Ghost ghost, Vector3 position)
+        {
+            var group = _ghostGroupMap[ghost];
+            Vector3 ghostPosition = group.ApplyPositions(position);
+            return ghostPosition;
+        }
+
+        public void ApplyGroupRotation(Ghost ghost, Quaternion rotation)
+        {
+            var group = _ghostGroupMap[ghost];
+            group.ApplyRotations(rotation);
+        }
+
+        public void ApplyGroupScale(Ghost ghost, Vector3 scale)
+        {
+            var group = _ghostGroupMap[ghost];
+
+            var clampedScale = new Vector3(
+                Mathf.Clamp(scale.x, minScale, maxScale),
+                Mathf.Clamp(scale.y, minScale, maxScale),
+                Mathf.Clamp(scale.z, minScale, maxScale)
+            );
+
+            group.ApplyScales(clampedScale);
+        }
+    }
+
+    public class TransformGroup
+    {
+        public Ghost GroupGhost {get; }
+        public Handle GroupHandle {get; }
+        
+        public bool IsOriginOnCenter;
+
+        public HashSet<Transform> Transforms { get; }
+        public Dictionary<Transform, MeshRenderer> RenderersMap { get; }
+        public Dictionary<Transform, Bounds> BoundsMap { get; }
+
+        public TransformGroup(Ghost groupGhost, Handle groupHandle)
+        {
+            GroupGhost = groupGhost;
+            GroupHandle = groupHandle;
+            
+            Transforms = new HashSet<Transform>();
+            RenderersMap = new Dictionary<Transform, MeshRenderer>();
+            BoundsMap = new Dictionary<Transform, Bounds>();
+        }
+
+        public bool AddTransform(Transform tElement)
+        {
+            if (IsTargetRelativeToSelectedOnes(tElement)) return false;
+            
+            var meshRenderer = tElement.GetComponent<MeshRenderer>();
+            
+            Transforms.Add(tElement);
+            RenderersMap.Add(tElement, meshRenderer);
+            BoundsMap.Add(tElement, meshRenderer != null ? meshRenderer.bounds : tElement.GetBounds());
+            
+            return true;
+        }
+        
+        public bool RemoveTransform(Transform transform)
+        {
+            Transforms.Remove(transform);
+            RenderersMap.Remove(transform);
+            BoundsMap.Remove(transform);
+            
+            return Transforms.Count == 0;
+        }
+
+        public void UpdateBounds()
+        {
+            foreach (var (tElement, meshRenderer) in RenderersMap)
+            {
+                var bounds = meshRenderer ? meshRenderer.bounds : tElement.GetBounds();
+                BoundsMap[tElement] = bounds;
+            }
+        }
+        
+        public void UpdatePositions(Vector3 positionChange)
+        {
+            foreach (var tElement in RenderersMap.Keys)
+            {
+                tElement.position += positionChange;
+            }
+        }
+        
+        public Vector3 ApplyPositions(Vector3 position)
+        {
+            Vector3 averagePosition = Vector3.zero;
+            foreach (var tElement in RenderersMap.Keys)
+            {
+                tElement.position = position;
+                averagePosition += tElement.position;
+            }
+            averagePosition /= RenderersMap.Count;
+            return averagePosition;
+        }
+        
+        public void ApplyRotations(Quaternion newRotation)
+        {
+            foreach (var tElement in RenderersMap.Keys)
+            {
+                tElement.rotation = newRotation;
+            }
+        }
+
+        
+        public void UpdateRotations(Quaternion rotationChange)
+        {
+            var ghostPosition = GroupGhost.transform.position;
+            var rotationAxis = rotationChange.normalized.eulerAngles;
+            var rotationChangeMagnitude = rotationChange.eulerAngles.magnitude;
+            foreach (var tElement in RenderersMap.Keys)
+            {
+                if (GroupHandle.space == Space.Self)
+                {
+                    tElement.position = rotationChange * (tElement.position - ghostPosition) + ghostPosition;
+                    tElement.rotation = rotationChange * tElement.rotation;
+                }
+                else
+                {
+                    tElement.RotateAround(ghostPosition, rotationAxis, rotationChangeMagnitude);
+                }
+            }
+        }
+
+        public void UpdateScales(Vector3 scaleChange)
+        {
+            foreach (var (tElement, meshRenderer) in RenderersMap)
+            {
+                if (IsOriginOnCenter)
+                {
+                    if (meshRenderer != null)
+                    {
+                        var oldCenter = meshRenderer.bounds.center;
+
+                        tElement.localScale += scaleChange;
+            
+                        // ReSharper disable once Unity.InefficientPropertyAccess
+                        var newCenter =  meshRenderer.bounds.center;
+
+                        var change = newCenter - oldCenter;
+                
+                        tElement.position += change * -1;
+                    }
+                    else
+                    {
+                        tElement.localScale += scaleChange;
+                    }
+                }
+                else
+                {
+                    tElement.localScale += scaleChange;
+                }
+            }
+        }
+        
+        
+        public void ApplyScales(Vector3 newScale)
+        {
+            var ghost = GroupGhost.transform;
+            var ghostPosition = ghost.position;
+            var ghostScale = ghost.localScale;
+
+            foreach (var (tElement, meshRenderer) in RenderersMap)
+            {
+                tElement.localScale = newScale;
+            }
+        }
+
+        private Vector3 GetCenterPoint(Transform tElement)
+        {
+            return IsOriginOnCenter ? BoundsMap[tElement].center : tElement.position;
+        }
+        
+        public PosRotScale GetAveragePosRotScale()
+        {
+            var space = GroupHandle.space;
+            
+            var averagePosRotScale = new PosRotScale();
+            
+            var centerPositions = new List<Vector3>();
+            var sumQuaternion = Quaternion.identity;
+            var averageScale = Vector3.zero;
+            var transformsCount = Transforms.Count;
+
+            foreach (var tElement in Transforms)
+            {
+                var centerPoint = GetCenterPoint(tElement);
+                centerPositions.Add(centerPoint);
+                averageScale += tElement.localScale;
+                
+                if (space == Space.World)
+                    continue;
+                
+                sumQuaternion *= tElement.rotation;
+            }
+
+            var averagePosition = Vector3.zero;
+            foreach (var centerPosition in centerPositions)
+                averagePosition += centerPosition;
+            
+            averagePosition /= transformsCount;
+            averageScale /= transformsCount;
+            averagePosRotScale.Position = averagePosition;
+            averagePosRotScale.Rotation = sumQuaternion;
+            averagePosRotScale.Scale = averageScale;
+
+            return averagePosRotScale;
+        }
+        
+        private bool IsTargetRelativeToSelectedOnes(Transform newTarget)
+        {
+            foreach (var transformInHash in Transforms)
+            {
+                if (transformInHash.IsDeepParentOf(newTarget)) return true;
+
+                if (!newTarget.IsDeepParentOf(transformInHash)) continue;
+                RemoveTransform(transformInHash);
+                return false;
+            }
+
+            return false;
+        }
+    }
+}

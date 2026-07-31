@@ -1,0 +1,35 @@
+:root {
+
+}
+
+/* --- ESTILOS PARA LOS BOTONES DE OPCIONES --- */
+
+/* 1. Estado por defecto de los botones (reemplaza el color inline) */
+.option-button {
+    background-color: rgb(255, 255, 255);
+    border-radius: 8px; /* Opcional: bordes un poco redondeados */
+    border-width: 2px;
+    border-color: rgba(0, 0, 0, 0); /* Borde transparente por defecto */
+    transition-duration: 0.2s; /* Transición suave al cambiar de color */
+}
+
+/* 2. Efecto al pasar el ratón por encima (Hover) */
+.option-button:hover {
+    background-color: rgb(240, 240, 240);
+}
+
+/* 3. CLASE DE ESTADO SELECCIONADO (La que añadirás por C#) */
+.option-button.button-selected {
+    background-color: rgb(215, 235, 255); /* Color de fondo resaltado (Ej: Azul claro) */
+    border-color: rgb(0, 122, 255); /* Borde resaltado */
+}
+
+/* 4. Opcional: Cambiar el color del texto cuando el botón está seleccionado */
+.option-button.button-selected AutoSizeLabel {
+    color: rgb(0, 80, 180);
+}
+
+/* 5. Opcional: Tintar el icono (si tu icono es blanco/negro con alpha) cuando está seleccionado */
+.option-button.button-selected {
+    -unity-background-image-tint-color: rgb(0, 80, 180);
+}

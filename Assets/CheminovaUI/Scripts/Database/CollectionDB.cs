@@ -1,0 +1,467 @@
+using System.Collections;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Text;
+using Newtonsoft.Json;
+using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.Networking;
+
+/// <summary>
+/// Clase estática que maneja las operaciones relacionadas con los sitios en la base de datos a través de la API.
+/// Proporciona métodos para obtener, crear, modificar y eliminar sitios.
+/// </summary>
+public static class CollectionDB
+{
+    private static APIEndpointConfig config;
+    public static string ApiEndpointUrl => Config != null ? Config.endpointURL : "";
+    private static APIEndpointConfig Config
+    {
+        get
+        {
+            string className = MethodBase.GetCurrentMethod().DeclaringType.Name;
+            if(className == null)
+            {
+                Debug.LogWarning("Couldn't obtained class name.");
+                return null;
+            }
+            else
+            {
+                //Debug.Log("Name of the class: " + className);
+            }
+     
+            config = Resources.Load<APIEndpointConfig>("API_URLS_ENDPOINT/" + className);
+            if (config == null)
+            {
+                Debug.LogWarning("No APIBaseConfig found in Resources. Create an asset with that name in Resources.");
+            }
+            return config;
+        }
+    }
+    public static string ApiUrl => GlobalManagement.Instance.urlBase + ApiEndpointUrl;
+    
+    /// <summary>
+    /// Obtiene el icono de un sitio específico por su ID.
+    /// </summary>
+    public static IEnumerator GetCollectionIcon(int? id, UnityAction<Texture2D, bool> onComplete)
+    {
+        yield return DownloadDB.GetDownloadByID(id, (rawDownload, success) =>
+        {
+            if (success && rawDownload.data != null && rawDownload.data.Length > 0)
+            {
+                Texture2D tex = new Texture2D(2, 2, TextureFormat.RGBA32, false);
+                bool loaded = tex.LoadImage(rawDownload.data); // Esto convierte los bytes en textura
+
+                if (loaded)
+                {
+                    onComplete?.Invoke(tex, true);
+                }
+                else
+                {
+                    Debug.LogWarning("No se pudo crear la textura desde los datos descargados.");
+                    onComplete?.Invoke(null, false);
+                }
+            }
+            else
+            {
+                Debug.LogWarning("Error en la descarga o datos vacíos.");
+                onComplete?.Invoke(null, false);
+            }
+        });
+    }
+    /// <summary>
+    /// Obtiene el icono de un sitio específico por su ID.
+    /// </summary>
+    public static IEnumerator GetCollectionIcon(int id, UnityAction<RawFileDownload, bool> onComplete)
+    {
+        yield return DownloadDB.GetDownloadByID(id, onComplete);
+    }
+    /// <summary>
+    /// Obtiene la lista de sitios desde la API.
+    /// </summary>
+    public static IEnumerator GetCollectionList(UnityAction<CollectionResponse, bool> onCompleted,
+        int? page = null, int? perPage = null,  string search = null,
+         string sort = null,  string order = null)
+    {
+        QueryParams queryParams = new QueryParams()
+        {
+            page = page,
+            per_page = perPage,
+            search = search,
+            sort = sort,
+            order = order
+        };
+        
+        string query = ApiUrl + QueryManagement.ToQueryString(queryParams);
+        //Debug.Log("API URL: " + query);
+        UnityWebRequest request = new UnityWebRequest(query, "GET");
+        request.SetRequestHeader("Authorization", "Bearer " + GlobalManagement.Instance.token);
+        request.SetRequestHeader("Content-Type", "application/json");
+        request.downloadHandler = new DownloadHandlerBuffer();
+        yield return request.SendWebRequest();
+
+        if (request.result == UnityWebRequest.Result.Success)
+        {
+           //Debug.Log("Collections obtained successfully: " + request.downloadHandler.text);
+            CollectionResponse collectionResponse = JsonConvert.DeserializeObject<CollectionResponse>(request.downloadHandler.text);
+            
+            if (string.IsNullOrEmpty(collectionResponse.error))
+            {
+               //Debug.Log("List of Collection saved with the size of " + collectionResponse.items.Count);
+                onCompleted?.Invoke(collectionResponse, true);
+            }
+            else
+            {
+                Debug.LogWarning("Error in server reply: " + collectionResponse.error);
+                onCompleted?.Invoke(collectionResponse, false);
+            }
+        }
+        else
+        {
+            Debug.LogWarning("Error: " + request.error);
+            Debug.LogWarning("Server reply: " + request.downloadHandler.text);
+            onCompleted?.Invoke(null, false);
+        }
+        
+        request.Dispose();
+    }
+    /// <summary>
+    /// Crea un nuevo sitio en la base de datos a través de la API.
+    /// </summary>
+    public static IEnumerator PostNewCollection(UnityAction<CollectionData, bool> onCompleted, string description,
+        string name, int? icon = null)
+    {
+        CollectionPost collectionPostData = new CollectionPost()
+        {
+            description = description,
+            icon = icon,
+            name = name
+        };
+
+        string jsonData = JsonConvert.SerializeObject(collectionPostData);
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonData);
+        
+        UnityWebRequest request = new UnityWebRequest(ApiUrl, "POST");
+        request.SetRequestHeader("Content-Type", "application/json");
+        request.SetRequestHeader("Authorization", "Bearer " + GlobalManagement.Instance.token);
+        request.uploadHandler = new UploadHandlerRaw(bodyRaw);
+        request.downloadHandler = new DownloadHandlerBuffer();
+        yield return request.SendWebRequest();
+        
+        if (request.result == UnityWebRequest.Result.Success)
+        {
+           //Debug.Log("Successful creation of Collection: " + request.downloadHandler.text);
+            CollectionData collectionData = JsonConvert.DeserializeObject<CollectionData>(request.downloadHandler.text);
+            
+            if (string.IsNullOrEmpty(collectionData.error))
+            {
+               //Debug.Log("Site added " + collectionData.name);
+                onCompleted?.Invoke(collectionData, true);
+            }
+            else
+            {
+                Debug.LogWarning("Error in server reply: " + collectionData.error);
+                onCompleted?.Invoke(collectionData, false);
+            }
+        }
+        else
+        {
+            Debug.LogWarning("Error: " + request.error);
+            Debug.LogWarning("Server reply: " + request.downloadHandler.text);
+            onCompleted?.Invoke(null, false);
+        }
+        
+        request.Dispose();
+    }
+    /// <summary>
+    /// Elimina un sitio específico por su ID desde la API.
+    /// </summary>
+    public static IEnumerator DeleteCollectionFromApi(UnityAction<ErrorMessage, bool> onCompleted, int id)
+    {
+        UnityWebRequest request = UnityWebRequest.Delete(ApiUrl + "/" + id);
+        request.SetRequestHeader("Authorization", "Bearer " + GlobalManagement.Instance.token);
+        request.SetRequestHeader("Content-Type", "application/json");
+        request.downloadHandler = new DownloadHandlerBuffer();
+        yield return request.SendWebRequest();
+
+        if (request.result == UnityWebRequest.Result.Success)
+        {
+           //Debug.Log("Successful elimination of Collection: " + request.downloadHandler.text);
+            ErrorMessage errorMessage = JsonConvert.DeserializeObject<ErrorMessage>(request.downloadHandler.text);
+            
+            if (string.IsNullOrEmpty(errorMessage.error))
+            {
+               //Debug.Log("Element deleted");
+                onCompleted?.Invoke(null, true);
+            }
+            else
+            {
+                Debug.LogWarning("Error in server reply: " + errorMessage.error);
+                onCompleted?.Invoke(errorMessage, false);
+            }
+        }
+        else
+        {
+            Debug.LogWarning("Error: " + request.error);
+            Debug.LogWarning("Server reply: " + request.downloadHandler.text);
+            onCompleted?.Invoke(null, false);
+        }
+        
+        request.Dispose();
+    }
+    /// <summary>
+    /// Obtiene un sitio específico por su ID desde la API.
+    /// </summary>
+    public static IEnumerator GetCollectionByID(UnityAction<CollectionData, bool> onCompleted, int id)
+    {
+        UnityWebRequest request = new UnityWebRequest(ApiUrl + "/" + id, "GET");
+        request.SetRequestHeader("Authorization", "Bearer " + GlobalManagement.Instance.token);
+        request.SetRequestHeader("Content-Type", "application/json");
+        request.downloadHandler = new DownloadHandlerBuffer();
+        yield return request.SendWebRequest();
+
+        if (request.result == UnityWebRequest.Result.Success)
+        {
+           //Debug.Log("Collection obtained successfully: " + request.downloadHandler.text);
+            CollectionData collectionData = JsonConvert.DeserializeObject<CollectionData>(request.downloadHandler.text);
+            
+            if (string.IsNullOrEmpty(collectionData.error))
+            {
+               //Debug.Log("Collection: " + collectionData.name);
+                onCompleted?.Invoke(collectionData, true);
+            }
+            else
+            {
+                Debug.LogWarning("Error in server reply: " + collectionData.error);
+                onCompleted?.Invoke(collectionData, false);
+            }
+        }
+        else
+        {
+            Debug.LogWarning("Error: " + request.error);
+            Debug.LogWarning("Server reply: " + request.downloadHandler.text);
+            onCompleted?.Invoke(null, false);
+        }
+        
+        request.Dispose();
+    }
+    /// <summary>
+    /// Modifica un sitio existente en la base de datos a través de la API.
+    /// </summary>
+    public static IEnumerator PutCollectionFromApi(UnityAction<CollectionData, bool> onCompleted, int id,
+         string description = null, int? icon = null,  List<int> idChElements = null,
+         List<int> idUsers = null,  string name = null)
+    {
+        CollectionPost collectionPutData = new CollectionPost()
+        {
+            description = description,
+            icon = icon,
+            id_chelements = idChElements,
+            id_users = idUsers,
+            name = name
+        };
+        
+        string jsonData = JsonConvert.SerializeObject(collectionPutData);
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonData);
+        
+        UnityWebRequest request = new UnityWebRequest(ApiUrl + "/" + id, "PUT");
+        request.SetRequestHeader("Authorization", "Bearer " + GlobalManagement.Instance.token);
+        request.SetRequestHeader("Content-Type", "application/json");
+        request.downloadHandler = new DownloadHandlerBuffer();
+        request.uploadHandler = new UploadHandlerRaw(bodyRaw);
+        yield return request.SendWebRequest();
+
+        if (request.result == UnityWebRequest.Result.Success)
+        {
+           //Debug.Log("Collection changed successfully: " + request.downloadHandler.text);
+            CollectionData collectionData = JsonConvert.DeserializeObject<CollectionData>(request.downloadHandler.text);
+            
+            if (string.IsNullOrEmpty(collectionData.error))
+            {
+               //Debug.Log("Collection changed: " + collectionData.name);
+                onCompleted?.Invoke(collectionData, true);
+            }
+            else
+            {
+                Debug.LogWarning("Error in server reply: " + collectionData.error);
+                onCompleted?.Invoke(collectionData, false);
+            }
+        }
+        else
+        {
+            Debug.LogWarning("Error: " + request.error);
+            Debug.LogWarning("Server reply: " + request.downloadHandler.text);
+            onCompleted?.Invoke(null, false);
+        }
+        
+        request.Dispose();
+    }
+    /// <summary>
+    /// Obtiene la lista de CHElement asociados a un sitio específico.
+    /// </summary>
+    public static IEnumerator GetCHElementListFromCollection(UnityAction<CHElementResponse, bool> onCompleted,
+        int id, int? page = null, int? perPage = null,  string search = null,
+         string sort = null,  string order = null)
+    {
+        QueryParams queryParams = new QueryParams()
+        {
+            page = page,
+            per_page = perPage,
+            search = search,
+            sort = sort,
+            order = order
+        };
+        
+        string query = ApiUrl + "/" + id + "/chelements" + QueryManagement.ToQueryString(queryParams);
+       //Debug.Log("API URL: " + query);
+        UnityWebRequest request = new UnityWebRequest(query, "GET");
+        request.SetRequestHeader("Authorization", "Bearer " + GlobalManagement.Instance.token);
+        request.SetRequestHeader("Content-Type", "application/json");
+        request.downloadHandler = new DownloadHandlerBuffer();
+        yield return request.SendWebRequest();
+
+        if (request.result == UnityWebRequest.Result.Success)
+        {
+            //Debug.Log("CHElements obtained successfully: " + request.downloadHandler.text);
+            CHElementResponse chelementResponse = JsonConvert.DeserializeObject<CHElementResponse>(request.downloadHandler.text);
+            
+            if (string.IsNullOrEmpty(chelementResponse.error))
+            {
+                //Debug.Log("List of CHElement saved with the size of " + chelementResponse.items.Count);
+                onCompleted?.Invoke(chelementResponse, true);
+            }
+            else
+            {
+                Debug.LogWarning("Error in server reply: " + chelementResponse.error);
+                onCompleted?.Invoke(chelementResponse, false);
+            }
+        }
+        else
+        {
+            Debug.LogWarning("Error: " + request.error);
+            Debug.LogWarning("Server reply: " + request.downloadHandler.text);
+            onCompleted?.Invoke(null, false);
+        }
+        
+        request.Dispose();
+    }
+    /// <summary>
+    /// Crea un nuevo CHElement asociado a un sitio específico.
+    /// </summary>
+    public static IEnumerator PostNewCHElementToCollection(UnityAction<CHElementData, bool> onCompleted,
+        int id, bool approximateDate, string description, int endYear, HeritageCategory heritageCategory,
+        string name, ScaleType scale, SpatialDimension spatialDimension, int startYear,
+         string address = null,  string author = null,
+         List<ChElementMaterial> chElementMaterials = null,  string culturalSphere = null,
+        int? icon = null, int? idCountry = null, int? idMunicipality = null, int? idProvince = null,
+        int? idSite = null, float? latitude = null, float? longitude = null)
+    {
+        CHElementPost chElementPostData = new CHElementPost()
+        {
+            address = address,
+            approximate_date = approximateDate,
+            author = author,
+            chelement_materials = chElementMaterials,
+            cultural_sphere = culturalSphere,
+            description = description,
+            end_year = endYear,
+            heritage_category = heritageCategory.ToString(),
+            icon = icon,
+            id_country = idCountry,
+            id_municipality = idMunicipality,
+            id_province = idProvince,
+            id_site = idSite,
+            latitude = latitude,
+            longitude = longitude,
+            name = name,
+            scale = scale.ToString(),
+            spatial_dimension = spatialDimension.ToString(),
+            start_year = startYear,
+        };
+
+        string jsonData = JsonConvert.SerializeObject(chElementPostData);
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonData);
+        
+        UnityWebRequest request = new UnityWebRequest(ApiUrl + "/" + id + "/chelements", "POST");
+        request.SetRequestHeader("Content-Type", "application/json");
+        request.SetRequestHeader("Authorization", "Bearer " + GlobalManagement.Instance.token);
+        request.uploadHandler = new UploadHandlerRaw(bodyRaw);
+        request.downloadHandler = new DownloadHandlerBuffer();
+        yield return request.SendWebRequest();
+        
+        if (request.result == UnityWebRequest.Result.Success)
+        {
+           //Debug.Log("Successful creation of CHElement: " + request.downloadHandler.text);
+            CHElementData chElementData = JsonConvert.DeserializeObject<CHElementData>(request.downloadHandler.text);
+            
+            if (string.IsNullOrEmpty(chElementData.error))
+            {
+               //Debug.Log("CHElement added " + chElementData.name);
+                onCompleted?.Invoke(chElementData, true);
+            }
+            else
+            {
+                Debug.LogWarning("Error in server reply: " + chElementData.error);
+                onCompleted?.Invoke(chElementData, false);
+            }
+        }
+        else
+        {
+            Debug.LogWarning("Error: " + request.error);
+            Debug.LogWarning("Server reply: " + request.downloadHandler.text);
+            onCompleted?.Invoke(null, false);
+        }
+        
+        request.Dispose();
+    }
+    
+    /// <summary>
+    /// Obtiene la lista de AnnexData asociados a un sitio específico.
+    /// </summary>
+    public static IEnumerator GetAnnexDataListFromCollection(UnityAction<AnnexDataResponse, bool> onCompleted,
+        int id, int? page = null, int? perPage = null,  string search = null,
+         string sort = null,  string order = null)
+    {
+        QueryParams queryParams = new QueryParams()
+        {
+            page = page,
+            per_page = perPage,
+            search = search,
+            sort = sort,
+            order = order
+        };
+        
+        string query = ApiUrl + "/" + id + "/annexdata" + QueryManagement.ToQueryString(queryParams);
+        //Debug.Log("API URL: " + query);
+        UnityWebRequest request = new UnityWebRequest(query, "GET");
+        request.SetRequestHeader("Authorization", "Bearer " + GlobalManagement.Instance.token);
+        request.SetRequestHeader("Content-Type", "application/json");
+        request.downloadHandler = new DownloadHandlerBuffer();
+        yield return request.SendWebRequest();
+
+        if (request.result == UnityWebRequest.Result.Success)
+        {
+           //Debug.Log("AnnexDatas obtained successfully: " + request.downloadHandler.text);
+            AnnexDataResponse annexDataResponse = JsonConvert.DeserializeObject<AnnexDataResponse>(request.downloadHandler.text);
+            
+            if (string.IsNullOrEmpty(annexDataResponse.error))
+            {
+               //Debug.Log("List of AnnexData saved with the size of " + annexDataResponse.items.Count);
+                onCompleted?.Invoke(annexDataResponse, true);
+            }
+            else
+            {
+                Debug.LogWarning("Error in server reply: " + annexDataResponse.error);
+                onCompleted?.Invoke(annexDataResponse, false);
+            }
+        }
+        else
+        {
+            Debug.LogWarning("Error: " + request.error);
+            Debug.LogWarning("Server reply: " + request.downloadHandler.text);
+            onCompleted?.Invoke(null, false);
+        }
+        
+        request.Dispose();
+    }
+}

@@ -1,0 +1,8 @@
+var class_province_d_b =
+[
+    [ "GetProvinceByID", "class_province_d_b.html#a0595d8da279c2371df21824e7a17ea3e", null ],
+    [ "GetProvinceList", "class_province_d_b.html#a854e8eb3e2b7fe712e9d483114aeaa7a", null ],
+    [ "config", "class_province_d_b.html#abd42ed00bd0a8cca9eabeeedc1218a3b", null ],
+    [ "ApiUrl", "class_province_d_b.html#a2f3ba331cd8a71739a97117bbdb364aa", null ],
+    [ "Config", "class_province_d_b.html#ae3aeb71691251b0d4adc578e6ede201e", null ]
+];

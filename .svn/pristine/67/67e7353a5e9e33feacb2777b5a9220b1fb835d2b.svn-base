@@ -1,0 +1,16 @@
+var class_annex_data_d_b =
+[
+    [ "DeleteAnnexDataFromApi", "class_annex_data_d_b.html#a963045d0b11469f985d5efd6716bcf35", null ],
+    [ "GetAnnexDataAudio", "class_annex_data_d_b.html#ab1e2a6fdc4ddc299266ca76cbd431aad", null ],
+    [ "GetAnnexDataByID", "class_annex_data_d_b.html#a4ffea0db48ceca236b5810e89b68267d", null ],
+    [ "GetAnnexDataFileListFromAnnexData", "class_annex_data_d_b.html#a28521a1b8e68876c073ac38df64e9c66", null ],
+    [ "GetAnnexDataImage", "class_annex_data_d_b.html#a7e75c40cda1922fda794548c35896742", null ],
+    [ "GetAnnexDataPdf", "class_annex_data_d_b.html#a229d06e5183a52d422b0e5ee5056a73c", null ],
+    [ "GetAnnexDataVideo", "class_annex_data_d_b.html#a3d97d6f94ca237a2f8e21113567511b5", null ],
+    [ "PostNewAnnexData", "class_annex_data_d_b.html#a382f0907c456f936a08e1c5d72b9e6e4", null ],
+    [ "PostNewAnnexDataFileToAnnexData", "class_annex_data_d_b.html#a82daa8a5d7baf7f188a863f49e46ba27", null ],
+    [ "PutAnnexDataFromApi", "class_annex_data_d_b.html#a64f46ea485027ebba7cb64820b50c118", null ],
+    [ "config", "class_annex_data_d_b.html#a2507a928d1ea12d725caab690166ad11", null ],
+    [ "ApiUrl", "class_annex_data_d_b.html#a275aae64969e7db1d09e65d1cae6ef6c", null ],
+    [ "Config", "class_annex_data_d_b.html#ad76877dd782628519477bfda503695a9", null ]
+];

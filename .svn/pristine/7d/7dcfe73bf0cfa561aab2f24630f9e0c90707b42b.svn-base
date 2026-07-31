@@ -1,0 +1,11 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:VisualElement name="DisconnectPanelInstance" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.7); align-items: center; justify-content: center; display: flex;">
+        <ui:VisualElement style="width: 60%; background-color: rgb(75, 214, 227); border-radius: 12px; border-width: 2px; border-color: rgb(80, 80, 80); padding: 24px; padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 10px; height: 50%;">
+            <ui:Label text="APPLICATION EXIT" style="color: rgb(0, 0, 0); -unity-font-style: bold; font-size: 50px; -unity-text-align: middle-center; margin-bottom: 10px; height: 20%;"/>
+            <ui:Label name="message" text="" style="color: rgb(0, 0, 0); font-size: 35px; -unity-text-align: middle-center; white-space: normal; margin-bottom: 25px; height: 40%;"/>
+            <ui:VisualElement style="flex-direction: row; justify-content: space-around; width: 100%; height: 20%;">
+                <ui:Button name="accept-button" text="Ok" style="width: 200px; height: 100px; background-color: rgb(46, 139, 87); color: rgb(255, 255, 255); font-size: 40px; border-radius: 6px; border-width: 0;"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

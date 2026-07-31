@@ -1,0 +1,11 @@
+var class_pilot_d_b =
+[
+    [ "DeletePilotFromApi", "class_pilot_d_b.html#ad2af7187ff57234130ca880ce4959213", null ],
+    [ "GetPilotByID", "class_pilot_d_b.html#ac7910fa65c4c691cede0ad6ba6459838", null ],
+    [ "GetPilotList", "class_pilot_d_b.html#ae2704da0e9477a4f32a62ffa50553ba6", null ],
+    [ "PostNewPilot", "class_pilot_d_b.html#a05353e63b33f534e7d83329ad32cefb2", null ],
+    [ "PutPilotFromApi", "class_pilot_d_b.html#a28562378086ec8119b3705ded7250eac", null ],
+    [ "config", "class_pilot_d_b.html#a05231e3d70f0a2ddd8507ebb3c0cb632", null ],
+    [ "ApiUrl", "class_pilot_d_b.html#a99e9799efa5cc719479b2df155f8804b", null ],
+    [ "Config", "class_pilot_d_b.html#a7ca778443b3d26c0f0d4e622337a62dd", null ]
+];

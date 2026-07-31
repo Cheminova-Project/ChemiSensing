@@ -1,0 +1,25 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/USS/utils.uss?fileID=7433441132597879392&amp;guid=03b52ca0672e26748b8fdddb1dcce61b&amp;type=3#utils"/>
+    <Style src="project://database/Assets/UI/USS/ruler-segment.uss?fileID=7433441132597879392&amp;guid=ea643416730d5234d9137bb3a2b1b667&amp;type=3#ruler-segment"/>
+    <ui:VisualElement name="RulerSegment" style="flex-grow: 0; height: auto; width: 100%; flex-direction: column; margin-left: 0; margin-right: 0; margin-top: 10px; margin-bottom: 10px; padding-left: 10px; padding-right: 10px;">
+        <ui:VisualElement name="top-row" style="flex-grow: 0; height: 75px; width: 100%; flex-direction: row; justify-content: center; align-content: center;">
+            <ui:DropdownField name="segment-start" choices="Hola,Hola2,Hola23" class="dropdown-field" style="white-space: normal; text-overflow: clip; -unity-text-align: upper-left; width: 23%; margin-left: 0%; margin-right: 1%; -unity-font-definition: url(&quot;project://database/Assets/Fonts/Mulish/static/Mulish-Regular.ttf?fileID=12800000&amp;guid=722f676cd3b8d41469ff5fc9c286d6a3&amp;type=3#Mulish-Regular&quot;); background-color: rgba(255, 255, 255, 0); font-size: 25px;"/>
+            <ui:DropdownField name="segment-end" class="dropdown-field" style="width: 23%; margin-left: 1%; margin-right: 1%; -unity-font-definition: url(&quot;project://database/Assets/Fonts/Mulish/static/Mulish-Regular.ttf?fileID=12800000&amp;guid=722f676cd3b8d41469ff5fc9c286d6a3&amp;type=3#Mulish-Regular&quot;); font-size: 25px;"/>
+            <AutoSizeLabel name="segment-length" text="0 cm" group="segment-values" min-font-size="20" max-font-size="50" style="width: 20%; height: 100%; margin-left: 1%; margin-right: 1%; -unity-font-definition: url(&quot;project://database/Assets/Fonts/Mulish/static/Mulish-Regular.ttf?fileID=12800000&amp;guid=722f676cd3b8d41469ff5fc9c286d6a3&amp;type=3#Mulish-Regular&quot;); -unity-text-align: middle-center; padding-left: 0; padding-right: 0; flex-grow: 0; font-size: 50px;"/>
+            <ui:VisualElement name="options" style="flex-grow: 0; width: 29%; height: 100%; flex-direction: row; margin-left: 0%;">
+                <ui:Button name="highlight-button" class="rounded-button" style="flex-grow: 1; padding-left: 1px; padding-right: -2px; padding-bottom: 1px; padding-top: 1px;">
+                    <ui:VisualElement name="highlight-image" enabled="true" style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Images/Icons/visibility.png?fileID=2800000&amp;guid=8c0aea48729b2114f8a37715194c7966&amp;type=3#visibility&quot;); -unity-background-scale-mode: scale-to-fit;"/>
+                </ui:Button>
+                <ui:Button name="delete-button" class="rounded-button" style="flex-grow: 1; padding-left: 1px; padding-top: 1px; padding-bottom: 1px; padding-right: 1px;">
+                    <ui:VisualElement name="delete-image" style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Images/Icons/delete.png?fileID=2800000&amp;guid=c14ceb17f8f5e5a43bf255afdf677f7c&amp;type=3#delete&quot;); -unity-background-scale-mode: scale-to-fit;"/>
+                </ui:Button>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="medium-row" style="flex-grow: 0; flex-direction: row; margin-top: 10px; justify-content: flex-start; align-content: center;">
+            <ui:Toggle name="direct-connection-toggle" label="" text="Select if you want to connect the points directly" style="-unity-font-definition: url(&quot;project://database/Assets/Fonts/Mulish/static/Mulish-Regular.ttf?fileID=12800000&amp;guid=722f676cd3b8d41469ff5fc9c286d6a3&amp;type=3#Mulish-Regular&quot;); font-size: 20px; -unity-text-align: middle-left;"/>
+        </ui:VisualElement>
+        <ui:VisualElement name="bottom-row" style="flex-grow: 0; flex-direction: row; margin-top: 10px; justify-content: flex-start; align-content: center;">
+            <ui:Toggle name="share-segment-toggle" label="" text="Select if you want to share the segment" style="-unity-font-definition: url(&quot;project://database/Assets/Fonts/Mulish/static/Mulish-Regular.ttf?fileID=12800000&amp;guid=722f676cd3b8d41469ff5fc9c286d6a3&amp;type=3#Mulish-Regular&quot;); font-size: 20px; -unity-text-align: middle-left;"/>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

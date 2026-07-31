@@ -1,0 +1,21 @@
+var class_manipulable_object =
+[
+    [ "Awake", "class_manipulable_object.html#a5984ac67a33d984056bea4233cefd744", null ],
+    [ "ForceReleaseOwnership", "class_manipulable_object.html#a1dcc6d32a36ebd75ba521a1b6c2e0797", null ],
+    [ "IsBeingManipulated", "class_manipulable_object.html#ab8885032b5490dca2d31b113c3e39479", null ],
+    [ "OnApplicationQuit", "class_manipulable_object.html#a5411c87dc2e63543e96862fb29806b46", null ],
+    [ "OnClientDisconnect", "class_manipulable_object.html#a94effd54a0adea2794a106f09f54365a", null ],
+    [ "OnDeselected", "class_manipulable_object.html#a6efdc6233a653583b8a6b88abdd658d3", null ],
+    [ "OnNetworkDespawn", "class_manipulable_object.html#a739581f439b9312c5db74a30af0a51c0", null ],
+    [ "OnNetworkSpawn", "class_manipulable_object.html#a2347b2a006068686fcddc412f96c3ff8", null ],
+    [ "OnOwnershipChangedClientRpc", "class_manipulable_object.html#a7da28a750053a542bbfb4055d9d2f348", null ],
+    [ "OnOwnershipRemovedClientRpc", "class_manipulable_object.html#a339e94531d6e1ea918acb4d3984a9485", null ],
+    [ "OnSelected", "class_manipulable_object.html#a3d909f366955b6760ed4e04b4b430665", null ],
+    [ "ReleaseAllOwnerships", "class_manipulable_object.html#a48fe04f1800049bc1b5e3b610d9ff564", null ],
+    [ "ReleaseOwnershipServerRpc", "class_manipulable_object.html#a6fc00a25cb71ed9e10ce31b80a866b71", null ],
+    [ "RequestOwnershipServerRpc", "class_manipulable_object.html#affebf3de037166bbe9797df3273f8593", null ],
+    [ "ResetTransform", "class_manipulable_object.html#abc4f3469108db3d70420c02493d2ed3c", null ],
+    [ "_networkObject", "class_manipulable_object.html#afbbef59277befd989eee71f9e464ba23", null ],
+    [ "activeManipulatedObjects", "class_manipulable_object.html#aaf12058307a5ca02ba9ac31acd0172e6", null ],
+    [ "isBeingManipulated", "class_manipulable_object.html#aa7e94b5a2b8a2f98b0c9a1c5e7909101", null ]
+];

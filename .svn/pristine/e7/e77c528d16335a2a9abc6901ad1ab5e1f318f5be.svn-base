@@ -1,0 +1,17 @@
+var class_desktop_input_action_references =
+[
+    [ "m_leftClick", "class_desktop_input_action_references.html#aeac89a0558097585031546463efab2e1", null ],
+    [ "m_look", "class_desktop_input_action_references.html#a42c1d7b2f8b574e6614ca0a4d87f0326", null ],
+    [ "m_middleClick", "class_desktop_input_action_references.html#af755ced200f66b0f7e0062d90fff54c3", null ],
+    [ "m_mousePosition", "class_desktop_input_action_references.html#aad64ccbeb5d4752f0d1e3b19bab23fb2", null ],
+    [ "m_move", "class_desktop_input_action_references.html#acb75ac6e326f91ef3b6c240f4db6e719", null ],
+    [ "m_openMenu", "class_desktop_input_action_references.html#ae7e37914243e79192195bec883d8cc6c", null ],
+    [ "m_rightClick", "class_desktop_input_action_references.html#a20a708ebcfead775cfb57d67f42b8de2", null ],
+    [ "LeftClick", "class_desktop_input_action_references.html#a32fdb6f02c44e57b37f3a2e06ca55df3", null ],
+    [ "Look", "class_desktop_input_action_references.html#a7bb8c9c5b877be911a96fb8e3b8f0cde", null ],
+    [ "MiddleClick", "class_desktop_input_action_references.html#a5dbe1edf1986cf998a02b81e137ea909", null ],
+    [ "MousePosition", "class_desktop_input_action_references.html#a85bc9586c17b954b87687c6178df00ea", null ],
+    [ "Move", "class_desktop_input_action_references.html#ae2fd812674d2b635e2135edf547f0bdd", null ],
+    [ "OpenMenu", "class_desktop_input_action_references.html#a5bf09ba2a52effe7cae6ffeef80ff78b", null ],
+    [ "RightClick", "class_desktop_input_action_references.html#adb726a8c21a3287ef536040bc340196f", null ]
+];

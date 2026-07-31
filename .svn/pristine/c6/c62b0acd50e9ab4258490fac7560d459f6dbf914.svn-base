@@ -1,0 +1,42 @@
+using UnityEngine;
+using Unity.Netcode;
+
+
+[RequireComponent(typeof(NetworkedPlayerCharacter))]
+/// <summary>
+/// Clase que maneja el comportamiento del personaje en escritorio.
+/// Extiende GeneralCharacter para personalizar la gestión de objetos del personaje
+/// según si es el jugador local o un jugador remoto.
+/// </summary>
+public class DesktopCharacter : GeneralCharacter
+{
+    protected override void Awake()
+    {
+        base.Awake();
+    }
+    /// <summary>
+    /// Gestiona los objetos del personaje según si es el jugador local o un jugador remoto.
+    /// </summary>
+    public override void ManageCharacterObjects()
+    {
+        if (m_NetworkedPlayerCharacter.IsLocalPlayer)
+        {
+            //Cosas que hacer cuando es el jugador local
+        }
+        else
+        {
+            //Cosas que hacer cuando no es el jugador local
+        }
+        base.ManageCharacterObjects();
+    }
+    
+    /// <summary>
+    /// Sale de la aplicación.
+    /// </summary>
+    public void ExitApplication()
+    {
+        Application.Quit();
+        Debug.Log("Application exited");
+    }
+}
+

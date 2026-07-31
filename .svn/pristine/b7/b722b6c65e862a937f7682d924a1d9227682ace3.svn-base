@@ -1,0 +1,12 @@
+var class_auto_size_label =
+[
+    [ "AutoSizeLabel", "class_auto_size_label.html#a39280ec20ca8fe98f7d605dd66670e39", null ],
+    [ "ApplyFontSize", "class_auto_size_label.html#a9e387322d3e01d4f967fb2585e3d952f", null ],
+    [ "ComputeBestFitFontSize", "class_auto_size_label.html#ae7052abee757a8b793f8b64f8b01b434", null ],
+    [ "ForceRecalculate", "class_auto_size_label.html#aa0b35980000450974d5d4f60dceab59a", null ],
+    [ "OnGeometryChanged", "class_auto_size_label.html#a3bf42c37a4702289c862dd6bfb097fb0", null ],
+    [ "ScheduleFontRecalculation", "class_auto_size_label.html#a86840dbb05e6ba199a04be2186fcff63", null ],
+    [ "group", "class_auto_size_label.html#aa767158de2d6067b33ce9927eedfea2e", null ],
+    [ "maxFontSize", "class_auto_size_label.html#ad1b7c48f5659ecdeb85b111eb490e0ce", null ],
+    [ "minFontSize", "class_auto_size_label.html#aa53cd78a3bc2270f681efa33d8e1df50", null ]
+];

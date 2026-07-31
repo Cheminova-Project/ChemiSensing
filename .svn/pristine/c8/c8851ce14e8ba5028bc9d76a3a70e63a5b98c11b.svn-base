@@ -1,0 +1,11 @@
+var class_room_u_i_controller =
+[
+    [ "SetArtifactName", "class_room_u_i_controller.html#a0d95848b034a38421376ee1f26e45b71", null ],
+    [ "SetCreatorName", "class_room_u_i_controller.html#a4a4a79c8d9e957d9960bb422d89936f6", null ],
+    [ "SetImage", "class_room_u_i_controller.html#a8653f7ed44d7286a6b59a4773e5c0ed3", null ],
+    [ "Start", "class_room_u_i_controller.html#a9c129a748ff31e2f553ce309b924d95a", null ],
+    [ "m_ArtifactName", "class_room_u_i_controller.html#a7001ecec2be749d2f0aea8a805585fae", null ],
+    [ "m_CreatorName", "class_room_u_i_controller.html#aa156cc80e36988a79d6973a5da0fea13", null ],
+    [ "m_Image", "class_room_u_i_controller.html#a207340cb96c8e2a77b91f49b58f0fa63", null ],
+    [ "roomUIElements", "class_room_u_i_controller.html#a773f72933e369986b00c613503dca61d", null ]
+];

@@ -1,0 +1,8 @@
+var class_gyroscope_controller =
+[
+    [ "OnGyroResetButtonClicked", "class_gyroscope_controller.html#a8b20823ad1d8e4b347e36cc1278f9d53", null ],
+    [ "OnToolActivatedInternal", "class_gyroscope_controller.html#ad3e1f9d80f68ce9aaf7a8f0ee43a4c4b", null ],
+    [ "OnToolDeactivatedInternal", "class_gyroscope_controller.html#ad64c5f925e3baa1bf137c70d938fdece", null ],
+    [ "gyroResetButton", "class_gyroscope_controller.html#aabbb399f4fa401c7768b496b6f9ded06", null ],
+    [ "mobileFirstPersonController", "class_gyroscope_controller.html#a8f511b6c1f9b7a1a4c7b70b135b7a213", null ]
+];

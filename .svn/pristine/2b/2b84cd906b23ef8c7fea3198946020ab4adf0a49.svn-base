@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7205f81df83d59d4393c42ffa83ae238, type: 3}
+  m_Name: E3D
+  m_EditorClassIdentifier: Assembly-CSharp::ToolDefinition
+  Id: e3d
+  DisplayName: E3D
+  Icon: {fileID: 21300000, guid: 3e476a6c67445f548b1a1d0e2eca34cb, type: 3}
+  SupportedPlatforms: 01000000030000000200000004000000
+  IsSubmenu: 1
+  WindowAsset: {fileID: 9197481963319205126, guid: 3b681c24ae556d34ea370544cf33eee5, type: 3}
+  ScriptsContainer: {fileID: 0}
+  SubmenuTools:
+  - {fileID: 11400000, guid: 5ce491eddbdb39d4e955d5d738210d6d, type: 2}
+  - {fileID: 11400000, guid: 6823560f896c8ce429301828243b8b30, type: 2}
+  - {fileID: 11400000, guid: bef1b6b77f936434cbd219aeb862c670, type: 2}

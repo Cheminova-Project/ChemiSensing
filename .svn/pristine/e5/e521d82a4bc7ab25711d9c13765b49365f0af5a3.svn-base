@@ -1,0 +1,13 @@
+var class_init_d_b =
+[
+    [ "PostInitAlterationForms", "class_init_d_b.html#a7613b80d5e3e08f908d8cffaa90e6d64", null ],
+    [ "PostInitAlterations", "class_init_d_b.html#a11d4bb65e0e772aa62a1cd56efcac361", null ],
+    [ "PostInitChUsages", "class_init_d_b.html#a5f9488bab5bac5905047b161f9803786", null ],
+    [ "PostInitCountries", "class_init_d_b.html#afae77dee772d118f25192f7a90fce2f1", null ],
+    [ "PostInitInspectionModes", "class_init_d_b.html#a06e7f4eaf422933231411414bd8cbb0a", null ],
+    [ "PostInitMaterials", "class_init_d_b.html#a8106f52a2ef8b80322fe41e83c68c7f1", null ],
+    [ "PostInitUsers", "class_init_d_b.html#a9b9261e14e63a5563c96ecb1e0b116df", null ],
+    [ "config", "class_init_d_b.html#a8871cc14b874060097a0328f5af3860e", null ],
+    [ "ApiUrl", "class_init_d_b.html#a1b4fbe884b88272cf79c746ec1043c74", null ],
+    [ "Config", "class_init_d_b.html#ac27b497d5f2df30e0b579019810eabc8", null ]
+];

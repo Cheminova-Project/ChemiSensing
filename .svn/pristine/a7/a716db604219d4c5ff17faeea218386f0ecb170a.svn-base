@@ -1,0 +1,49 @@
+using UnityEngine;
+
+/// <summary>
+/// Connection state corresponding to a connected client. When being disconnected, transitions to the Offline state.
+/// </summary>
+class ClientConnectedState : OnlineState
+{
+    public override void Enter() { }
+
+    public override void Exit() { }
+
+    public override void OnClientDisconnect(ulong clientId)
+    {
+        if(clientId != ConnectionManager.NetworkManager.LocalClientId)
+        {
+            Debug.LogWarning($"Client {clientId} disconnected, but it is not the local client. Ignoring.");
+            return;
+        }
+        
+        var disconnectReason = ConnectionManager.NetworkManager.DisconnectReason;
+        
+        if (string.IsNullOrEmpty(disconnectReason))
+        {
+            Debug.LogWarning("Client disconnected without a specific reason. Defaulting to GenericDisconnect.");
+            ConnectionManager.EventManager.Broadcast(new ConnectionEvent { status = ConnectStatus.GenericDisconnect });
+        }
+        else
+        {
+            // --- CAMBIO AQUÍ: Protección con Try-Catch ---
+            try 
+            {
+                var connectStatus = JsonUtility.FromJson<ConnectStatus>(disconnectReason);
+                Debug.Log($"Client {clientId} disconnected with reason: {connectStatus}");
+                ConnectionManager.EventManager.Broadcast(new ConnectionEvent { status = connectStatus });
+            }
+            catch (System.Exception)
+            {
+                // Si el texto no era JSON válido (ej: "Shutdown" o basura de memoria),
+                // capturamos el error y procedemos como desconexión genérica para no bloquear el juego.
+                Debug.LogWarning($"Disconnect reason was not valid JSON: '{disconnectReason}'. Defaulting to GenericDisconnect.");
+                ConnectionManager.EventManager.Broadcast(new ConnectionEvent { status = ConnectStatus.GenericDisconnect });
+            }
+            // ---------------------------------------------
+        }
+        
+        Debug.Log($"Changing state to Offline due to client disconnection. Client ID: {clientId}");
+        ConnectionManager.ChangeState(ConnectionManager.m_Offline);
+    }
+}

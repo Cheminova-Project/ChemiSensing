@@ -1,0 +1,109 @@
+﻿using System;
+using UnityEngine;
+using UnityEngine.InputSystem;
+
+[RequireComponent(typeof(CharacterController))]
+public class BasicFirstPersonController : MonoBehaviour
+{
+    [Header("Input Actions")]
+    [SerializeField]
+    protected InputActionReference moveAction;
+    [SerializeField] protected InputActionReference lookAction;
+    
+    [Header("Movement Settings")]
+    [SerializeField] private float moveSpeed = 5f;
+    [SerializeField] protected float lookSensitivity = 2f;
+    [SerializeField] protected float verticalLookLimit = 85f;
+    [SerializeField] protected Transform rotationPivot;
+    [Header("References")]
+    [SerializeField] protected Transform BodyTransform;
+    [SerializeField] protected Transform HeadTransform;
+    [SerializeField] private CharacterController characterController;
+    
+    protected float verticalLookRotation = 0f;
+    protected Vector2 moveInput;
+    protected Vector3 lookInput;
+    protected bool cameraMovementAllowed;
+    protected virtual void Awake()
+    {
+        
+    }
+    
+    protected virtual void OnEnable()
+    {
+        moveAction.action.Enable();
+        lookAction.action.Enable();
+    }
+
+    protected virtual void OnDisable()
+    {
+        moveAction.action.Disable();
+        lookAction.action.Disable();
+    }
+
+    protected virtual void Start()
+    {
+        EnableCameraMovement(false);
+    }
+
+    protected virtual void Update()
+    {
+        // Get input
+        UpdateLookInput();
+        UpdateMoveInput();
+
+        // Apply look
+        if(cameraMovementAllowed)
+            ApplyLook();
+
+        // Apply movement
+        ApplyMovement();
+    }
+    
+    
+    protected virtual void UpdateLookInput()
+    {
+        lookInput = lookAction.action.ReadValue<Vector2>();
+    }
+
+    protected virtual void UpdateMoveInput()
+    {
+        moveInput = moveAction.action.ReadValue<Vector2>();
+    }
+
+
+    protected virtual void ApplyLook()
+    {
+        float rotX = lookInput.x * lookSensitivity;
+        float rotY = lookInput.y * lookSensitivity;
+
+        verticalLookRotation -= rotY;
+        verticalLookRotation = Mathf.Clamp(verticalLookRotation, -verticalLookLimit, verticalLookLimit);
+
+        // Rotación vertical de la cámara (pitch)
+        HeadTransform.localEulerAngles = new Vector3(verticalLookRotation, 0f, 0f);
+
+        // Rotación horizontal alrededor del pivote (yaw)
+        BodyTransform.Rotate(Vector3.up * rotX);
+    }
+
+    protected void ApplyMovement()
+    {
+        Vector3 move = transform.right * moveInput.x + transform.forward * moveInput.y;
+        characterController.Move(move * moveSpeed * Time.deltaTime);
+    }
+    
+    public virtual void EnableCameraMovement(bool enable)
+    {
+        if (enable)
+        {
+            cameraMovementAllowed = true;
+            lookAction.action.Enable();
+        }
+        else
+        {
+            cameraMovementAllowed = false;
+            lookAction.action.Disable();
+        }
+    }
+}

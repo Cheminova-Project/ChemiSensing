@@ -1,0 +1,13 @@
+var class_tool_definition =
+[
+    [ "IsValidForPlatform", "class_tool_definition.html#a786f747e45b0678e7128d5bfabf73317", null ],
+    [ "disabled", "class_tool_definition.html#ad2ca87d244a6a7c91f72968aa1c45b22", null ],
+    [ "DisplayName", "class_tool_definition.html#aace2afaaca3d0f03cc71c003ffa53c91", null ],
+    [ "Icon", "class_tool_definition.html#acc36c90d0717dfbf069728d2eb3fee6e", null ],
+    [ "Id", "class_tool_definition.html#a0c63e70c390d8f75aaa9026470462ea4", null ],
+    [ "IsSubmenu", "class_tool_definition.html#aceba418e679b7bf8b7a671777fef3fd7", null ],
+    [ "ScriptsContainer", "class_tool_definition.html#a5e0237e43bac3566153abbf9e049cbe9", null ],
+    [ "SubmenuTools", "class_tool_definition.html#a4ad12d5355074662949524c9aeb6e32d", null ],
+    [ "SupportedPlatforms", "class_tool_definition.html#a421d66fb9e3220a2c73db1c5c2199693", null ],
+    [ "WindowAsset", "class_tool_definition.html#add57a39b91011af2a0cfc03276199046", null ]
+];

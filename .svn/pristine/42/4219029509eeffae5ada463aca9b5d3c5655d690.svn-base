@@ -1,0 +1,12 @@
+var class_alteration_event_data =
+[
+    [ "alterations", "class_alteration_event_data.html#a62eb316e92433af62765d1854bc8dffe", null ],
+    [ "annex_data", "class_alteration_event_data.html#a5d4871cc3034891ebfb29516126a03fd", null ],
+    [ "created_on", "class_alteration_event_data.html#a626546a3cbbb99ffbb14a86cf11cb66d", null ],
+    [ "description", "class_alteration_event_data.html#a59f3a5fef4dabc1f20a5ad2f634bb1ee", null ],
+    [ "error", "class_alteration_event_data.html#a0b40289c675d6fdb12ed92b424c30650", null ],
+    [ "GUID", "class_alteration_event_data.html#a20fa8915ca17b3f1bfd0e3edca1cb381", null ],
+    [ "id", "class_alteration_event_data.html#a1394705b2484aa65dc3b7f004e953d4c", null ],
+    [ "id_alteration_agent", "class_alteration_event_data.html#a235e4af9805b75682266aa369a1f753b", null ],
+    [ "name", "class_alteration_event_data.html#ad29511689ee84e00c76c9688d59772e6", null ]
+];

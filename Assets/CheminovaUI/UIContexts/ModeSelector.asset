@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5d7f9c9eb223fc4bb9318bded138343, type: 3}
+  m_Name: ModeSelector
+  m_EditorClassIdentifier: 
+  contextName: mode-selector
+  visualTreeAsset: {fileID: 9197481963319205126, guid: ed7f08e57ab3c6c478e5d762c4a5583c, type: 3}
+  scriptsContainer: {fileID: 8474570339907549398, guid: 67a7505eef0d2a64fa86d429a4ce6b7c, type: 3}

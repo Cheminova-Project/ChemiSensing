@@ -1,0 +1,11 @@
+var class_material_d_b =
+[
+    [ "DeleteMaterialFromApi", "class_material_d_b.html#a2d14673d41e7a58639f56a975f8afde0", null ],
+    [ "GetMaterialByID", "class_material_d_b.html#a025bf214b5c392c4f9e78a8e146f0ff9", null ],
+    [ "GetMaterialList", "class_material_d_b.html#ae3d65470c4749a135832c4deb748e363", null ],
+    [ "PostNewMaterial", "class_material_d_b.html#a321a3cf4d29e1b4f01be1d2ce407cdb6", null ],
+    [ "PutMaterialFromApi", "class_material_d_b.html#a21d642499c29a3fe59ffeebca7e95e7e", null ],
+    [ "config", "class_material_d_b.html#a3d176e85fb525f3f1c157f6054bb15ca", null ],
+    [ "ApiUrl", "class_material_d_b.html#af1839dae5e031b06f0e2c35db9b15f9a", null ],
+    [ "Config", "class_material_d_b.html#aa6299ca59202a595ac6cd9a21e6e97ac", null ]
+];

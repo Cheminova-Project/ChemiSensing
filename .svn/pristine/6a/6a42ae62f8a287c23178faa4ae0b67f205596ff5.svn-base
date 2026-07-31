@@ -1,0 +1,14 @@
+var class_u_i_feedback_box_shader_controller =
+[
+    [ "CalculateObjectHeight", "class_u_i_feedback_box_shader_controller.html#a29beb3fc84bce042c1ec072553216d01", null ],
+    [ "GetHeightFadeThreshold", "class_u_i_feedback_box_shader_controller.html#a41e8ba553d8c7821292011062f3a13ef", null ],
+    [ "GetObjectHeight", "class_u_i_feedback_box_shader_controller.html#a8ac236f2d61d345344e76e70a7814f28", null ],
+    [ "Initialize", "class_u_i_feedback_box_shader_controller.html#a25394964eeae42f8f7605ef05a53a9cf", null ],
+    [ "InitializeMaterial", "class_u_i_feedback_box_shader_controller.html#a48227613979538a3a19e8d045a2a9b61", null ],
+    [ "OnValidate", "class_u_i_feedback_box_shader_controller.html#ac8d86706710686cb94fa08ea86996216", null ],
+    [ "SetHeightFadeThreshold", "class_u_i_feedback_box_shader_controller.html#a56aa6570991edad14dfe7902b8663a22", null ],
+    [ "heightFadeThreshold", "class_u_i_feedback_box_shader_controller.html#abaa2b31fee42cbb51485d395cced706d", null ],
+    [ "meshRenderer", "class_u_i_feedback_box_shader_controller.html#af768e1b0c62c72c05a2fc6060a970eb8", null ],
+    [ "objectHeight", "class_u_i_feedback_box_shader_controller.html#a48bba0bfca6cc46b483bcd0464005e4e", null ],
+    [ "shaderMaterial", "class_u_i_feedback_box_shader_controller.html#a80fbdc6c2416d3b40306d46ce11fc756", null ]
+];

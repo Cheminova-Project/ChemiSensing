@@ -1,0 +1,26 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/USS/utils.uss?fileID=7433441132597879392&amp;guid=03b52ca0672e26748b8fdddb1dcce61b&amp;type=3#utils"/>
+    <Style src="project://database/Assets/UI/USS/ruler-segment.uss?fileID=7433441132597879392&amp;guid=ea643416730d5234d9137bb3a2b1b667&amp;type=3#ruler-segment"/>
+    <ui:VisualElement name="AngleSegment" style="flex-grow: 0; height: auto; width: 100%; flex-direction: column; margin-left: 0; margin-right: 0; margin-top: 10px; margin-bottom: 10px; padding-left: 10px; padding-right: 10px;">
+        <ui:VisualElement name="top-row" style="flex-grow: 0; height: 75px; width: 100%; flex-direction: row; justify-content: center; align-content: center;">
+            <ui:DropdownField name="angle-start" class="dropdown-field" style="width: 18%; -unity-font-definition: url(&quot;project://database/Assets/Fonts/Mulish/static/Mulish-Regular.ttf?fileID=12800000&amp;guid=722f676cd3b8d41469ff5fc9c286d6a3&amp;type=3#Mulish-Regular&quot;); margin-left: 0%; margin-right: 1%; background-color: rgba(255, 255, 255, 0); font-size: 25px;"/>
+            <ui:DropdownField name="angle-vertex" class="dropdown-field" style="width: 18%; -unity-font-definition: url(&quot;project://database/Assets/Fonts/Mulish/static/Mulish-Regular.ttf?fileID=12800000&amp;guid=722f676cd3b8d41469ff5fc9c286d6a3&amp;type=3#Mulish-Regular&quot;); margin-left: 0%; margin-right: 1%; background-color: rgba(255, 255, 255, 0); font-size: 25px;"/>
+            <ui:DropdownField name="angle-end" class="dropdown-field" style="width: 18%; -unity-font-definition: url(&quot;project://database/Assets/Fonts/Mulish/static/Mulish-Regular.ttf?fileID=12800000&amp;guid=722f676cd3b8d41469ff5fc9c286d6a3&amp;type=3#Mulish-Regular&quot;); margin-left: 1%; margin-right: 2%; font-size: 25px;"/>
+            <AutoSizeLabel name="angle-value" text="0°" group="angle-values" max-font-size="50" min-font-size="20" style="width: 16%; height: 100%; -unity-font-definition: url(&quot;project://database/Assets/Fonts/Mulish/static/Mulish-Regular.ttf?fileID=12800000&amp;guid=722f676cd3b8d41469ff5fc9c286d6a3&amp;type=3#Mulish-Regular&quot;); -unity-text-align: middle-center; padding-left: 0; padding-right: 0; margin-left: 1%; margin-right: 1%; flex-grow: 0; font-size: 50px;"/>
+            <ui:VisualElement name="options" style="flex-grow: 0; width: 30%; height: 100%; flex-direction: row; margin-left: 0%;">
+                <ui:Button name="highlight-button" class="rounded-button" style="flex-grow: 1; padding-left: 1px; padding-right: -2px; padding-bottom: 1px; padding-top: 1px;">
+                    <ui:VisualElement name="highlight-image" enabled="true" style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Images/Icons/visibility.png?fileID=21300000&amp;guid=8c0aea48729b2114f8a37715194c7966&amp;type=3#visibility&quot;); -unity-background-scale-mode: scale-to-fit;"/>
+                </ui:Button>
+                <ui:Button name="delete-button" class="rounded-button" style="flex-grow: 1; padding-left: 1px; padding-top: 1px; padding-bottom: 1px; padding-right: 1px;">
+                    <ui:VisualElement name="delete-image" style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Images/Icons/delete.png?fileID=21300000&amp;guid=c14ceb17f8f5e5a43bf255afdf677f7c&amp;type=3#delete&quot;); -unity-background-scale-mode: scale-to-fit;"/>
+                </ui:Button>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="medium-row" style="flex-grow: 0; width: 100%; flex-direction: row; margin-top: 10px; justify-content: space-between; align-items: center; height: auto;">
+            <ui:Button name="cycle-vertex-button" class="rounded-button" style="flex-direction: row; align-items: center; justify-content: center; padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 15px; height: auto; background-color: rgb(240, 240, 240);">
+                <ui:Label text="Reorder the points" style="font-size: 30px; color: rgb(0, 0, 0); margin: 0; padding: 0;"/>
+            </ui:Button>
+            <ui:Toggle name="share-segment-toggle" label="" text="Share angle" style="font-size: 25px; margin-right: 10px;"/>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

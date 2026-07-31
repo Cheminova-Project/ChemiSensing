@@ -1,0 +1,9 @@
+var class_transform_handles_1_1_rotation_handle_old =
+[
+    [ "Initialize", "class_transform_handles_1_1_rotation_handle_old.html#a1b51dc07263a2c9bbe57aab82aaa2c0f", null ],
+    [ "_handleInitialized", "class_transform_handles_1_1_rotation_handle_old.html#abd6887e4e2a146afdbe164e034844e79", null ],
+    [ "_parentHandle", "class_transform_handles_1_1_rotation_handle_old.html#a1cbd707099c565c00779359f5c9836b4", null ],
+    [ "xAxis", "class_transform_handles_1_1_rotation_handle_old.html#add4bac3c92015aaaafb3986ae8a9db47", null ],
+    [ "yAxis", "class_transform_handles_1_1_rotation_handle_old.html#a9ac2a470f8d8ca41a66fe7ae52fa60d8", null ],
+    [ "zAxis", "class_transform_handles_1_1_rotation_handle_old.html#abd4146398a72c6f08c2d008aa150e885", null ]
+];

@@ -1,0 +1,14 @@
+var class_alteration_u_i =
+[
+    [ "CreateFoldouts", "class_alteration_u_i.html#a8b69d56f1bd64a87ca15d938d6534ae7", null ],
+    [ "InitializeUI", "class_alteration_u_i.html#a3cd5c89d94aca3306c0a81e6a3f75c92", null ],
+    [ "OnAlterationFormListReceived", "class_alteration_u_i.html#a6b88fca9ff4d97eac545d6a48c6c9082", null ],
+    [ "alterationFormFoldoutName", "class_alteration_u_i.html#aa49ce384ff4119596a7242b02aad6ca2", null ],
+    [ "alterationFormsContainerName", "class_alteration_u_i.html#a2c8dd4242df92fc4d9525415da814310", null ],
+    [ "alterationFormScrollViewName", "class_alteration_u_i.html#a7887cab30ebddbee0727c5ee884174e5", null ],
+    [ "alterationFormTemplate", "class_alteration_u_i.html#a752c431feb4d8e8bf1b39e56245c51c8", null ],
+    [ "alterationFormToggleName", "class_alteration_u_i.html#aefe3cc2821c6e7a7cd64deecdd3c95dd", null ],
+    [ "alterationTemplate", "class_alteration_u_i.html#a33db66e6d5aef0ac4aacab43569ea10e", null ],
+    [ "alterationToggleName", "class_alteration_u_i.html#ad9488636b3645f182d3853a3d7611780", null ],
+    [ "homePageUI", "class_alteration_u_i.html#a005b51e2db8c0ffdcda9d9f08481139b", null ]
+];

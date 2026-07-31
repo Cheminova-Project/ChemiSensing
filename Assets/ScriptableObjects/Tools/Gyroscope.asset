@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7205f81df83d59d4393c42ffa83ae238, type: 3}
+  m_Name: Gyroscope
+  m_EditorClassIdentifier: Assembly-CSharp::ToolDefinition
+  Id: gyroscope
+  DisplayName: Gyroscope
+  Icon: {fileID: 21300000, guid: a97c3187071497e47bac425b3a0bc503, type: 3}
+  BehaviourType: 1
+  SupportedPlatforms: 03000000
+  IsSubmenu: 0
+  WindowAsset: {fileID: 9197481963319205126, guid: 6985d32d618d18340b260e8e09dcd932, type: 3}
+  ScriptsContainer: {fileID: 4387277265330116982, guid: 4d469004a9e23404d8027ae7f2aa4ac2, type: 3}
+  SubmenuTools: []
+  disabled: 0

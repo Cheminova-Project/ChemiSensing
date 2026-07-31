@@ -1,0 +1,20 @@
+var searchData=
+[
+  ['radiallayout_0',['RadialLayout',['../class_radial_layout.html',1,'']]],
+  ['rawfiledownload_1',['RawFileDownload',['../class_raw_file_download.html',1,'']]],
+  ['raycasteventcontroller_2',['RaycastEventController',['../class_unity_engine_1_1_x_r_1_1_a_r_foundation_1_1_samples_1_1_raycast_event_controller.html',1,'UnityEngine::XR::ARFoundation::Samples']]],
+  ['registerdb_3',['RegisterDB',['../class_register_d_b.html',1,'']]],
+  ['registerui_4',['RegisterUI',['../class_register_u_i.html',1,'']]],
+  ['respuestaservidor_5',['RespuestaServidor',['../class_respuesta_servidor.html',1,'']]],
+  ['reticlematerialmanager_6',['ReticleMaterialManager',['../class_reticle_material_manager.html',1,'']]],
+  ['room_7',['Room',['../class_room.html',1,'']]],
+  ['roommanageruidoccontroller_8',['RoomManagerUIDocController',['../class_room_manager_u_i_doc_controller.html',1,'']]],
+  ['roomsmanager_9',['RoomsManager',['../class_rooms_manager.html',1,'']]],
+  ['roomsuicontroller_10',['RoomsUIController',['../class_rooms_u_i_controller.html',1,'']]],
+  ['roomuicontroller_11',['RoomUIController',['../class_room_u_i_controller.html',1,'']]],
+  ['rotationaxis_12',['RotationAxis',['../class_transform_handles_1_1_rotation_axis.html',1,'TransformHandles']]],
+  ['rotationhandlenew_13',['RotationHandleNew',['../class_transform_handles_1_1_rotation_handle_new.html',1,'TransformHandles']]],
+  ['rotationhandleold_14',['RotationHandleOld',['../class_transform_handles_1_1_rotation_handle_old.html',1,'TransformHandles']]],
+  ['ruler_15',['Ruler',['../class_ruler.html',1,'']]],
+  ['rulerui_16',['RulerUI',['../class_ruler_u_i.html',1,'']]]
+];

@@ -1,0 +1,14 @@
+var class_user_post =
+[
+    [ "active", "class_user_post.html#a3c3a6096bc8c1416a9bf9d6bed4f2222", null ],
+    [ "activity_start", "class_user_post.html#a8a631827b860f2126a7de228d3f3d628", null ],
+    [ "affiliation", "class_user_post.html#af29a33ec7f4bd7633e44390184d862ec", null ],
+    [ "email", "class_user_post.html#a649231db96100bdb77d6cc0124a9f968", null ],
+    [ "id_country", "class_user_post.html#a8e27cdc61b470eac47608a33f9e6f731", null ],
+    [ "name", "class_user_post.html#af635d8658e67fb1893c8d06fc7bdeb83", null ],
+    [ "password", "class_user_post.html#a6d60ea4af7a4a00f42cb6dbb7a07e834", null ],
+    [ "profession", "class_user_post.html#af2e143cf278272d415e847794c8800d5", null ],
+    [ "role", "class_user_post.html#a99261d61797ce55b84c7db47e91f4562", null ],
+    [ "surname", "class_user_post.html#a160157735fbc24fabfb1a526083c6352", null ],
+    [ "username", "class_user_post.html#a629abdb014ae9b67eaadf9875b879e30", null ]
+];

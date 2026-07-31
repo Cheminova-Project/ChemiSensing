@@ -1,0 +1,22 @@
+var class_platform_tools_manager =
+[
+    [ "AddPlatformGroup", "class_platform_tools_manager.html#a9ad0e36a23aca850102b34490d18b9e2", null ],
+    [ "ApplyPlatformConfiguration", "class_platform_tools_manager.html#a234a5ea8295e3cd4565972a3bceffd23", null ],
+    [ "Awake", "class_platform_tools_manager.html#a21098ca6fda09bfd197aa11b75e84c80", null ],
+    [ "ChangePlatform", "class_platform_tools_manager.html#afca6535f99a58dc624e895d9606584ae", null ],
+    [ "CleanNullComponents", "class_platform_tools_manager.html#ae21fd748ce39230da19f215410ee6d35", null ],
+    [ "DetectCurrentPlatform", "class_platform_tools_manager.html#a315f511b30b3288b7051eb764278136d", null ],
+    [ "GetPlatformGroup", "class_platform_tools_manager.html#a443b133c19c6bd239818723b0e2ee5d2", null ],
+    [ "InitializePlatformManager", "class_platform_tools_manager.html#a03ace079b31e66ed5c890afd11175014", null ],
+    [ "OnValidate", "class_platform_tools_manager.html#ad894c60c1b113ff34b4502da29c6cc13", null ],
+    [ "RefreshConfiguration", "class_platform_tools_manager.html#acf6fdc40490178c26895654adf31fcb1", null ],
+    [ "autoDetectPlatform", "class_platform_tools_manager.html#a2a14dbf99302f4d0416292e6ca73343c", null ],
+    [ "currentPlatform", "class_platform_tools_manager.html#a6aa71f5a2c30bbff29d292707653e00c", null ],
+    [ "enableDebugLogs", "class_platform_tools_manager.html#ad2fad20428046af898f2cf10b45aea2d", null ],
+    [ "forcedPlatform", "class_platform_tools_manager.html#aad4f80a14644001f7b930788ef5398ea", null ],
+    [ "isInitialized", "class_platform_tools_manager.html#a97bd257565126542dfc964a84097ec0a", null ],
+    [ "platformGroups", "class_platform_tools_manager.html#a04c9bb0ee60f10d5fa4e9668819b34e9", null ],
+    [ "updateOnPlatformChange", "class_platform_tools_manager.html#a6af9d4dfe25fa3b883364b166c423d2f", null ],
+    [ "CurrentPlatform", "class_platform_tools_manager.html#aa8f483fc7df5b806ea3e712fdb407e64", null ],
+    [ "PlatformGroups", "class_platform_tools_manager.html#aa217b0f6ee2c9dd2d8e301aaeb1dbaac", null ]
+];

@@ -1,0 +1,315 @@
+using System.Collections;
+using System.Collections.Generic;
+using Unity.Netcode;
+using Unity.Netcode.Components;
+using UnityEngine;
+using UnityEngine.Events;
+
+public struct ClientInfo
+{
+    public ulong ClientId;
+    public ulong NetworkObjectId;
+    public string Username;
+
+    public ClientInfo(ulong clientId, ulong networkObjectId, string username = "Unknown")
+    {
+        ClientId = clientId;
+        NetworkObjectId = networkObjectId;
+        Username = username;
+    }
+}
+
+
+public class LocalRegistry : MonoBehaviourSingleton<LocalRegistry>
+{
+    /// <summary>
+    /// Struct que contiene la información de un cliente conectado
+    /// </summary>
+
+    // Diccionario centralizado: clientId → ClientInfo (contiene todo)
+    public readonly Dictionary<ulong, ClientInfo> _clientInfo = new();
+
+    public UnityAction<ulong> OnPlayerObjectRegistered;
+    public UnityAction<Dictionary<ulong, ClientInfo>> OnInitialPlayerListReceived;
+    public UnityAction<ulong, string> OnClientUsernameReceived;
+    public UnityAction<ulong> OnClientUnregistered;
+
+    private void Awake()
+    {
+        GetInitialPlayerList();
+    }
+
+    private void GetInitialPlayerList()
+    {
+        if (NetworkManager.Singleton == null || NetworkManager.Singleton.IsServer) return;
+
+        StartCoroutine(WaitForObjectsSpawn(OnPlayersSpawned));
+    }
+
+    private void OnPlayersSpawned(bool success)
+    {
+        if (success)
+        {
+            foreach (var playerObject in NetworkManager.Singleton.SpawnManager.SpawnedObjects)
+            {
+                var netObj = playerObject.Value;
+                if (netObj.IsPlayerObject)
+                {
+                    ulong clientId = netObj.OwnerClientId;
+                    ulong objectId = netObj.NetworkObjectId;
+
+                    var clientInfo = new ClientInfo(clientId, objectId, "Unknown");
+                    _clientInfo[clientId] = clientInfo;
+                }
+            }
+
+            // Convertir a formato antiguo para compatibilidad si es necesario
+            var legacyDict = new Dictionary<ulong, ulong>();
+            foreach (var kvp in _clientInfo)
+            {
+                legacyDict[kvp.Key] = kvp.Value.NetworkObjectId;
+            }
+
+            OnInitialPlayerListReceived?.Invoke(_clientInfo);
+        }
+        else
+        {
+            Debug.LogError("[LocalRegistry] No se pudo completar la espera de los objetos. Timeout alcanzado.");
+        }
+    }
+
+    private IEnumerator WaitForObjectsSpawn(UnityAction<bool> onComplete)
+    {
+        float timeout = 5f;
+        float startTime = Time.time;
+        yield return new WaitUntil(() =>
+        {
+            bool completed = true;
+            int completedCount = 0;
+            foreach (var clientID in NetworkManager.Singleton.ConnectedClientsIds)
+            {
+                if (FindPlayerNetworkObject(clientID) == null)
+                {
+                    completed = false;
+                    break;
+                }
+                else
+                {
+                    completedCount++;
+                }
+            }
+            return completed || Time.time - startTime > timeout;
+        });
+
+        if (Time.time - startTime > timeout)
+        {
+            onComplete?.Invoke(false);
+        }
+        else
+        {
+            onComplete?.Invoke(true);
+        }
+    }
+
+    private void OnEnable()
+    {
+        if (NetworkManager.Singleton == null) return;
+
+        NetworkManager.Singleton.OnConnectionEvent += OnConnectionEvent;
+    }
+
+    private void OnDisable()
+    {
+        if (NetworkManager.Singleton == null) return;
+
+        NetworkManager.Singleton.OnConnectionEvent -= OnConnectionEvent;
+    }
+
+    private void OnConnectionEvent(NetworkManager networkManager, ConnectionEventData connectionEventData)
+    {
+        if (connectionEventData.EventType == Unity.Netcode.ConnectionEvent.ClientConnected || connectionEventData.EventType == Unity.Netcode.ConnectionEvent.PeerConnected)
+        {
+            OnClientConnected(connectionEventData.ClientId);
+        }
+        else if (connectionEventData.EventType == Unity.Netcode.ConnectionEvent.ClientDisconnected || connectionEventData.EventType == Unity.Netcode.ConnectionEvent.PeerDisconnected)
+        {
+            OnClientDisconnected(connectionEventData.ClientId);
+        }
+    }
+
+    private void OnClientConnected(ulong clientId)
+    {
+        StartCoroutine(WaitAndRegisterPlayerObject(clientId));
+    }
+
+    private IEnumerator WaitAndRegisterPlayerObject(ulong clientId)
+    {
+        float timeout = 5f;
+        float startTime = Time.time;
+
+        yield return new WaitUntil(() => FindPlayerNetworkObject(clientId) != null || Time.time - startTime > timeout);
+
+        if (Time.time - startTime > timeout)
+        {
+            Debug.LogError($"[LocalRegistry] No se pudo encontrar el objeto jugador del cliente {clientId} después de {timeout} segundos.");
+            yield break;
+        }
+
+        var playerObject = FindPlayerNetworkObject(clientId);
+        if (playerObject != null)
+        {
+            RegisterClient(clientId, playerObject.NetworkObjectId);
+        }
+        else
+        {
+            Debug.LogWarning($"[LocalRegistry] No se pudo encontrar el objeto jugador del cliente {clientId}.");
+        }
+    }
+
+    private NetworkObject FindPlayerNetworkObject(ulong clientId)
+    {
+        foreach (var kvp in NetworkManager.Singleton.SpawnManager.SpawnedObjects)
+        {
+            var netObj = kvp.Value;
+            if (netObj.IsPlayerObject && netObj.OwnerClientId == clientId)
+            {
+                return netObj;
+            }
+        }
+        return null;
+    }
+
+    private void OnClientDisconnected(ulong clientId)
+    {
+        // Notificación de salida del usuario
+        if (_clientInfo.TryGetValue(clientId, out var info))
+        {
+            string leftName = string.IsNullOrEmpty(info.Username) || info.Username == "Unknown" ? $"User {clientId}" : info.Username;
+
+            if (NetworkManager.Singleton != null && 
+                clientId != NetworkManager.Singleton.LocalClientId && 
+                clientId != NetworkManager.ServerClientId)
+            {
+                if (ToolMessageHandler.Instance != null)
+                {
+                    ToolMessageHandler.Instance.ShowMessage($"{leftName} has left the room.", 3f, MessageType.Info);
+                }
+            }
+        }
+        
+        _clientInfo.Remove(clientId);
+        OnClientUnregistered?.Invoke(clientId);
+    }
+
+    private void RegisterClient(ulong clientId, ulong networkObjectId)
+    {
+        if (!_clientInfo.ContainsKey(clientId))
+        {
+            var clientInfo = new ClientInfo(clientId, networkObjectId, "Unknown");
+            _clientInfo[clientId] = clientInfo;
+
+            OnPlayerObjectRegistered?.Invoke(clientId);
+
+            NetworkRegistryBridge.Instance.RequestUsername(clientId);
+        }
+    }
+
+    /// <summary>
+    /// NetworkRegistryBridge llama esto cuando recibe un username
+    /// </summary>
+    public void UpdateClientUsername(ulong clientId, string username)
+    {
+        if (_clientInfo.TryGetValue(clientId, out var clientInfo))
+        {
+            string oldName = clientInfo.Username;
+            clientInfo.Username = username;
+            _clientInfo[clientId] = clientInfo;
+
+            OnClientUsernameReceived?.Invoke(clientId, username);
+            
+            // Notificación de entrada del usuario
+            if ((string.IsNullOrEmpty(oldName) || oldName == "Unknown") && !string.IsNullOrEmpty(username))
+            {
+                if (NetworkManager.Singleton != null && 
+                    clientId != NetworkManager.Singleton.LocalClientId && 
+                    clientId != NetworkManager.ServerClientId)
+                {
+                    if (ToolMessageHandler.Instance != null)
+                        ToolMessageHandler.Instance.ShowMessage($"{username} has joined the room.", 3f, MessageType.Info);
+                }
+            }
+        }
+        else
+        {
+            Debug.LogWarning($"[LocalRegistry] No se encontró ClientInfo para {clientId}");
+        }
+    }
+
+    // ========== MÉTODOS DE ACCESO ==========
+
+    public ClientInfo GetClientInfo(ulong clientId)
+    {
+        if (_clientInfo.TryGetValue(clientId, out var info))
+        {
+            return info;
+        }
+        Debug.LogWarning($"[LocalRegistry] No se encontró info del cliente {clientId}");
+        return default;
+    }
+
+    public string GetClientUsername(ulong clientId)
+    {
+        if (_clientInfo.TryGetValue(clientId, out var info))
+        {
+            return info.Username;
+        }
+        return "Unknown";
+    }
+
+    public Dictionary<ulong, ClientInfo> GetAllClientsInfo()
+    {
+        return new Dictionary<ulong, ClientInfo>(_clientInfo);
+    }
+
+    public Dictionary<ulong, string> GetAllClientUsernames()
+    {
+        var usernames = new Dictionary<ulong, string>();
+        foreach (var kvp in _clientInfo)
+        {
+            usernames[kvp.Key] = kvp.Value.Username;
+        }
+        return usernames;
+    }
+
+    public bool HasClientUsername(ulong clientId)
+    {
+        if (_clientInfo.TryGetValue(clientId, out var info))
+        {
+            return info.Username != "Unknown";
+        }
+        return false;
+    }
+
+    public NetworkObject GetNetworkObjectOfClient(ulong clientId)
+    {
+        if (_clientInfo.TryGetValue(clientId, out var info))
+        {
+            if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(info.NetworkObjectId, out var netObj))
+            {
+                return netObj;
+            }
+        }
+        return null;
+    }
+
+    public GameObject GetPlayerGameObject(ulong clientId)
+    {
+        var netObj = GetNetworkObjectOfClient(clientId);
+        return netObj ? netObj.gameObject : null;
+    }
+
+    public List<ulong> GetAllClientIds()
+    {
+        return new List<ulong>(_clientInfo.Keys);
+    }
+}

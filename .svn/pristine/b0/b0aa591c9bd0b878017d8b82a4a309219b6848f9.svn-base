@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5d7f9c9eb223fc4bb9318bded138343, type: 3}
+  m_Name: Search
+  m_EditorClassIdentifier: 
+  contextName: search_page
+  visualTreeAsset: {fileID: 9197481963319205126, guid: 56c615d58c822e845a95da649b0431cd, type: 3}
+  scriptsContainer: {fileID: 1268088321102575684, guid: 01df3ebc9542ec74db5b543b69b71acd, type: 3}

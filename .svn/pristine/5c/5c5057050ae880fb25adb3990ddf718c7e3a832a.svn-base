@@ -1,0 +1,11 @@
+var class_condition_report_response =
+[
+    [ "error", "class_condition_report_response.html#a0add9026c16a5cef02dec46f55bd9035", null ],
+    [ "items", "class_condition_report_response.html#a888958c5cf7f5a23630ab9fb27e3cda6", null ],
+    [ "next_page", "class_condition_report_response.html#a751b99716ba374d2adb8f472e9bf5000", null ],
+    [ "page", "class_condition_report_response.html#ac24fcc3bbbe9256f253420675aae2a06", null ],
+    [ "pages", "class_condition_report_response.html#a4ad79695d7fbdf49a54052ee7f40f102", null ],
+    [ "per_page", "class_condition_report_response.html#a95ee77dd3ec215903f20356204ca1da2", null ],
+    [ "prev_page", "class_condition_report_response.html#a7ce9f9111a3b90a8815e72dacfa9f71b", null ],
+    [ "total", "class_condition_report_response.html#aa5eb604df7a79d44792db2f1a7e3bd1d", null ]
+];

@@ -1,0 +1,5 @@
+var _custom_spawner_8cs =
+[
+    [ "CustomPlayerSpawner", "class_custom_player_spawner.html", "class_custom_player_spawner" ],
+    [ "CharacterPrefab", "struct_character_prefab.html", "struct_character_prefab" ]
+];

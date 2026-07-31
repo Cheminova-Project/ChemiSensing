@@ -1,0 +1,13 @@
+var class_offline_custom_spawner =
+[
+    [ "Awake", "class_offline_custom_spawner.html#a308d9ba4ecee597e115efebbc763ab31", null ],
+    [ "GetRandomSpawnPoint", "class_offline_custom_spawner.html#a9579a05ebe02fda552f194b6356a5732", null ],
+    [ "OnDestroy", "class_offline_custom_spawner.html#aa55570f46fc8ae6042b2b3c3282a92aa", null ],
+    [ "OnMyselfConnected", "class_offline_custom_spawner.html#a7de13fde17572493a8056bbcfaee03f1", null ],
+    [ "SpawnPlayer", "class_offline_custom_spawner.html#a4a3143e67ee329fef6348ad748ae18d1", null ],
+    [ "Start", "class_offline_custom_spawner.html#a361e7cef82c89b9194aad6e1ae15d360", null ],
+    [ "characterPrefabs", "class_offline_custom_spawner.html#ad1429cf4121c71ea7487f017e81f7bb8", null ],
+    [ "on2DPlayerSpawned", "class_offline_custom_spawner.html#a1935da4b1be605ba8af4badcdfd137b2", null ],
+    [ "onVRPlayerSpawned", "class_offline_custom_spawner.html#a002fdaf79c53312f699d1343da13ba3f", null ],
+    [ "spawnPoints", "class_offline_custom_spawner.html#a3207e47f50f7bd51df94b32593f84df5", null ]
+];

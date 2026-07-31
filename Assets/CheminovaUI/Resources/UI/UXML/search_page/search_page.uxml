@@ -1,0 +1,60 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/CheminovaUI/Resources/UI/USS/home_page/home_page.uss?fileID=7433441132597879392&amp;guid=02011ef9a6f2c8e47afa305318ed5cd9&amp;type=3#home_page" />
+    <Style src="project://database/Assets/CheminovaUI/Resources/UI/USS/utils.uss?fileID=7433441132597879392&amp;guid=9bc8afcbc8187b149860a5a14fc82d8c&amp;type=3#utils" />
+    <ui:VisualElement name="sidebar" class="sidebar" style="transform-origin: center; margin-right: 0; padding-left: 20px; align-items: flex-start; align-self: flex-start; align-content: flex-start; flex-grow: 0; flex-direction: column;">
+        <ui:VisualElement name="logout-visual-element" style="flex-direction: row; align-items: center; margin-top: 20px; flex-grow: 0; width: 100%;">
+            <ui:Button name="logout" icon-image="project://database/Assets/CheminovaUI/Resources/UI/Icons/options/logout.png?fileID=2800000&amp;guid=6f230a4a89259fc4893d799f1365cc13&amp;type=3#logout" class="logout transparent-button" style="margin-top: 0; background-image: none; margin-left: 0; margin-bottom: 0; margin-right: 0; padding-left: 5px; padding-right: 5px; padding-bottom: 5px; padding-top: 5px; height: 100%; width: 20%;" />
+            <AutoSizeLabel name="username" text="Ignacio" group="username" style="width: 80%; height: 100%; -unity-text-align: middle-left; white-space: normal; font-size: 10px; margin-left: 0; margin-top: 0; margin-bottom: 0; margin-right: 0;" />
+        </ui:VisualElement>
+        <ui:VisualElement name="separation-bar" class="horizontal-divider" style="height: 2px; width: 80%; margin-top: 10px; background-color: rgb(180, 180, 180); -unity-text-align: upper-left; align-self: center;" />
+        <ui:Foldout text="Types" name="types-foldout" enabled="true" class="ToggleFoldout" style="flex-direction: column; width: 100%; display: flex;">
+            <ui:ScrollView name="types-container" style="flex-grow: 1;">
+                <ToggleWithInternalValue text="CH Element" internal-value="ch_element" />
+                <ToggleWithInternalValue text="E3D Model" internal-value="e3d_model" />
+                <ToggleWithInternalValue text="E3D Instance" internal-value="e3d_instance" />
+                <ToggleWithInternalValue text="Annotation" internal-value="annotation" />
+            </ui:ScrollView>
+        </ui:Foldout>
+        <ui:VisualElement name="separation-bar" class="horizontal-divider" style="height: 2px; width: 80%; margin-top: 10px; background-color: rgb(180, 180, 180); -unity-text-align: upper-left; align-self: center;" />
+        <ui:Foldout text="Materials" name="materials-foldout" class="ToggleFoldout" style="flex-direction: column; width: 100%;">
+            <ui:ScrollView name="materials-container" style="flex-grow: 1;" />
+        </ui:Foldout>
+        <ui:VisualElement name="separation-bar" class="horizontal-divider" style="height: 2px; width: 80%; margin-top: 10px; background-color: rgb(180, 180, 180); -unity-text-align: upper-left; align-self: center;" />
+        <ui:Foldout text="Damage Type" name="damage-type-foldout" class="multi-toggle-foldout" style="width: 100%;">
+            <ui:ScrollView name="alteration-forms-list" style="flex-grow: 1;" />
+        </ui:Foldout>
+        <ui:VisualElement name="chemi-logo" style="flex-direction: row-reverse; align-items: auto; justify-content: center; align-self: auto; -unity-background-image-tint-color: rgb(255, 255, 255); background-image: resource(&apos;UI/Icons/logo/05_ANAGRAMA_Cheminova_NegroColor&apos;); height: 2%; width: 80%; left: auto; bottom: auto; flex-grow: 1; align-content: auto; top: auto; -unity-background-scale-mode: scale-to-fit; max-height: 100px; min-height: 100px;" />
+    </ui:VisualElement>
+    <ui:VisualElement name="main-content" class="main-content" style="border-left-color: rgba(0, 0, 0, 0); border-right-color: rgba(0, 0, 0, 0); border-top-color: rgba(0, 0, 0, 0); border-bottom-color: rgba(0, 0, 0, 0); margin-right: 6px; font-size: 20px; margin-top: 15px; margin-bottom: 15px;">
+        <ui:VisualElement name="top-bar" style="flex-grow: 1; height: 10%; max-height: 10%; flex-direction: row; flex-wrap: wrap; align-self: center; justify-content: space-between; width: 100%;">
+            <ui:VisualElement name="visual-element-search-bar" style="height: 100px; width: 55%; margin-top: 0; flex-direction: row; padding-right: 20px; flex-grow: 0; padding-left: 20px; padding-top: 5px; padding-bottom: 5px;">
+                <ui:Button icon-image="project://database/Assets/CheminovaUI/Resources/UI/Icons/options/search.png?fileID=2800000&amp;guid=ebcc31e0c3eb2ca4cada6f2f334a4b78&amp;type=3#search" name="search-button" style="background-image: none; -unity-background-scale-mode: scale-to-fit; margin-left: 0; margin-right: 0; width: 20%; margin-top: 0; margin-bottom: 0;" />
+                <ui:TextField name="search-bar" style="height: 100%; width: 80%; padding-left: 10px; padding-right: 10px;" />
+            </ui:VisualElement>
+            <ui:VisualElement name="options-buttons" style="display: flex; flex-direction: row; align-items: stretch; gap: 20px; top: auto; right: auto; height: 100px; width: 40%; flex-grow: 1; align-self: center; padding-top: 10px; padding-bottom: 10px; -unity-text-align: middle-left; justify-content: center; align-content: center; flex-wrap: wrap; bottom: auto;">
+                <ui:Button name="map-search-button" icon-image="project://database/Assets/CheminovaUI/Resources/UI/Icons/options/map.png?fileID=2800000&amp;guid=0753e759417d74541b34f6a26cda9755&amp;type=3#map" enable-rich-text="true" style="height: 100%; width: 30%; background-color: rgb(255, 255, 255); align-self: auto; padding-top: 10px; padding-bottom: 10px; margin-bottom: 2px; margin-top: 2px; min-height: auto; align-content: flex-start; align-items: center;">
+                    <AutoSizeLabel text="Map Search" group="header-buttons" style="max-width: none; width: 75%; padding-left: 5%; font-size: 20px; height: 100%; -unity-text-align: middle-left;" />
+                </ui:Button>
+                <ui:Button name="sites-button" icon-image="project://database/Assets/CheminovaUI/Resources/UI/Icons/options/flag.png?fileID=2800000&amp;guid=735200293d6084d45b562b7228fbf512&amp;type=3#flag" enable-rich-text="true" style="height: 100%; width: 30%; background-color: rgb(255, 255, 255);">
+                    <AutoSizeLabel text="Sites" group="header-buttons" style="max-width: none; width: 75%; padding-left: 5%; font-size: 20px; height: 100%; -unity-text-align: middle-left;" />
+                </ui:Button>
+                <ui:Button name="watchlist-button" icon-image="project://database/Assets/CheminovaUI/Resources/UI/Icons/options/eye.png?fileID=2800000&amp;guid=73e89b3d8e37e1f4ea93ff32e1b56007&amp;type=3#eye" enable-rich-text="true" style="height: 100%; width: 30%; background-color: rgb(255, 255, 255);">
+                    <AutoSizeLabel text="Watchlist" group="header-buttons" style="max-width: none; width: 75%; padding-left: 5%; font-size: 20px; height: 100%; -unity-text-align: middle-left;" />
+                </ui:Button>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="main-container" style="flex-grow: 1; height: 85%;">
+            <ui:VisualElement name="visual-element-filters" class="filters-label-container" style="height: 10%; width: 100%; min-height: 50px;">
+                <ui:Label name="filters-count" text="0 results" class="artifacts-count" style="margin-left: 29px; margin-right: 44px;" />
+                <ui:Label text="Filters:" name="label-filters" class="filters-label" />
+                <ui:VisualElement name="filters-list" class="filters-list" style="width: 100%; min-height: 50px;" />
+            </ui:VisualElement>
+            <ui:ListView name="artifacts-container" class="list-view-inlined-styles" />
+            <ui:VisualElement name="pagination-bar" class="pagination-bar" style="background-color: rgba(249, 249, 249, 0); height: 5%; flex-grow: 1; flex-shrink: 0; padding-top: 0; padding-bottom: 0; flex-wrap: nowrap; justify-content: center; align-content: center; align-self: center; align-items: stretch;">
+                <ui:Button text="&#10;" name="prev-page-button" icon-image="project://database/Assets/CheminovaUI/Resources/UI/Icons/general/arrow_left_black.png?fileID=2800000&amp;guid=7c791fe8d8ae74443bd922c9dd2cf71a&amp;type=3#arrow_left_black" style="min-width: 20px; height: 100%; width: 50px;" />
+                <ui:Label text="Label" name="current-page-label" style="height: 100%; padding-top: 0; padding-bottom: 0; margin-top: 0; margin-bottom: 0; padding-left: 0; padding-right: 0; margin-right: 0; margin-left: 0; justify-content: center; align-content: center; background-position-y: center 0; bottom: auto; -unity-text-align: middle-left;" />
+                <ui:Button text="&#10;" name="next-page-button" icon-image="project://database/Assets/CheminovaUI/Resources/UI/Icons/general/arrow_right_black.png?fileID=2800000&amp;guid=5ff81df754e4b894792dd2c983587c8c&amp;type=3#arrow_right_black" style="min-width: 20px; height: 100%; width: 50px;" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

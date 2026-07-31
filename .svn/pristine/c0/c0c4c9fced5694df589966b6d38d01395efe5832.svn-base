@@ -1,0 +1,11 @@
+var class_empty_download =
+[
+    [ "Dispose", "class_empty_download.html#aec239f5530e015ffe8c6088c9fe834aa", null ],
+    [ "Run", "class_empty_download.html#a301a5f4b44348610c03ea03a0b624ffd", null ],
+    [ "Data", "class_empty_download.html#a85a767d551f714163b9875c3b92a1891", null ],
+    [ "Error", "class_empty_download.html#a3ddf6df4fa71deea893b7564d208668e", null ],
+    [ "IsBinary", "class_empty_download.html#a62bc7aab369f9a2e07d3241fba567f47", null ],
+    [ "Success", "class_empty_download.html#a14740799375792df7e0aef3a4aafbde7", null ],
+    [ "Text", "class_empty_download.html#a77da4dc3c168119b7885fe8cf3cf6c65", null ],
+    [ "Url", "class_empty_download.html#a7481b1dc7de557d5a366f240f721d084", null ]
+];

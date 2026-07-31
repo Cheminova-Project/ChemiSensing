@@ -1,0 +1,12 @@
+var class_country_response =
+[
+    [ "CountryResponse", "class_country_response.html#a3e818f1ea397c968e8f0559c5c0d4d0c", null ],
+    [ "error", "class_country_response.html#a4b954ad5d5728d7de4f6d785452eb1b7", null ],
+    [ "items", "class_country_response.html#ac2ad9c97a6ac13e98e88a008394723b1", null ],
+    [ "next_page", "class_country_response.html#a5840d9210a6c15ac6fa3bfb045f42ea9", null ],
+    [ "page", "class_country_response.html#a9c3f95c102063535eb7901e570ff28db", null ],
+    [ "pages", "class_country_response.html#a4ab2f4d5c8473e9f16f4111fcea131e1", null ],
+    [ "per_page", "class_country_response.html#a68e7e111412e7d5e99d519944704b4ac", null ],
+    [ "prev_page", "class_country_response.html#a782e6bef93d8d8b482ca699212177658", null ],
+    [ "total", "class_country_response.html#aedd26da7ac612d53b317b24186780c0e", null ]
+];

@@ -1,0 +1,15 @@
+var class_user_data =
+[
+    [ "active", "class_user_data.html#ad0f099eb594e9805ecd658f389f7226b", null ],
+    [ "activity_start", "class_user_data.html#a087ec0fa706cf19af2acb5baaadb6e4c", null ],
+    [ "affiliation", "class_user_data.html#ab3a5858b15147fa6abf7002bd39a3582", null ],
+    [ "email", "class_user_data.html#a512ead7120e301760abe40d9a92516ec", null ],
+    [ "error", "class_user_data.html#a0845a6d74442f3c3d2171e512df507a5", null ],
+    [ "id", "class_user_data.html#a21e009dce117670daa2fe8da42a6eb31", null ],
+    [ "id_country", "class_user_data.html#adb2689b51aac017da798b6b106b4a9ed", null ],
+    [ "name", "class_user_data.html#a4d09efd5e8b06945a466cc721fe9ce04", null ],
+    [ "profession", "class_user_data.html#abe2da2154160fb3f9894f0feec9d0540", null ],
+    [ "role", "class_user_data.html#a0c2ec7e58c4176e75c12ede0798ae1c3", null ],
+    [ "surname", "class_user_data.html#a03af7ea64b2914f49dbe5117a6517688", null ],
+    [ "username", "class_user_data.html#a5ca02b8e0cf83f941d50a2d1ea676b9f", null ]
+];

@@ -1,0 +1,86 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19513a90959ec6b4da5c712f057c39ac, type: 3}
+  m_Name: XRInputActionReferences
+  m_EditorClassIdentifier: Assembly-CSharp::XRInputActionReferences
+  m_LeftTriggerPressed:
+    m_UseReference: 1
+    m_Action:
+      m_Name: Left Trigger Pressed
+      m_Type: 0
+      m_ExpectedControlType: 
+      m_Id: f45b6dbb-5451-4c04-8fe1-080d80e00886
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings: []
+      m_Flags: 0
+    m_Reference: {fileID: -9119248258719881326, guid: 59d225c3369dd544eb1d81ea08449178, type: 3}
+  m_LeftHandPosition:
+    m_UseReference: 1
+    m_Action:
+      m_Name: Left Hand Position
+      m_Type: 0
+      m_ExpectedControlType: 
+      m_Id: b50f05fb-c79c-46aa-934e-de0cbb7a8119
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings: []
+      m_Flags: 0
+    m_Reference: {fileID: 0}
+  m_LeftHandRotation:
+    m_UseReference: 1
+    m_Action:
+      m_Name: Left Hand Rotation
+      m_Type: 0
+      m_ExpectedControlType: 
+      m_Id: 28cc6002-b9be-49ee-8268-32968c40d727
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings: []
+      m_Flags: 0
+    m_Reference: {fileID: 0}
+  m_RightTriggerPressed:
+    m_UseReference: 1
+    m_Action:
+      m_Name: Right Trigger Pressed
+      m_Type: 0
+      m_ExpectedControlType: 
+      m_Id: 5b051223-60fd-4ac9-998f-df328f41250f
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings: []
+      m_Flags: 0
+    m_Reference: {fileID: -8769278094456378073, guid: 59d225c3369dd544eb1d81ea08449178, type: 3}
+  m_RightHandPosition:
+    m_UseReference: 1
+    m_Action:
+      m_Name: Right Hand Position
+      m_Type: 0
+      m_ExpectedControlType: 
+      m_Id: 01b2d228-d3a8-4d05-9d7a-0310ec245504
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings: []
+      m_Flags: 0
+    m_Reference: {fileID: 0}
+  m_RightHandRotation:
+    m_UseReference: 1
+    m_Action:
+      m_Name: Right Hand Rotation
+      m_Type: 0
+      m_ExpectedControlType: 
+      m_Id: a24181f7-b584-4d23-876b-66f7f0d1abe6
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings: []
+      m_Flags: 0
+    m_Reference: {fileID: 0}

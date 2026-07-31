@@ -1,0 +1,11 @@
+var class_annotation_post =
+[
+    [ "annotation_infos", "class_annotation_post.html#ae4185e38a88e1c7331ae0a905bb8586c", null ],
+    [ "description", "class_annotation_post.html#aeb02072537628aacab9032297c4894a1", null ],
+    [ "icon", "class_annotation_post.html#a3548ecd9d32579a80e59660c887e642e", null ],
+    [ "id_group", "class_annotation_post.html#acda4863ecbe09c875c03fc421e9a15ce", null ],
+    [ "id_textures", "class_annotation_post.html#ae3a3186c492f8336bda25cd0b76ab44a", null ],
+    [ "name", "class_annotation_post.html#a5fa48c35392fac1960add3fb91956e37", null ],
+    [ "shape_and_context", "class_annotation_post.html#a26a71cb5a2a364371bf6cbe3c106d7bb", null ],
+    [ "type", "class_annotation_post.html#ac6cea5d1a055e6165842c71402fa91f7", null ]
+];

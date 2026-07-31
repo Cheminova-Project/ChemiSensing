@@ -1,0 +1,14 @@
+var class_init_response =
+[
+    [ "created_on", "class_init_response.html#af322409a686e2f6c12f4ea0c8e19c0d3", null ],
+    [ "description", "class_init_response.html#a71f466cee079c39236509da814cd316a", null ],
+    [ "error", "class_init_response.html#a06dd8763b6450bee6ef9adbf08732a45", null ],
+    [ "GUID", "class_init_response.html#a6b0cca1dc5da6f9c88eb8f5620160906", null ],
+    [ "icon", "class_init_response.html#ac4fa0449e84710ee91b721df44734fd8", null ],
+    [ "icon_path", "class_init_response.html#a01a91492f8736fcfd11c0b3ca12d8f27", null ],
+    [ "id", "class_init_response.html#a03618a74f9938e98aab96ccfcc9ffbaf", null ],
+    [ "id_user", "class_init_response.html#aa0fc5959384f37353259547199a86eed", null ],
+    [ "name", "class_init_response.html#a909cf93e71d8816d50e81ef6eb7ffa4e", null ],
+    [ "sites", "class_init_response.html#ac09d90e0b14a394a902cd1131db39995", null ],
+    [ "username", "class_init_response.html#a231a5aa5550cf67120d7bc73bd07d217", null ]
+];

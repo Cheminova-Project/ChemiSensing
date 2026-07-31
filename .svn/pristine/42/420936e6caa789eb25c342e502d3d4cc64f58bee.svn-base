@@ -1,0 +1,8 @@
+var class_singleton_1_g =
+[
+    [ "Awake", "class_singleton-1-g.html#a72d236a3a431af6b9cbce52964361b6b", null ],
+    [ "OnApplicationQuit", "class_singleton-1-g.html#abbef8b345af079ea0438e4c4538e7465", null ],
+    [ "OnDestroy", "class_singleton-1-g.html#a3117f3cb47c946df9f05a4f59068491f", null ],
+    [ "_instance", "class_singleton-1-g.html#a948282bcd2c7847940d101bd5be85094", null ],
+    [ "Instance", "class_singleton-1-g.html#a54103e8475b2a352ee759d5732307534", null ]
+];

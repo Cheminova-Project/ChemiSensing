@@ -1,0 +1,7 @@
+var class_math_utils =
+[
+    [ "Angle", "class_math_utils.html#ad01d2bc6e567f57ae3d6d7339eb450cc", null ],
+    [ "ClosestPointOnRay", "class_math_utils.html#adb8d5db41dd9ece91073a1e63bdf2103", null ],
+    [ "Distance", "class_math_utils.html#a35ff717f5e3c1f461d911a94c1ba4364", null ],
+    [ "PrecisionThreshold", "class_math_utils.html#a4bcf7665ccbe836ac6239037340e403a", null ]
+];

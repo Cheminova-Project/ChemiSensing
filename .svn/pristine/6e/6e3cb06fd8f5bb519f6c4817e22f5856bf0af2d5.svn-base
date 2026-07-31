@@ -1,0 +1,9 @@
+var namespace_unity_engine_1_1_x_r_1_1_a_r_foundation_1_1_samples =
+[
+    [ "ARAnchorDebugVisualizer", "class_unity_engine_1_1_x_r_1_1_a_r_foundation_1_1_samples_1_1_a_r_anchor_debug_visualizer.html", "class_unity_engine_1_1_x_r_1_1_a_r_foundation_1_1_samples_1_1_a_r_anchor_debug_visualizer" ],
+    [ "ARPlaceAnchor", "class_unity_engine_1_1_x_r_1_1_a_r_foundation_1_1_samples_1_1_a_r_place_anchor.html", "class_unity_engine_1_1_x_r_1_1_a_r_foundation_1_1_samples_1_1_a_r_place_anchor" ],
+    [ "ARRaycastHitEventAsset", "class_unity_engine_1_1_x_r_1_1_a_r_foundation_1_1_samples_1_1_a_r_raycast_hit_event_asset.html", null ],
+    [ "EventAsset", "class_unity_engine_1_1_x_r_1_1_a_r_foundation_1_1_samples_1_1_event_asset.html", "class_unity_engine_1_1_x_r_1_1_a_r_foundation_1_1_samples_1_1_event_asset" ],
+    [ "EventAsset&lt; T &gt;", "class_unity_engine_1_1_x_r_1_1_a_r_foundation_1_1_samples_1_1_event_asset-1-g.html", "class_unity_engine_1_1_x_r_1_1_a_r_foundation_1_1_samples_1_1_event_asset-1-g" ],
+    [ "RaycastEventController", "class_unity_engine_1_1_x_r_1_1_a_r_foundation_1_1_samples_1_1_raycast_event_controller.html", "class_unity_engine_1_1_x_r_1_1_a_r_foundation_1_1_samples_1_1_raycast_event_controller" ]
+];

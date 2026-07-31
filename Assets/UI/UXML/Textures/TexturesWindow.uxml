@@ -1,0 +1,21 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/USS/texture-window.uss?fileID=7433441132597879392&amp;guid=88361b8b011b5df43968b0d0699d6199&amp;type=3#texture-window"/>
+    <ui:VisualElement name="Background" style="flex-grow: 1; background-color: rgb(255, 249, 249); width: 100%; height: 100%;">
+        <ui:VisualElement name="Header" style="flex-grow: 0; flex-shrink: 0; height: 10%; background-color: rgba(18, 171, 195, 0.87); min-height: 80px; color: rgb(18, 171, 195);">
+            <ui:Label text="Texture manager" name="header-text" style="height: 100%; color: rgb(0, 0, 0); -unity-text-align: middle-center; font-size: 50px;"/>
+        </ui:VisualElement>
+        
+        <ui:VisualElement name="TopSide" style="flex-direction: row; padding: 15px; background-color: rgb(235, 235, 235); justify-content: center; align-items: center; flex-grow: 0; flex-shrink: 0;">
+            <ui:Label text="Type:" style="font-size: 22px; color: rgb(0, 0, 0); margin-right: 10px; -unity-font-style: bold;"/>
+            <ui:DropdownField name="type-options" choices="All,RGB,IR,RTI,Hyperspectral" index="0" style="width: 60%; color: rgb(0, 0, 0); font-size: 18px;"/>
+        </ui:VisualElement>
+
+        <ui:ScrollView name="texture-list" 
+                       mode="Vertical"
+                       horizontal-scroller-visibility="Hidden" 
+                       vertical-scroller-visibility="Auto" 
+                       touch-scroll-behavior="Clamped"
+                       style="flex-grow: 1; width: 100%;">
+        </ui:ScrollView>
+    </ui:VisualElement>
+</ui:UXML>

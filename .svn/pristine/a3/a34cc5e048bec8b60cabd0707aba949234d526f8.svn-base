@@ -1,0 +1,8 @@
+var class_upload_data_post =
+[
+    [ "file_checksum", "class_upload_data_post.html#a7e3912feac738c8774607977b07f1f79", null ],
+    [ "file_name", "class_upload_data_post.html#a98e50a5b54eb7e9382ef0b22d22c9eac", null ],
+    [ "file_type", "class_upload_data_post.html#ad5d9d62347c64287179c0b21288d783d", null ],
+    [ "id", "class_upload_data_post.html#a3fc3d7738c7558e71175903e232db61c", null ],
+    [ "total_chunks", "class_upload_data_post.html#a6463370c4e74818e90ceea091acc6326", null ]
+];

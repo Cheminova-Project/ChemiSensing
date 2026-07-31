@@ -1,0 +1,192 @@
+using System.Collections.Generic;
+using UnityEngine;
+
+/// <summary>
+/// Singleton que almacena datos en sesión (en memoria) sin usar PlayerPrefs.
+/// No persiste entre sesiones, se limpia al cambiar de escena o cerrar la aplicación.
+/// </summary>
+public class SessionPrefs : MonoBehaviour
+{
+    private static SessionPrefs _instance;
+    private Dictionary<string, string> _sessionData = new Dictionary<string, string>();
+
+    public static SessionPrefs Instance
+    {
+        get
+        {
+            if (_instance == null)
+            {
+                // Buscar si ya existe en la escena
+                _instance = FindFirstObjectByType<SessionPrefs>();
+
+                // Si no existe, crear uno nuevo
+                if (_instance == null)
+                {
+                    GameObject singletonObject = new GameObject(nameof(SessionPrefs));
+                    _instance = singletonObject.AddComponent<SessionPrefs>();
+                }
+            }
+
+            return _instance;
+        }
+    }
+
+    private void Awake()
+    {
+        // Si ya existe una instancia y no es esta, destruir esta
+        if (_instance != null && _instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        _instance = this;
+    }
+
+    /// <summary>
+    /// Guarda un string en la sesión
+    /// </summary>
+    public void SetString(string key, string value)
+    {
+        if (string.IsNullOrEmpty(key))
+        {
+            Debug.LogWarning("[SessionPrefs] Key no puede ser null o vacío");
+            return;
+        }
+
+        if (_sessionData.ContainsKey(key))
+        {
+            _sessionData[key] = value;
+        }
+        else
+        {
+            _sessionData.Add(key, value);
+        }
+    }
+
+    /// <summary>
+    /// Obtiene un string de la sesión
+    /// </summary>
+    public string GetString(string key, string defaultValue = "")
+    {
+        if (_sessionData.TryGetValue(key, out string value))
+        {
+            return value;
+        }
+
+        //Debug.LogWarning($"[SessionPrefs] Key no encontrada: {key}. Retornando valor por defecto: {defaultValue}");
+        return defaultValue;
+    }
+
+    /// <summary>
+    /// Guarda un int en la sesión
+    /// </summary>
+    public void SetInt(string key, int value)
+    {
+        SetString(key, value.ToString());
+    }
+
+    /// <summary>
+    /// Obtiene un int de la sesión
+    /// </summary>
+    public int GetInt(string key, int defaultValue = 0)
+    {
+        string value = GetString(key, defaultValue.ToString());
+        if (int.TryParse(value, out int result))
+        {
+            return result;
+        }
+
+        Debug.LogWarning($"[SessionPrefs] No se pudo convertir {key} a int");
+        return defaultValue;
+    }
+
+    /// <summary>
+    /// Guarda un float en la sesión
+    /// </summary>
+    public void SetFloat(string key, float value)
+    {
+        SetString(key, value.ToString());
+    }
+
+    /// <summary>
+    /// Obtiene un float de la sesión
+    /// </summary>
+    public float GetFloat(string key, float defaultValue = 0f)
+    {
+        string value = GetString(key, defaultValue.ToString());
+        if (float.TryParse(value, out float result))
+        {
+            return result;
+        }
+
+        Debug.LogWarning($"[SessionPrefs] No se pudo convertir {key} a float");
+        return defaultValue;
+    }
+
+    /// <summary>
+    /// Elimina una key de la sesión
+    /// </summary>
+    public bool DeleteKey(string key)
+    {
+        if (_sessionData.Remove(key))
+        {
+            return true;
+        }
+
+        Debug.LogWarning($"[SessionPrefs] No se encontró la key: {key}");
+        return false;
+    }
+
+    /// <summary>
+    /// Elimina todas las keys de la sesión
+    /// </summary>
+    public void DeleteAll()
+    {
+        _sessionData.Clear();
+    }
+
+    /// <summary>
+    /// Comprueba si una key existe
+    /// </summary>
+    public bool HasKey(string key)
+    {
+        return _sessionData.ContainsKey(key);
+    }
+
+    /// <summary>
+    /// Obtiene el número total de keys almacenadas
+    /// </summary>
+    public int KeyCount => _sessionData.Count;
+
+    /// <summary>
+    /// Obtiene todas las keys
+    /// </summary>
+    public IEnumerable<string> GetAllKeys() => _sessionData.Keys;
+
+    /// <summary>
+    /// Retorna el diccionario completo (útil para debugging)
+    /// </summary>
+    public Dictionary<string, string> GetAllData() => new Dictionary<string, string>(_sessionData);
+
+    /// <summary>
+    /// Imprime en consola todos los datos de la sesión
+    /// </summary>
+    public void PrintAllData()
+    {
+        if (_sessionData.Count == 0)
+        {
+            return;
+        }
+
+        foreach (var kvp in _sessionData)
+        {
+            Debug.Log($"  {kvp.Key} = {kvp.Value}");
+        }
+    }
+
+    private void OnDestroy()
+    {
+        // Se limpia automáticamente al destruir
+    }
+}

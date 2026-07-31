@@ -1,0 +1,14 @@
+var class_search_response =
+[
+    [ "annotations_no", "class_search_response.html#a7b05920329b36137961b334157de8936", null ],
+    [ "chelements_no", "class_search_response.html#aa3672a48deaf33330a021c68dd3a2390", null ],
+    [ "e3dinstances_no", "class_search_response.html#a94958c0f1eba7101118db1f65c679e7b", null ],
+    [ "e3dmodels_no", "class_search_response.html#a313869250a52dd21556da88549899224", null ],
+    [ "items", "class_search_response.html#a9c8cc8a99937cea2cc6a98746138890e", null ],
+    [ "next_page", "class_search_response.html#a938c0391e84300eac7e3d452df770a62", null ],
+    [ "page", "class_search_response.html#a4a39ff95a3014cdc69a8b878f174cf64", null ],
+    [ "pages", "class_search_response.html#a813bf51dcc9bf3acfa0858905ae897e7", null ],
+    [ "per_page", "class_search_response.html#a47963f8abc759a398eb58a572e21fe73", null ],
+    [ "prev_page", "class_search_response.html#abc20a50affb3cf9aa23d2486a0200df0", null ],
+    [ "total", "class_search_response.html#ae8fb02916c48618eade20748be0eb244", null ]
+];

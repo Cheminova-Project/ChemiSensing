@@ -1,0 +1,73 @@
+.top-tabs-container {
+    width: 100%;
+    height: 10%;
+    min-height: 60px;
+    max-height: 120px;
+    background-color: #12ABC3;
+    flex-direction: row;
+    align-items: center;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.back-button {
+    width: 80px;
+    height: 100%;
+    background-color: transparent;
+    border-width: 0px;
+    margin-right: 10px;
+    justify-content: center;
+    align-items: center;
+}
+
+.back-button-image {
+    width: 60px;
+    height: 60px;
+    background-repeat: no-repeat;
+    -unity-background-scale-mode: scale-to-fit;
+    background-image: url("/Assets/CheminovaUI/Resources/UI/Icons/general/arrow_back.png");
+}
+
+.tabs-row {
+    flex-direction: row;
+    flex-grow: 1;
+    justify-content: space-between;
+}
+
+.tab-button {
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 0%;
+    background-color: transparent;
+    border-width: 0px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.button-label {
+    font-size: 24px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    white-space: nowrap;
+    overflow: hidden;
+    height: 21px;
+    width: 261px;
+    margin-top: 10px;
+    margin-bottom: 7px;
+}
+
+.tab-underline {
+    width: 90%;
+    height: 6px;
+    margin-top: 0;
+    margin-bottom: 0;
+    background-color: #E6E6E6;
+    border-radius: 2px;
+}
+
+.tab-button.active .tab-underline {
+    background-color: #F2BD66;
+}

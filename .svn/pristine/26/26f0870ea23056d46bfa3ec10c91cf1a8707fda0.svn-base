@@ -1,0 +1,154 @@
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UIElements;
+using Unity.Netcode;
+using System.Linq;
+
+public class AudioSettingsTool : ToolComponent
+{
+    [Header("UI Element Names")]
+    [Tooltip("El nombre del DropdownField en el UXML para el micrófono")]
+    [SerializeField] private string micDropdownName = "mic-dropdown";
+
+    // Referencias a los elementos de UI
+    private DropdownField micDropdown;
+
+    // Referencia al script de audio del jugador local
+    private NetworkAudio localPlayerAudio;
+
+    protected override void OnToolActivatedInternal()
+    {
+        base.OnToolActivatedInternal();
+
+        if (uIDocument == null)
+        {
+            Debug.LogError($"[{GetType().Name}] No UIDocument found in parent.");
+            return;
+        }
+
+        var root = uIDocument.rootVisualElement;
+
+        // 1. Buscar los elementos en la UI
+        micDropdown = root.Q<DropdownField>(micDropdownName);
+
+        if (micDropdown == null)
+        {
+            Debug.LogError($"[{GetType().Name}] Could not find one or both Dropdowns in UXML. Check names.");
+            return;
+        }
+
+        // 2. Buscar al jugador local y sus datos
+        FindLocalPlayerAndInitialize();
+    }
+
+    private void FindLocalPlayerAndInitialize()
+    {
+        // Si no estamos conectados o no hay NetworkManager, salimos
+        if (NetworkManager.Singleton == null || !NetworkManager.Singleton.IsClient)
+        {
+            Debug.LogWarning($"[{GetType().Name}] NetworkManager not ready or not connected.");
+            return;
+        }
+
+        // Obtenemos el objeto del jugador local
+        var localPlayerObj = NetworkManager.Singleton.SpawnManager.GetLocalPlayerObject();
+        
+        if (localPlayerObj != null)
+        {
+            localPlayerAudio = localPlayerObj.GetComponent<NetworkAudio>();
+            if (localPlayerAudio != null)
+            {
+                InitializeMicDropdown();
+            }
+            else
+            {
+                Debug.LogError($"[{GetType().Name}] Local player does not have NetworkAudio component.");
+            }
+        }
+        else
+        {
+            // Nota: Si abres la herramienta antes de que el jugador aparezca (spawn), 
+            // podrías necesitar suscribirte a NetworkManager.Singleton.OnClientConnectedCallback 
+            // o reintentar.
+            Debug.LogWarning($"[{GetType().Name}] Local player object not found yet.");
+        }
+    }
+
+    private void InitializeMicDropdown()
+    {
+        // 0. Limpieza preventiva: Evitar duplicar callbacks si abres/cierras la herramienta muchas veces
+        // (Aunque sea la primera vez no dará error, es seguro llamarlo)
+        micDropdown.UnregisterValueChangedCallback(OnMicChanged);
+
+        // 1. Obtener nombres frescos
+        List<string> deviceNames = localPlayerAudio.GetMicrophoneNames();
+
+        if (deviceNames.Count > 0)
+        {
+            micDropdown.choices = deviceNames;
+
+            // A) Averiguar qué micro está usando YA el NetworkAudio
+            string currentMicName = localPlayerAudio.CurrentDeviceName;
+            
+            // B) Buscar el índice de forma ROBUSTA (ignorando espacios extra)
+            int currentIndex = -1;
+
+            if (!string.IsNullOrEmpty(currentMicName))
+            {
+                // Buscamos coincidencia exacta o aproximada (Trim)
+                currentIndex = deviceNames.FindIndex(name => name.Trim() == currentMicName.Trim());
+            }
+
+            // C) Aplicar la selección
+            if (currentIndex >= 0)
+            {
+                // IMPORTANTE: En UI Toolkit, establecer el index ayuda a la consistencia visual
+                micDropdown.index = currentIndex; 
+                micDropdown.SetValueWithoutNotify(deviceNames[currentIndex]);
+                
+                Debug.Log($"[UI] Micro activo detectado: '{deviceNames[currentIndex]}' (Índice: {currentIndex})");
+            }
+            else
+            {
+                // Fallback al primero
+                micDropdown.index = 0;
+                micDropdown.SetValueWithoutNotify(deviceNames[0]);
+                
+                if(!string.IsNullOrEmpty(currentMicName))
+                    Debug.LogWarning($"[UI] El micro activo '{currentMicName}' no se encontró en la lista. Se seleccionó el primero.");
+            }
+
+            // 2. Registrar el callback (usando un método con nombre para poder desregistrarlo luego)
+            micDropdown.RegisterValueChangedCallback(OnMicChanged);
+        }
+        else
+        {
+            micDropdown.choices = new List<string> { "No Mic Found" };
+            micDropdown.SetEnabled(false);
+        }
+    }
+
+    // Definimos el callback aparte para poder desuscribirlo limpiamente
+    private void OnMicChanged(ChangeEvent<string> evt)
+    {
+        string selectedName = evt.newValue;
+        Debug.Log($"[UI] Usuario seleccionó manualmente: {selectedName}");
+        
+        if (localPlayerAudio != null)
+        {
+            localPlayerAudio.SetMicrophone(selectedName);
+        }
+    }
+
+    protected override void OnToolDeactivatedInternal()
+    {
+        base.OnToolDeactivatedInternal();
+        
+        // Opcional: Limpiar referencias o detener actualizaciones visuales si las hubiera.
+        // No es estrictamente necesario desuscribir los callbacks de UI Toolkit 
+        // si el UIDocument se destruye, pero si se oculta, siguen vivos.
+        
+        // En este caso, como ToolComponent parece ser algo que se activa/desactiva
+        // frecuentemente, dejamos las referencias listas para la próxima activación.
+    }
+}

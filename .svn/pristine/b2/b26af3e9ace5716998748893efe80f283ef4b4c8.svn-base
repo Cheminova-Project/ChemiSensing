@@ -1,0 +1,23 @@
+var class_visual_pointer =
+[
+    [ "CreateQuadMesh", "class_visual_pointer.html#aeb0a865fc5a9696727df4a122371ac3f", null ],
+    [ "HideMarker", "class_visual_pointer.html#ac1c91fa9f9ce0b737ed929df8d99a857", null ],
+    [ "HidePointer", "class_visual_pointer.html#adbae40a262658bf166731395fc23bf1a", null ],
+    [ "OnDestroy", "class_visual_pointer.html#ab76669405399731df852030532ed797a", null ],
+    [ "OnDisable", "class_visual_pointer.html#aeeb2e8ba554b59d2fd5f72a8fecf70aa", null ],
+    [ "SetMarkerPosition", "class_visual_pointer.html#a2de04242f7fb70046a56f69f709ed342", null ],
+    [ "SetupMarker", "class_visual_pointer.html#aa7ce446e9ccafe17157ee0eb00c2a486", null ],
+    [ "ShowMarker", "class_visual_pointer.html#a54dc24021efe3d6aaad22486ea5deb0e", null ],
+    [ "ShowPointer", "class_visual_pointer.html#ae7cfb3673f4c77df3cc8d957bfb16111", null ],
+    [ "Start", "class_visual_pointer.html#aff8080a30765402e9eb43ef41ece2685", null ],
+    [ "Update", "class_visual_pointer.html#ac76486c4931742cc674bd8bfa0c19513", null ],
+    [ "framesSinceLastUpdate", "class_visual_pointer.html#aefe0706ef802c92e7b9105b92a551faf", null ],
+    [ "frameTimeoutThreshold", "class_visual_pointer.html#aba25ae66c063b8eb38ed6c200e7e3899", null ],
+    [ "mainCamera", "class_visual_pointer.html#a7cc58e71a99f5aa833e65b31d5bd3fd1", null ],
+    [ "markerMaterial", "class_visual_pointer.html#a2d5078b7f72e16522886449c56eb97fa", null ],
+    [ "markerMaterialInstance", "class_visual_pointer.html#afd2e22b8e309de2a3e62e8a35d0775ee", null ],
+    [ "markerQuad", "class_visual_pointer.html#a25ea2f716923ae4d54b4d30c2c96192c", null ],
+    [ "markerSize", "class_visual_pointer.html#a307b57ec82f2a07afe82ca8a611ec4f0", null ],
+    [ "pointerGraphic", "class_visual_pointer.html#a1f5d63668dcd88365cc0933af2b97866", null ],
+    [ "Instance", "class_visual_pointer.html#a45413c8aaa77faba940c9bbeee4195ce", null ]
+];

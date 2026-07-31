@@ -1,0 +1,43 @@
+.artifact-title {
+    font-size: 24px;
+    -unity-font-style: bold;
+    margin-left: 10px;
+    margin-bottom: 10px;
+}
+
+.artifact-card {
+    border-width: 1px;
+    border-color: black;
+    border-radius: 10px;
+
+    background-color: #F0F0F0;
+    padding: 16px;
+    margin: 10px;
+
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-direction: column;
+
+    max-height: 500px;
+    max-width: 450px; 
+    overflow: scroll;
+}
+
+.artifact-line {
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.artifact-label-bold {
+    font-size: 16px;
+    -unity-font-style: bold;
+    flex-shrink: 0;
+    margin-right: 5px;
+}
+
+.artifact-label {
+    font-size: 16px;
+    white-space: normal;
+    flex-grow: 1;
+}

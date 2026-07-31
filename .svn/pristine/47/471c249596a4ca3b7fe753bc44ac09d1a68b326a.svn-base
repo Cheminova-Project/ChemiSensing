@@ -1,0 +1,11 @@
+var class_alteration_form_d_b =
+[
+    [ "DeleteAlterationFormFromApi", "class_alteration_form_d_b.html#a6f88949f721f1df3bae856d6e34cf42c", null ],
+    [ "GetAlterationFormByID", "class_alteration_form_d_b.html#a875b89653b4805a2216e00b3e4990b6d", null ],
+    [ "GetAlterationFormList", "class_alteration_form_d_b.html#ae43fee11df06d5fcbba2bad69ceb7c46", null ],
+    [ "PostNewAlterationForm", "class_alteration_form_d_b.html#a625f16a6b78162da2dd0b72f8a90653b", null ],
+    [ "PutAlterationFormFromApi", "class_alteration_form_d_b.html#acc6e78f0f4956e188bd4fea2c96f9476", null ],
+    [ "config", "class_alteration_form_d_b.html#a26c614828ed4b2f21aae3d4dfaca0807", null ],
+    [ "ApiUrl", "class_alteration_form_d_b.html#adb6b25b992a36ed022c601ef378fa1a6", null ],
+    [ "Config", "class_alteration_form_d_b.html#ad0bc0ce6681a3e44094d91552f768a7e", null ]
+];

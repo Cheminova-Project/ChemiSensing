@@ -1,0 +1,18 @@
+var class_site_data =
+[
+    [ "counts", "class_site_data.html#a0bdaae248b9dc1df5fb743e730f538e7", null ],
+    [ "created_on", "class_site_data.html#a74768f366a7e76627c7f8d66f7664939", null ],
+    [ "description", "class_site_data.html#add58525ee9bd5322628b759451978393", null ],
+    [ "error", "class_site_data.html#ae435a8463db3d3505c414a9e32c5dbbe", null ],
+    [ "GUID", "class_site_data.html#ac45b91f6941bbe5119bf6870a473c398", null ],
+    [ "icon", "class_site_data.html#a6877fd677530ee74f463d68d0c3775e1", null ],
+    [ "icon_path", "class_site_data.html#a768885eb354dc7f39114cd73237070ff", null ],
+    [ "id", "class_site_data.html#a4e08e8d234056d98bc0cf342f765fcbe", null ],
+    [ "id_country", "class_site_data.html#ae2b361ca3a182eb94f1a65d64e20012c", null ],
+    [ "id_user", "class_site_data.html#a4e597c6380543fbed44de85473c34706", null ],
+    [ "latitude", "class_site_data.html#a89ad468897d1b157ead289c2b6ef06dd", null ],
+    [ "longitude", "class_site_data.html#a2461b9fa114a3818517d584b9903083f", null ],
+    [ "name", "class_site_data.html#ad4b4f7ac75c1e774462ef89ee6f32632", null ],
+    [ "pilots", "class_site_data.html#a588b9447a2d5aaed0d9541753d01ce91", null ],
+    [ "username", "class_site_data.html#ac0740e3eae16d80e912071cd8bf32d0f", null ]
+];

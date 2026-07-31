@@ -1,0 +1,120 @@
+.artifact-item {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background-color: rgb(255, 255, 255);
+    padding: 16px;
+    border-radius: 5px;
+    border-top-color: rgba(0, 0, 0, 0);
+    margin: 10px 0;
+    margin-top: 15px;
+}
+.artifact-image-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 250px;
+    height: 100%;
+    margin-left: 10px;
+}
+
+.artifact-image {
+    background-image: url("project://database/Assets/CheminovaUI/Resources/UI/Icons/general/image.png?fileID=2800000&guid=af2c439a2ef0aac43b2c2c0171044b85&type=3#image");
+    width: 100%;
+    max-width: 250px;
+    margin-right: 20px;
+    background-size: cover;
+    background-position: center;
+    border-radius: 5px;
+    padding-left: 0;
+    margin-left: 0;
+}
+
+.info-text {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    padding-left: 15px;
+}
+
+.info {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+    width: 61px;
+    height: 1356px;
+    padding-top: 0;
+}
+
+.info-label {
+    -unity-font-style: bold;
+}
+
+.update-person {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.icon-update {
+    width: 40px;
+    height: 40px;
+    margin-right: 5px;
+    margin-top: 3px;
+    background-image: url("project://database/Assets/CheminovaUI/Resources/UI/Icons/artifacts/update.png?fileID=2800000&guid=133fdfdb94dc49446bcad35df527901f&type=3#update");
+    background-size: cover;
+}
+
+.icon-person {
+    width: 40px;
+    height: 40px;
+    margin-right: 5px;
+    margin-top: 5px;
+    background-image: url("project://database/Assets/CheminovaUI/Resources/UI/Icons/artifacts/person.png?fileID=2800000&guid=e2bd66aa3f9ba2d40ae8b7f585adb271&type=3#person");
+    background-size: cover;
+}
+
+.site-label {
+    font-size: 14px;
+    color: rgb(102, 102, 102);
+    margin-bottom: 3px;
+    -unity-font-style: bold;
+    font-size: 20px;
+    padding-bottom: -3px;
+}
+
+.artifact-name {
+    font-size: 35px;
+    -unity-font-style: bold;
+    margin-bottom: 4px;
+    overflow: visible;
+}
+
+.artifact-description {
+    font-size: 14px;
+    -unity-font-style: bold;
+    color: rgb(102, 102, 102);
+}
+
+#LastUpdate {
+    align-self: flex-start;
+}
+
+#CreatorName {
+    align-self: stretch;
+}
+
+.artifact-description-container {
+    width: 100%;
+    height: auto;
+    max-height: 150px;
+    flex-grow: 1;
+}
+
+.artifact-description {
+    white-space: normal;
+}

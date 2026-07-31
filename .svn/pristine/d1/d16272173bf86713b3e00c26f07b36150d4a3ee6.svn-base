@@ -1,0 +1,25 @@
+.sidebar {
+    flex-direction: column;
+    align-items: stretch;
+
+    background-color: #12ABC3;
+    -unity-font-style: bold;
+}
+
+.sidebar-button
+{
+    
+}
+
+.sidebar-button .unity-image{
+    max-width: 64px;
+    max-height: 64px;
+    width: 64px;
+    height: 64px;
+    margin: 0;
+    padding: 0;
+}
+
+.sidebar-button .unity-text-element{
+    padding: 10px;
+}

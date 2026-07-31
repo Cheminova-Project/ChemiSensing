@@ -1,0 +1,8 @@
+using UnityEngine;
+
+[CreateAssetMenu(menuName = "Config/API Base Config")]
+public class APIBaseConfig : ScriptableObject
+{
+    [Header("API URL Base")]
+    public string baseURL = "https://cgisdev.utcluj.ro/cheminovaStagingAPI";
+}

@@ -1,0 +1,11 @@
+var class_spatial_relation_response =
+[
+    [ "error", "class_spatial_relation_response.html#af392649f55d74e0c2fc0bc2a8f783449", null ],
+    [ "items", "class_spatial_relation_response.html#aeef34f2058e5d256b1b200e0a2c3ee8e", null ],
+    [ "next_page", "class_spatial_relation_response.html#a4385be24b0f4a123188cae23c9cc33ba", null ],
+    [ "page", "class_spatial_relation_response.html#a4e1cdbb99bb6e6a6103aa4ccb693d43a", null ],
+    [ "pages", "class_spatial_relation_response.html#a1a7c853f9aa33d257f0cdcf7adc3c592", null ],
+    [ "per_page", "class_spatial_relation_response.html#a8d784e29540461ee916ba5bf34d3e3cb", null ],
+    [ "prev_page", "class_spatial_relation_response.html#a8317544647f4d90ac92a9ba321f48776", null ],
+    [ "total", "class_spatial_relation_response.html#a52c662f7a324ae68bfdde5bc932c0e81", null ]
+];

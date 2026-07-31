@@ -1,0 +1,28 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/CheminovaUI/Resources/UI/USS/utils.uss?fileID=7433441132597879392&amp;guid=9bc8afcbc8187b149860a5a14fc82d8c&amp;type=3#utils"/>
+    <Style src="project://database/Assets/CheminovaUI/Resources/UI/USS/mainStyles.uss?fileID=7433441132597879392&amp;guid=065b6b9dde32a734fbd5a6bbfcc0ff03&amp;type=3#mainStyles"/>
+    <Style src="project://database/Assets/CheminovaUI/Resources/UI/USS/home_page/home_page.uss?fileID=7433441132597879392&amp;guid=02011ef9a6f2c8e47afa305318ed5cd9&amp;type=3#home_page"/>
+    <Style src="project://database/Assets/UI/USS/annexdata.uss?fileID=7433441132597879392&amp;guid=8a657db2c1de43f4d986d7f9dddd791e&amp;type=3#annexdata"/>
+    <ui:VisualElement name="AnnexData" class="main-content" style="border-left-color: rgba(0, 0, 0, 0); border-right-color: rgba(0, 0, 0, 0); border-top-color: rgba(0, 0, 0, 0); border-bottom-color: rgba(0, 0, 0, 0); margin-right: 0; font-size: 20px; margin-top: 0; margin-bottom: 0; margin-left: 0; padding-top: 5px; padding-right: 5px; padding-bottom: 5px; padding-left: 5px;">
+        <ui:VisualElement name="TopSide" class="filters-label-container" style="height: 12%; width: auto; min-height: auto; flex-direction: column; margin-top: 0; justify-content: flex-start; align-content: auto; align-items: auto;">
+            <ui:VisualElement name="TopBottomSide" style="flex-grow: 1; flex-direction: row; height: 100%; width: 100%;">
+                <AutoSizeLabel group="filtering" text="Type" style="width: auto; -unity-text-align: middle-left; min-width: 40px;"/>
+                <ui:DropdownField name="type-options" choices="All,PDF,Image,Audio,Video" index="0" style="font-size: initial; color: rgb(0, 0, 0); width: 30%; max-width: none; min-width: auto; opacity: 1; display: flex; background-color: rgba(0, 0, 0, 0); -unity-background-image-tint-color: rgb(255, 255, 255); -unity-text-align: middle-center; height: 60%; align-self: center;"/>
+                <AutoSizeLabel group="filtering" text="Sort by" style="width: 15%; -unity-text-align: middle-left; min-width: 40px;"/>
+                <ui:DropdownField name="ordering-options" choices="None,A-Z,Z-A,Creation date asc.,Creation date desc." index="0" style="font-size: initial; color: rgb(0, 0, 0); width: 30%; max-width: none; min-width: auto; opacity: 1; display: flex; background-color: rgba(0, 0, 0, 0); -unity-background-image-tint-color: rgb(255, 255, 255); -unity-text-align: middle-center; height: 60%; align-self: center; flex-grow: 1;"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="CenterSide" style="flex-grow: 0; height: 88%; padding-top: 5px;">
+            <ui:ScrollView vertical-scroller-visibility="Auto" name="annexdata-container" horizontal-scroller-visibility="Hidden" touch-scroll-behavior="Clamped" mode="Vertical" style="flex-grow: 1; width: 100%;"/>
+        </ui:VisualElement>
+        <ui:VisualElement name="documents-window" style="flex-grow: 1; position: absolute; width: 100%; height: 100%; background-color: rgb(255, 255, 255); top: 0; left: 0; display: none;">
+            <ui:VisualElement name="TopSide" style="flex-grow: 1; height: 10%; flex-direction: row;">
+                <ui:Button name="folder-button" class="transparent-button" style="width: 10%; -unity-background-scale-mode: scale-to-fit; border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; background-color: rgba(255, 255, 255, 0); transition-property: scale; transition-duration: 0.5s; background-image: resource(&quot;UI/Icons/general/folder-back&quot;);"/>
+                <ui:Label text="Label" name="folder-title" style="width: 85%; -unity-text-align: middle-left; white-space: nowrap; font-size: 40px; -unity-font-style: normal; overflow: hidden; text-overflow: ellipsis;"/>
+            </ui:VisualElement>
+            <ui:VisualElement name="CenterSide" style="flex-grow: 1; height: 90%; padding-top: 5px; padding-right: 5px; padding-bottom: 5px; padding-left: 5px;">
+                <ui:ScrollView vertical-scroller-visibility="Auto" name="doc-container" horizontal-scroller-visibility="Hidden" touch-scroll-behavior="Clamped" mode="Vertical" style="flex-grow: 1; width: 100%;"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

@@ -1,0 +1,9 @@
+var class_alteration_event_post =
+[
+    [ "description", "class_alteration_event_post.html#aca02491355a346886a07cb79105486cb", null ],
+    [ "id_alteration_agent", "class_alteration_event_post.html#ae08215b03d224121d0b1f14e837cb387", null ],
+    [ "id_alterations", "class_alteration_event_post.html#a3217f76a5d2a0da2caaebc4a0f15bbdb", null ],
+    [ "id_annex_data", "class_alteration_event_post.html#a030ffccbc9de66c439a940146f9fb8b4", null ],
+    [ "id_material", "class_alteration_event_post.html#aba930248dd37e3715492c232c347f39a", null ],
+    [ "name", "class_alteration_event_post.html#a73e5471ab3fac785618fa9db36c2081d", null ]
+];

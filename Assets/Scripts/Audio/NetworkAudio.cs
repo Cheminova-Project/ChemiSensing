@@ -1,0 +1,442 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
+using UnityEngine.UI; 
+using Unity.Netcode;
+using Adrenak.UniMic;
+
+[RequireComponent(typeof(AudioSource))]
+public class NetworkAudio : NetworkBehaviour
+{
+    private AudioSource audioSource;
+    private Mic.Device device;
+    private Queue<float> sampleQueue = new Queue<float>();
+    private AudioClip clip;
+    private int clipLengthSeconds = 1;
+    private int currentSampleRate;
+    private int defaultSampleRate = 48000;
+    private float voiceThreshold = 0.005f;
+    private float voiceHoldTime = 0.15f;
+    private float requiredVoicePercentage = 0.2f;
+    private float inputGain = 2f;
+    private bool audioSetupCompleted = false;
+    public static bool LocalGLTFLoaded = false;
+    
+    // --- VARIABLES DE RED ---
+    public NetworkVariable<int> micFrequency = new NetworkVariable<int>(48000, 
+        NetworkVariableReadPermission.Everyone, 
+        NetworkVariableWritePermission.Server);
+
+    public NetworkVariable<bool> isMuted = new NetworkVariable<bool>(false, 
+        NetworkVariableReadPermission.Everyone, 
+        NetworkVariableWritePermission.Server);
+
+    // --- UI ---
+    [Header("Icon Settings")]
+    [Tooltip("El GameObject padre del icono")]
+    public GameObject speakerIcon;
+
+    [Tooltip("El componente Image dentro del speakerIcon para cambiar el sprite")]
+    public Image iconImage;
+
+    [Tooltip("Sprite cuando el usuario está hablando")]
+    public Sprite speakingSprite;
+
+    [Tooltip("Sprite cuando el usuario está muteado")]
+    public Sprite mutedSprite;
+    
+    public string CurrentDeviceName => device != null ? device.Name : string.Empty;
+
+    private float lastVoiceTime;
+    private bool isSpeaking;
+    
+    private Coroutine restartMicCoroutine;
+
+    public bool IsSpeaking => isSpeaking;
+
+    private void Awake()
+    {
+        if (GlobalVariables.Instance.GetIsAudioRoom())
+        {
+            audioSource = GetComponent<AudioSource>();
+            audioSource.loop = true;
+            audioSource.volume = 1f;
+        
+            currentSampleRate = AudioSettings.outputSampleRate > 0 ? AudioSettings.outputSampleRate : defaultSampleRate;
+        }
+        else
+        {
+            if (speakerIcon != null)
+                speakerIcon.SetActive(false);
+            
+            enabled = false; // Desactivar el script si no es sala de audio
+        }
+    }
+
+    void Start()
+    {
+        if (!enabled)
+            return;
+
+        UpdateIconVisuals();
+    }
+    
+    public override void OnNetworkSpawn()
+    {
+        if (!enabled)
+            return;
+
+        if (currentSampleRate == 0)
+            Awake();
+        
+        micFrequency.OnValueChanged += OnMicFrequencyChanged;
+        isMuted.OnValueChanged += OnMuteStateChanged; 
+        
+        UpdateIconVisuals();
+
+        if (micFrequency.Value > 0)
+            UpdatePitch(micFrequency.Value);
+        
+        if (LocalGLTFLoaded)
+            InitializeAudioChannel();
+    }
+
+    public void InitializeAudioChannel()
+    {
+        if (audioSetupCompleted || !GlobalVariables.Instance.GetIsAudioRoom())
+            return;
+        
+        if (GlobalVariables.Instance.GetIsAudioRoom())
+        {
+#if !UNITY_SERVER
+            clip = AudioClip.Create(
+                "MicClip",
+                currentSampleRate * clipLengthSeconds,
+                1,
+                currentSampleRate,
+                true,
+                OnAudioRead
+            );
+
+            audioSource.clip = clip;
+            audioSource.Play();
+
+            if (IsOwner)
+                audioSource.mute = true;
+#endif
+            if (IsOwner)
+            {
+                Mic.Init();
+                if (Mic.AvailableDevices.Count > 0)
+                {
+                    SetMicrophone(Mic.AvailableDevices[0].Name);
+                }
+            }
+
+            audioSetupCompleted = true;
+            UpdateIconVisuals();
+        }
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        if (!enabled) return;
+
+        micFrequency.OnValueChanged -= OnMicFrequencyChanged;
+        isMuted.OnValueChanged -= OnMuteStateChanged;
+        StopCurrentMicrophoneInternal();
+    }
+
+    // --- LÓGICA DE MUTE Y VISUALES ---
+
+    public void SetMute(bool state)
+    {
+        if (!IsOwner || !enabled)
+            return;
+        
+        SetMuteServerRpc(state);
+    }
+
+    [ServerRpc]
+    void SetMuteServerRpc(bool newState)
+    {
+        isMuted.Value = newState;
+    }
+
+    void OnMuteStateChanged(bool previous, bool current)
+    {
+        UpdateIconVisuals();
+    }
+
+    void UpdateIconVisuals()
+    {
+        if (speakerIcon == null || iconImage == null) return;
+
+        if (isMuted.Value)
+        {
+            speakerIcon.SetActive(true);
+            iconImage.sprite = mutedSprite;
+        }
+        else if (isSpeaking && audioSetupCompleted)
+        {
+            speakerIcon.SetActive(true);
+            iconImage.sprite = speakingSprite;
+        }
+        else
+        {
+            speakerIcon.SetActive(false);
+        }
+    }
+
+    // --- GESTIÓN DE MICRÓFONOS ---
+
+    public List<string> GetMicrophoneNames()
+    {
+        if (!enabled)
+            return new List<string>();
+        
+        Mic.Init();
+        if (Mic.AvailableDevices == null) return new List<string>();
+        return Mic.AvailableDevices.Select(d => d.Name).ToList();
+    }
+
+    public void SetMicrophone(string deviceName)
+    {
+        if (!IsOwner || !enabled)
+            return;
+        
+        if (restartMicCoroutine != null)
+            StopCoroutine(restartMicCoroutine);
+        
+        restartMicCoroutine = StartCoroutine(RestartMicSystem(deviceName));
+    }
+
+    private IEnumerator RestartMicSystem(string targetDeviceName)
+    {
+        StopCurrentMicrophoneInternal();
+
+        foreach (var d in Microphone.devices)
+        {
+            if (Microphone.IsRecording(d))
+            {
+                Microphone.End(d);
+            }
+        }
+
+        yield return new WaitForSeconds(0.25f);
+
+        Mic.Init();
+        
+        Mic.Device newDevice = null;
+        foreach (var d in Mic.AvailableDevices)
+        {
+            if (d.Name == targetDeviceName) newDevice = d;
+        }
+
+        if (newDevice == null && Mic.AvailableDevices.Count > 0)
+        {
+            newDevice = Mic.AvailableDevices[0];
+        }
+        
+        if (newDevice != null)
+        {
+            device = newDevice;
+            device.OnFrameCollected += OnMicFrame;
+            
+            bool startSuccess = false;
+            try 
+            {
+                device.StartRecording();
+                startSuccess = true;
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"[NetworkAudio] Error al arrancar grabación: {e.Message}");
+            }
+
+            if (startSuccess)
+            {
+                yield return new WaitForSeconds(0.1f);
+                if (device.IsRecording)
+                {
+                    SetFrequencyServerRpc(device.SamplingFrequency);
+                }
+            }
+        }
+        restartMicCoroutine = null;
+    }
+
+    private void StopCurrentMicrophoneInternal()
+    {
+        if (device != null)
+        {
+            device.OnFrameCollected -= OnMicFrame;
+            device.StopRecording();
+            device = null;
+        }
+    }
+
+    // --- PROCESAMIENTO DE AUDIO ---
+
+    [ServerRpc]
+    void SetFrequencyServerRpc(int freq)
+    {
+        micFrequency.Value = freq;
+    }
+    
+    void OnMicFrequencyChanged(int previousValue, int newValue)
+    {
+        UpdatePitch(newValue);
+    }
+
+    void UpdatePitch(int inputFrequency)
+    {
+        if (IsOwner) return;
+
+        if (currentSampleRate > 0)
+        {
+            float pitchRatio = (float)inputFrequency / currentSampleRate;
+            audioSource.pitch = pitchRatio;
+        }
+    }
+
+    void OnDestroy()
+    {
+        StopCurrentMicrophoneInternal();
+    }
+
+    void OnMicFrame(int deviceIndex, int channelCount, float[] samples)
+    {
+        if (!audioSetupCompleted || isMuted.Value)
+        {
+            SetSpeakingState(false);
+            return;
+        }
+
+        if (AudioManager.Instance != null && AudioManager.Instance.IsMuted)
+        {
+            SetSpeakingState(false);
+            return; 
+        }
+        
+        if (inputGain > 1.0f) 
+        {
+            for (int i = 0; i < samples.Length; i++)
+            {
+                samples[i] = Mathf.Clamp(samples[i] * inputGain, -1f, 1f);
+            }
+        }
+        
+        bool voiceDetectedInPacket = CheckVoiceActivity(samples);
+        float time = Time.time;
+
+        if (voiceDetectedInPacket)
+        {
+            lastVoiceTime = time;
+        }
+    
+        bool shouldTransmit = (time - lastVoiceTime) <= voiceHoldTime;
+
+        SetSpeakingState(shouldTransmit);
+
+        if (!shouldTransmit)
+            return; 
+
+        lock (sampleQueue)
+        {
+            foreach (var s in samples)
+                sampleQueue.Enqueue(s);
+        }
+
+        SendAudioServerRpc(samples);
+    }
+
+    void OnAudioRead(float[] data)
+    {
+        if (!audioSetupCompleted)
+        {
+            Array.Clear(data, 0, data.Length);
+            return;
+        }
+        
+        lock (sampleQueue)
+        {
+            int emergencyLimit = (int)(currentSampleRate * clipLengthSeconds * 3);
+            
+            if (sampleQueue.Count > emergencyLimit)
+            {
+                sampleQueue.Clear();
+            }
+
+            for (int i = 0; i < data.Length; i++)
+                data[i] = sampleQueue.Count > 0 ? sampleQueue.Dequeue() : 0f;
+        }
+    }
+    
+    bool CheckVoiceActivity(float[] samples)
+    {
+        int samplesOverThreshold = 0;
+        for (int i = 0; i < samples.Length; i++)
+        {
+            if (Mathf.Abs(samples[i]) > voiceThreshold)
+            {
+                samplesOverThreshold++;
+            }
+        }
+        float percentage = (float)samplesOverThreshold / samples.Length;
+        return percentage >= requiredVoicePercentage;
+    }
+
+    [ServerRpc]
+    void SendAudioServerRpc(float[] samples, ServerRpcParams rpcParams = default)
+    {
+        ReceiveAudioClientRpc(samples, new ClientRpcParams
+        {
+            Send = new ClientRpcSendParams
+            {
+                TargetClientIds = NetworkManager.Singleton.ConnectedClientsIds
+            }
+        });
+    }
+
+    [ClientRpc]
+    void ReceiveAudioClientRpc(float[] samples, ClientRpcParams clientRpcParams = default)
+    {
+        if (IsOwner)
+            return;
+
+        if (isMuted.Value)
+            return;
+
+        if (!audioSetupCompleted)
+            return;
+
+        lastVoiceTime = Time.time;
+        SetSpeakingState(true);
+
+        lock (sampleQueue)
+        {
+            foreach (var s in samples)
+                sampleQueue.Enqueue(s);
+        }
+    }
+
+    void Update()
+    {
+        if (!IsOwner && isSpeaking && Time.time - lastVoiceTime > voiceHoldTime)
+        {
+            SetSpeakingState(false);
+        }
+    }
+
+    void SetSpeakingState(bool speaking)
+    {
+        if (isSpeaking == speaking)
+            return;
+
+        isSpeaking = speaking;
+        UpdateIconVisuals();
+    }
+}

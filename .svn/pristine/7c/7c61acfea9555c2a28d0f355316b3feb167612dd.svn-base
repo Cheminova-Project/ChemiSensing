@@ -1,0 +1,22 @@
+var class_c_h_element_post =
+[
+    [ "address", "class_c_h_element_post.html#a88cbc335dc5ad1af6e4f246c87c524b9", null ],
+    [ "approximate_date", "class_c_h_element_post.html#ab5cc5ed41726d784d56049c3f6975f88", null ],
+    [ "author", "class_c_h_element_post.html#a18ae5e1afd6815b2b78524a2eeefdd61", null ],
+    [ "chelement_materials", "class_c_h_element_post.html#afee81175234975afecf2c540e42c5bcc", null ],
+    [ "cultural_sphere", "class_c_h_element_post.html#a6ba2adff317cb8eefa1117409680208b", null ],
+    [ "description", "class_c_h_element_post.html#ab8eadd023857348e8af3d8354c7a4410", null ],
+    [ "end_year", "class_c_h_element_post.html#a617d1f6f89767a732b48033d881283f3", null ],
+    [ "heritage_category", "class_c_h_element_post.html#a8a04d0915b740d7649e1d4bd2745b530", null ],
+    [ "icon", "class_c_h_element_post.html#a707c084978ef3268465fd4d759731742", null ],
+    [ "id_country", "class_c_h_element_post.html#aad9f87bacfde88b8e0c20712e77d9745", null ],
+    [ "id_municipality", "class_c_h_element_post.html#a41d8ed92fb3f773c5a97278ffd19b55a", null ],
+    [ "id_province", "class_c_h_element_post.html#a9a1814aa9aebb00a8bc88a8bf8b74104", null ],
+    [ "id_site", "class_c_h_element_post.html#a93c2ea83f8b0e8b6432f772d1559bb68", null ],
+    [ "latitude", "class_c_h_element_post.html#a78d9a355662be3efdb3feb1a1ebda53d", null ],
+    [ "longitude", "class_c_h_element_post.html#a97dc54cffd1fcb76c389598e844305aa", null ],
+    [ "name", "class_c_h_element_post.html#a5bedeb9703ecb9129998a0d27f3b1bab", null ],
+    [ "scale", "class_c_h_element_post.html#a8cc7936f84e50716225272a94dbdd66f", null ],
+    [ "spatial_dimension", "class_c_h_element_post.html#add9e0d71fe5dff128b0619b5855d3368", null ],
+    [ "start_year", "class_c_h_element_post.html#a18fb5b5902559f2cf747a883faca64be", null ]
+];

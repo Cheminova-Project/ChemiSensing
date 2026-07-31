@@ -1,0 +1,390 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UIElements;
+
+/// <summary>
+/// Controlador de la interfaz de usuario para la gestión de salas usando UIDocument.
+/// Permite mostrar, actualizar y administrar la UI relacionada con las salas.
+/// </summary>
+public class RoomManagerUIDocController : BaseUI
+{
+    [Header("Room Template")]
+    [SerializeField] private VisualTreeAsset roomTemplate;
+    
+    private string updateRoomsButtonName = "update-rooms";
+    private string roomsContainerName = "room-container";
+    private string creatingRoomPanelName = "creating-room-panel";
+    private string errorRoomPanelName = "error-room-panel";
+    private string backButtonName = "back-button";
+
+    
+    private ScrollView roomsScrollView;
+    private VisualElement roomsContainer; // This will be the contentContainer of the ScrollView
+    private VisualElement creatingRoomPanel;
+    private VisualElement errorRoomPanel;
+    private Label chElementLabel;
+    private List<Room> currentRooms = new List<Room>();
+    private Button backButton;
+    private Button updateRoomsButton;
+    
+    // Event for when a room is selected
+    public event Action<Room> OnRoomSelected;
+
+    private int selectedRoomPort = -1;
+    private Coroutine refreshCoroutine;
+
+    /// <summary>
+    /// Inicializa la UI de gestión de salas.
+    /// </summary>
+    protected override void InitializeUI()
+    {
+        creatingRoomPanel = rootElement.Q<VisualElement>(creatingRoomPanelName);
+        errorRoomPanel = rootElement.Q<VisualElement>(errorRoomPanelName);
+        
+        //Debemos comprobar si ya existe un GlobalVariables.Instance.SelectedCHElementData
+        if (GlobalVariables.Instance.GetSelectedE3DModelData() != null)
+        {
+            Invoke("CreateRoom", 0.1f);
+            //Aquí mostraremos pantalla de carga hasta que se creen las salas
+            creatingRoomPanel = rootElement.Q<VisualElement>(creatingRoomPanelName);
+            if (creatingRoomPanel != null)
+            {
+                creatingRoomPanel.style.display = DisplayStyle.Flex;
+            }
+            else
+            {
+                Debug.LogWarning($"[RoomManagerUIDocController] Could not find creating room panel with name: {creatingRoomPanelName}");
+            }
+            return;
+        }
+
+        var root = uiDocument.rootVisualElement;
+        
+        // Find and setup buttons
+        updateRoomsButton = SetupButton(root, updateRoomsButtonName, OnUpdateRoomsClicked);
+        backButton = SetupButton(root, backButtonName, OnBackButtonClicked);
+        // Find rooms ScrollView and get its content container
+        roomsScrollView = root.Q<ScrollView>(roomsContainerName);
+        if (roomsScrollView == null)
+        {
+            Debug.LogError($"[RoomManagerUIDocController] Could not find rooms ScrollView with name: {roomsContainerName}");
+        }
+        else
+        {
+            // Get the content container from the ScrollView
+            roomsContainer = roomsScrollView.contentContainer;
+        }
+        
+        StartCoroutine(InitRoomSync());
+    }
+    
+    private IEnumerator InitRoomSync()
+    {
+        yield return new WaitUntil(() => RoomsManager.Instance != null);
+        UpdateRooms();
+        refreshCoroutine = RoomsManager.Instance.StartCoroutine(RoomsManager.Instance.RefreshRooms());
+    }
+
+    private void OnBackButtonClicked()
+    {
+        if (refreshCoroutine != null && RoomsManager.Instance != null)
+        {
+            RoomsManager.Instance.StopCoroutine(refreshCoroutine);
+            refreshCoroutine = null;
+        }
+        
+        UIDocumentManager.Instance.SwitchContext("mode-selector");
+    }
+
+    private void UpdateRooms()
+    {
+        if (RoomsManager.Instance != null)
+        {
+            RoomsManager.Instance.UpdateRooms();
+        }
+        else
+        {
+            Debug.LogError("[RoomManagerUIDocController] RoomsManager is null, cannot update rooms");
+        }
+    }
+
+    private void CreateRoom()
+    {
+        RoomsManager.Instance.CreateRoom(onRoomCreated: OnRoomCreated);
+    }
+
+    private void OnRoomCreated(RespuestaServidor respuestaServidor)
+    {
+        //Ahora intentaremos unirnos a la sala
+        if (respuestaServidor.port != 0) 
+        {
+            RoomsManager.Instance.ConnectToRoom(respuestaServidor.port);
+        }
+        else
+        {
+            Debug.LogError("[RoomManagerUIDocController] ¡Error! El puerto recibido es 0.");
+        }
+    }
+
+    private Button SetupButton(VisualElement root, string buttonName, Action callback)
+    {
+        var button = root.Q<Button>(buttonName);
+        if (button != null)
+            button.clicked += callback;
+        else
+            Debug.LogError($"[RoomManagerUIDocController] Could not find button with name: {buttonName}");
+        
+        return button;
+    }
+
+    public void ShowErrorMessage(string customMessage = null)
+    {
+        if (creatingRoomPanel != null)
+        {
+            creatingRoomPanel.style.display = DisplayStyle.None;
+        }
+        
+        if (!string.IsNullOrEmpty(customMessage))
+        {
+            var label = errorRoomPanel.Q<Label>();
+            if (label != null)
+            {
+                label.text = customMessage + "\nReturning to the menu...";
+            }
+        }
+        
+        errorRoomPanel.style.display = DisplayStyle.Flex;
+    }
+
+    public void BackToSelectRoom()
+    {
+        if (refreshCoroutine != null && RoomsManager.Instance != null)
+        {
+            RoomsManager.Instance.StopCoroutine(refreshCoroutine);
+            refreshCoroutine = null;
+        }
+        
+        errorRoomPanel.style.display = DisplayStyle.None;
+        creatingRoomPanel.style.display = DisplayStyle.None;
+        UIDocumentManager.Instance.SwitchContext("mode-selector");
+        GlobalVariables.Instance.SetSelectedE3DModelData(null);
+        currentRooms.Clear();
+    }
+    
+    #region Button Callbacks
+    
+    private void OnUpdateRoomsClicked()
+    {
+        if (RoomsManager.Instance != null)
+            RoomsManager.Instance.UpdateRooms();
+        else
+            Debug.LogError("[RoomManagerUIDocController] RoomsManager is null, cannot update rooms");
+    }
+    
+    #endregion
+    
+    #region Room Management
+    
+    /// <summary>
+    /// Sets the CHElement name in the UI
+    /// </summary>
+    public void SetCHElementName(string name)
+    {
+        if (chElementLabel != null)
+        {
+            chElementLabel.text = name;
+        }
+        else
+        {
+            Debug.LogWarning("[RoomManagerUIDocController] CHElement label is not assigned");
+        }
+    }
+    
+    /// <summary>
+    /// Adds a new room to the UI
+    /// </summary>
+    public void AddRoom(string roomName, string creatorName, int port, string ip, int chelementID, bool hasAudio, List<string> usuariosAceptados, int jugadoresActuales)
+    {
+        if (roomsScrollView == null)
+        {
+            Debug.LogError("[RoomManagerUIDocController] Rooms ScrollView not found");
+            return;
+        }
+        
+        if (roomsContainer == null)
+        {
+            Debug.LogError("[RoomManagerUIDocController] Rooms container (contentContainer) not found");
+            return;
+        }
+        
+        if (roomTemplate == null)
+        {
+            Debug.LogError("[RoomManagerUIDocController] Room template not assigned");
+            return;
+        }
+        
+        // Create room data
+        Room room = new Room(roomName, creatorName, (ushort)port, ip, chelementID, hasAudio, usuariosAceptados, jugadoresActuales);
+        currentRooms.Add(room);
+        
+        // Create visual element from template
+        VisualElement roomElement = roomTemplate.CloneTree();
+        roomElement.style.height = new StyleLength(100f);
+        
+        // Apply alternating CSS classes
+        string cssClass = (currentRooms.Count % 2 == 0) ? "room-item-even" : "room-item-odd";
+        roomElement.AddToClassList(cssClass);
+        
+        // Configure room element with data
+        SetupRoomElement(roomElement, room);
+        
+        // Add to the ScrollView's content container
+        roomsContainer.Add(roomElement);
+    }
+    
+    /// <summary>
+    /// Sets up a room element with the provided room data
+    /// </summary>
+    private void SetupRoomElement(VisualElement roomElement, Room room)
+    {
+        // Find elements in the template (adjust names based on your UXML template)
+        var roomNameLabel = roomElement.Q<Label>("room-name");
+        var roomImage = roomElement.Q<VisualElement>("room-image");
+        var roomButton = roomElement.Q<Button>("room-button");
+        
+        // Set data
+        if (roomNameLabel != null)
+        {
+            roomNameLabel.text = room.getRoomName();
+        }
+
+        if (roomImage != null)
+        {
+            E3DModelData e3dModelData = GlobalVariables.Instance.GetSelectedE3DModelData();
+            if (e3dModelData != null && e3dModelData.icon != null)
+            {
+                StartCoroutine(DownloadDB.GetDownloadByID(e3dModelData.id, (textureraw, success) =>
+                {
+                    if (textureraw != null && textureraw.data.Length > 0 && success)
+                    {
+                        Texture2D tex = new Texture2D(2, 2, TextureFormat.RGBA32, false);
+                        bool loaded = tex.LoadImage(textureraw.data); // Esto convierte los bytes en textura
+
+                        if (loaded)
+                        {
+                            roomImage.style.backgroundImage = new StyleBackground(tex);
+                        }
+                        else
+                        {
+                            Debug.LogWarning("[RoomManagerUIDocController] Failed to create texture from downloaded data");
+                        }
+                    }
+                    else
+                    {
+                        Debug.LogWarning("[RoomManagerUIDocController] Failed to load room image texture");
+                    }
+                }));
+            }
+            else
+            {
+                Debug.LogWarning("[RoomManagerUIDocController] E3DModelData or icon is null, cannot set room image");
+            }
+        }
+        else
+        {
+            Debug.LogWarning("[RoomManagerUIDocController] E3DModelData or icon is null, cannot set room image");
+        }
+        
+        var roomUsersCountLabel = roomElement.Q<Label>("room-users-count");
+        if (roomUsersCountLabel != null)
+        {
+            roomUsersCountLabel.text = $"{room.getJugadoresActuales()} / 5";
+        }
+
+        // Setup button click event
+        if (roomButton != null)
+        {
+            roomButton.clicked += () => OnRoomElementClicked(room);
+        }
+        else
+        {
+            // If no specific button, make the whole element clickable
+            roomElement.RegisterCallback<ClickEvent>(evt => OnRoomElementClicked(room));
+        }
+
+        // Store room data in userData for reference
+        roomElement.userData = room;
+    }
+    
+    /// <summary>
+    /// Handles when a room element is clicked
+    /// </summary>
+    private void OnRoomElementClicked(Room room)
+    {
+        if (refreshCoroutine != null && RoomsManager.Instance != null)
+        {
+            RoomsManager.Instance.StopCoroutine(refreshCoroutine);
+            refreshCoroutine = null;
+        }
+        GlobalVariables.Instance.SetIsAudioRoom(room.getHasAudio());
+        OnRoomSelected?.Invoke(room);
+        selectedRoomPort = room.getPort();
+        StartCoroutine(E3DModelDB.GetE3DModelByID(OnE3DInfoReceived, room.getCHElementID()));
+    }
+
+    private void OnE3DInfoReceived(E3DModelData e3dModelData, bool success)
+    {
+        if(success)
+        {
+            GlobalVariables.Instance.SetSelectedE3DModelData(e3dModelData);
+            
+            if(selectedRoomPort != -1)
+                RoomsManager.Instance.ConnectToRoom(selectedRoomPort);
+            else
+                Debug.LogError("[RoomManagerUIDocController] Selected room port is invalid");
+        }
+            
+        else
+            Debug.LogError("[RoomManagerUIDocController] Failed to retrieve E3DModelData for selected room");
+    }
+
+    /// <summary>
+    /// Clears all rooms from the UI
+    /// </summary>
+    public void ClearRooms()
+    {
+        if (roomsContainer == null)
+        {
+            Debug.LogWarning("[RoomManagerUIDocController] Rooms container (contentContainer) not found");
+            return;
+        }
+        
+        // Clear visual elements from the ScrollView's content container
+        roomsContainer.Clear();
+        
+        // Clear room data
+        currentRooms.Clear();
+    }
+    
+    /// <summary>
+    /// Gets all current rooms
+    /// </summary>
+    public List<Room> GetCurrentRooms()
+    {
+        return new List<Room>(currentRooms);
+    }
+    
+    #endregion
+    
+    private void OnDestroy()
+    {
+        // Clean up event subscriptions if needed
+        OnRoomSelected = null;
+        if (updateRoomsButton != null)
+            updateRoomsButton.clicked -= OnUpdateRoomsClicked;
+        if (backButton != null)
+            backButton.clicked -= OnBackButtonClicked;
+    }
+}

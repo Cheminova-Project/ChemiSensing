@@ -1,0 +1,160 @@
+using Unity.Netcode;
+using UnityEngine;
+using UnityEngine.UIElements;
+
+public class PersistentGyroLongPress : MonoBehaviour
+{
+    private UIDocument uiDocument; 
+    private VisualElement activationToggle;
+    private IVisualElementScheduledItem holdTask;
+    
+    private bool hasTriggeredReset = false;
+    private const float REQUIRED_HOLD_TIME = 3.0f;
+    
+    // Bandera para saber si ya hemos vinculado los eventos
+    private bool isInitialized = false;
+
+    private void Update()
+    {
+        // Si no nos hemos vinculado a la UI, lo intentamos en cada frame
+        // hasta que el jugador y la UI existan.
+        if (!isInitialized)
+        {
+            TryInitializeUI();
+        }
+    }
+
+    private void TryInitializeUI()
+    {
+        // 1. Asegurarnos de que el NetworkManager está listo y somos un cliente
+        if (NetworkManager.Singleton == null || !NetworkManager.Singleton.IsClient) 
+            return;
+
+        // 2. Intentar obtener el jugador local
+        GameObject playerObject = LocalRegistry.Instance.GetPlayerGameObject(NetworkManager.Singleton.LocalClientId);
+        if (playerObject == null) 
+            return;
+
+        // 3. Buscar el UIDocument. 
+        // OPCIÓN A: Si el UIDocument es hijo del prefab del jugador:
+        uiDocument = playerObject.GetComponentInChildren<UIDocument>();
+        
+        // OPCIÓN B: Si el UIDocument es un objeto suelto en la escena (descomenta la siguiente línea y borra la anterior):
+        // uiDocument = FindObjectOfType<UIDocument>();
+
+        if (uiDocument != null && uiDocument.rootVisualElement != null)
+        {
+            activationToggle = uiDocument.rootVisualElement.Q<VisualElement>("gyroscope");
+
+            if (activationToggle != null)
+            {
+                // Registramos los eventos
+                activationToggle.RegisterCallback<PointerDownEvent>(OnPointerDown, TrickleDown.TrickleDown);
+                activationToggle.RegisterCallback<PointerUpEvent>(OnPointerUp, TrickleDown.TrickleDown);
+                activationToggle.RegisterCallback<PointerLeaveEvent>(OnPointerLeave, TrickleDown.TrickleDown);
+                activationToggle.RegisterCallback<ClickEvent>(OnClick, TrickleDown.TrickleDown);
+                
+                // Marcamos como inicializado para que el Update no vuelva a ejecutar esto
+                isInitialized = true; 
+                Debug.Log("PersistentGyroLongPress: UI del jugador local encontrada y vinculada con éxito.");
+            }
+        }
+    }
+
+    private void OnDisable()
+    {
+        // Limpiamos los eventos si se destruye o desactiva este manager
+        if (activationToggle != null)
+        {
+            activationToggle.UnregisterCallback<PointerDownEvent>(OnPointerDown, TrickleDown.TrickleDown);
+            activationToggle.UnregisterCallback<PointerUpEvent>(OnPointerUp, TrickleDown.TrickleDown);
+            activationToggle.UnregisterCallback<PointerLeaveEvent>(OnPointerLeave, TrickleDown.TrickleDown);
+            activationToggle.UnregisterCallback<ClickEvent>(OnClick, TrickleDown.TrickleDown);
+        }
+        isInitialized = false;
+    }
+
+    // --- Lógica del Long Press (Siempre activa) ---
+
+    private void OnPointerDown(PointerDownEvent evt)
+    {
+        hasTriggeredReset = false;
+
+        if (activationToggle != null)
+        {
+            holdTask = activationToggle.schedule.Execute(() => 
+            {
+                hasTriggeredReset = true;
+                TriggerReset();
+            }).StartingIn((long)(REQUIRED_HOLD_TIME * 1000));
+        }
+    }
+
+    private void OnPointerUp(PointerUpEvent evt)
+    {
+        if (hasTriggeredReset)
+        {
+            evt.StopPropagation();
+            evt.PreventDefault();
+        }
+        else
+        {
+            CancelHoldTask();
+        }
+    }
+
+    private void OnClick(ClickEvent evt)
+    {
+        if (hasTriggeredReset)
+        {
+            evt.StopPropagation();
+            evt.PreventDefault();
+        }
+    }
+
+    private void OnPointerLeave(PointerLeaveEvent evt)
+    {
+        CancelHoldTask();
+    }
+
+    private void CancelHoldTask()
+    {
+        if (holdTask != null)
+        {
+            holdTask.Pause();
+            holdTask = null;
+        }
+    }
+
+    // --- Ejecución del Reset ---
+
+    private void TriggerReset()
+    {
+        Debug.Log("Reset por Long Press desde el script persistente. Desactivando toggle...");
+
+        if (activationToggle is Toggle toggleUI)
+        {
+            toggleUI.value = false;
+        }
+
+        if (NetworkManager.Singleton != null)
+        {
+            GameObject playerObject = LocalRegistry.Instance.GetPlayerGameObject(NetworkManager.Singleton.LocalClientId);
+            if (playerObject != null)
+            {
+                var mobileFirstPersonController = playerObject.GetComponentInChildren<MobileFirstPersonController>();
+                
+                if (mobileFirstPersonController != null)
+                {
+                    mobileFirstPersonController.ResetCameraPosition();
+                    mobileFirstPersonController.isGyroEnabled = false;
+                    
+                    if (!mobileFirstPersonController.isJoystickEnabled)
+                    {
+                        mobileFirstPersonController.EnableCameraMovement(false);
+                    }
+                }
+            }
+        }
+    }
+}

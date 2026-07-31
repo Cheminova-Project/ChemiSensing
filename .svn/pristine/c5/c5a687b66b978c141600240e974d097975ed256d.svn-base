@@ -1,0 +1,12 @@
+var class_spatial_relation_data =
+[
+    [ "created_on", "class_spatial_relation_data.html#ac683e05c51fce707e8dc7e419faf70dd", null ],
+    [ "error", "class_spatial_relation_data.html#a507e1eac6577eeacbd6a4faf7000398f", null ],
+    [ "id", "class_spatial_relation_data.html#a77d5b9b7b52bb7211e58e17fa070123e", null ],
+    [ "id_included", "class_spatial_relation_data.html#ada0511921856281bca0e558209791efb", null ],
+    [ "id_reference", "class_spatial_relation_data.html#ae4658303ec0ce452f2018d6be2d46d17", null ],
+    [ "id_user", "class_spatial_relation_data.html#a2e3983bf2a9eef827d1f9b5b33f647b7", null ],
+    [ "inclusion_type", "class_spatial_relation_data.html#a8961b0c2d3cd5d0b41f487d8b891b0fa", null ],
+    [ "transformation", "class_spatial_relation_data.html#a59049a96563b050e8b544d83dfef3e31", null ],
+    [ "username", "class_spatial_relation_data.html#aff4e288aa8e26d761bb46b801e48dac2", null ]
+];

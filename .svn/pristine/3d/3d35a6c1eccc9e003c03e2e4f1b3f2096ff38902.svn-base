@@ -1,0 +1,11 @@
+var class_alteration_agent_type_d_b =
+[
+    [ "DeleteAlterationAgentTypeFromApi", "class_alteration_agent_type_d_b.html#a2e02a6e708062a1015802de54c0f1059", null ],
+    [ "GetAlterationAgentTypeByID", "class_alteration_agent_type_d_b.html#a2dbe722fc52d6ced11370821e26a8e65", null ],
+    [ "GetAlterationAgentTypeList", "class_alteration_agent_type_d_b.html#a26b4959284e220c1c5a9cd99700c3b33", null ],
+    [ "PostNewAlterationAgentType", "class_alteration_agent_type_d_b.html#a2cd75e441f65664e9185ca0606f08384", null ],
+    [ "PutAlterationAgentTypeFromApi", "class_alteration_agent_type_d_b.html#a40be908f9256fd41d93bad10a4757c61", null ],
+    [ "config", "class_alteration_agent_type_d_b.html#a38cf532de8faeb4771cb90a61b9bcaa4", null ],
+    [ "ApiUrl", "class_alteration_agent_type_d_b.html#adaba6e9553552f2ffe08ac28ca1c3b08", null ],
+    [ "Config", "class_alteration_agent_type_d_b.html#a95784780daaf583a5b7c275c7dede831", null ]
+];

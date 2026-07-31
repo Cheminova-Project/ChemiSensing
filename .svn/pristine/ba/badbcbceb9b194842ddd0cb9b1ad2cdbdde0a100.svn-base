@@ -1,0 +1,21 @@
+var class_visual_clones_manager =
+[
+    [ "CleanCloneHierarchy", "class_visual_clones_manager.html#a963c2e1a889a10ad0196611ea23e4ce1", null ],
+    [ "CreateInspectedObjectVisualClone", "class_visual_clones_manager.html#a646510d931d55e66516d84301a6be5f2", null ],
+    [ "GetTotalScale", "class_visual_clones_manager.html#a8065a04d831dcb7553f1936c2cb85fe1", null ],
+    [ "HideMeshes", "class_visual_clones_manager.html#ab9ca8d3cf66938398a518a19c4b90366", null ],
+    [ "LateUpdate", "class_visual_clones_manager.html#af5c7fdbacff905f6d34dcb342b2cead6", null ],
+    [ "OnClientConnected", "class_visual_clones_manager.html#a563ee6b23939f1c42a3b5f1495548269", null ],
+    [ "OnClientDisconnected", "class_visual_clones_manager.html#ac5398f4557b1607caef8fbcb35ab95ee", null ],
+    [ "OnDisable", "class_visual_clones_manager.html#a0b872ff78836d0dc813db533248dd1aa", null ],
+    [ "OnEnable", "class_visual_clones_manager.html#af2cf04e9b4fecd0ca2d42b62232a708e", null ],
+    [ "OnInitialPlayerListReceived", "class_visual_clones_manager.html#aa73084320f01836bcec37dfa7a4bc91d", null ],
+    [ "RemoveNetworkingComponents", "class_visual_clones_manager.html#a67a5a72a4b8c88d08c29400df2d5f4c7", null ],
+    [ "SafeDiv", "class_visual_clones_manager.html#a4093fb75b0fa16ba3039a9a088892f6f", null ],
+    [ "TryRegisterClient", "class_visual_clones_manager.html#a37ae82a44d1600e74686d901d48542e6", null ],
+    [ "_clonedCharacters", "class_visual_clones_manager.html#a6f22d035d77540b5f64e0b114c21fb24", null ],
+    [ "cloneTargetTransform", "class_visual_clones_manager.html#a22bba057f95552bff36c88aec9e24321", null ],
+    [ "inspectedObjectController", "class_visual_clones_manager.html#a2ce122349f32488ed24b49fda8cd3039", null ],
+    [ "originalTargetTransform", "class_visual_clones_manager.html#ad81ba910c174ed84dfe137aba1d95b8d", null ],
+    [ "playerCharacterType", "class_visual_clones_manager.html#af6a4ce1b919c6d1180823b3fa87ce645", null ]
+];

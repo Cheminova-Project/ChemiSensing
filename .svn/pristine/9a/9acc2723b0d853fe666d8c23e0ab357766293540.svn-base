@@ -1,0 +1,21 @@
+var class_unity_engine_1_1_x_r_1_1_a_r_foundation_1_1_samples_1_1_raycast_event_controller =
+[
+    [ "Awake", "class_unity_engine_1_1_x_r_1_1_a_r_foundation_1_1_samples_1_1_raycast_event_controller.html#ab9f2470a6d847b88271c07ae77391138", null ],
+    [ "OnDisable", "class_unity_engine_1_1_x_r_1_1_a_r_foundation_1_1_samples_1_1_raycast_event_controller.html#a9d1a9dc8ae4bc9efc8e3ad67c4fe0941", null ],
+    [ "OnEnable", "class_unity_engine_1_1_x_r_1_1_a_r_foundation_1_1_samples_1_1_raycast_event_controller.html#a45d26be1f1fde9144dd39149ca2a64b2", null ],
+    [ "Reset", "class_unity_engine_1_1_x_r_1_1_a_r_foundation_1_1_samples_1_1_raycast_event_controller.html#a0b3deb300c20de0a97ef61d5745f6dba", null ],
+    [ "ScreenTapped", "class_unity_engine_1_1_x_r_1_1_a_r_foundation_1_1_samples_1_1_raycast_event_controller.html#a5c9207b28ace0b6265dc3b6b9f58df47", null ],
+    [ "TapPositionChanged", "class_unity_engine_1_1_x_r_1_1_a_r_foundation_1_1_samples_1_1_raycast_event_controller.html#a4f08b878b27381dd3b717767147c8493", null ],
+    [ "inputActionReferences", "class_unity_engine_1_1_x_r_1_1_a_r_foundation_1_1_samples_1_1_raycast_event_controller.html#a8247cd8f72863a993eb7f8b7d58bceb1", null ],
+    [ "m_ARRaycastHitEvent", "class_unity_engine_1_1_x_r_1_1_a_r_foundation_1_1_samples_1_1_raycast_event_controller.html#a546cd1762028a201116189bf87193b58", null ],
+    [ "m_Camera", "class_unity_engine_1_1_x_r_1_1_a_r_foundation_1_1_samples_1_1_raycast_event_controller.html#a281641358f18085a100fd0776297d5b9", null ],
+    [ "m_RaycastManager", "class_unity_engine_1_1_x_r_1_1_a_r_foundation_1_1_samples_1_1_raycast_event_controller.html#a4f91a3d22c85ab558e8f9cff34d63975", null ],
+    [ "m_TrackableType", "class_unity_engine_1_1_x_r_1_1_a_r_foundation_1_1_samples_1_1_raycast_event_controller.html#aca499e719f6e48b3de424fa41fad0fb5", null ],
+    [ "m_UILayerMask", "class_unity_engine_1_1_x_r_1_1_a_r_foundation_1_1_samples_1_1_raycast_event_controller.html#a64cde5b058cea1fdbe371ff902abcdf4", null ],
+    [ "m_UIRaycastHits", "class_unity_engine_1_1_x_r_1_1_a_r_foundation_1_1_samples_1_1_raycast_event_controller.html#a8d63848194db301a10e1bf5c35d932dc", null ],
+    [ "m_XROrigin", "class_unity_engine_1_1_x_r_1_1_a_r_foundation_1_1_samples_1_1_raycast_event_controller.html#ab96a56f5d37fdea7d75898da204235b9", null ],
+    [ "s_Hits", "class_unity_engine_1_1_x_r_1_1_a_r_foundation_1_1_samples_1_1_raycast_event_controller.html#a1a785f2e75dab35f556c6522ac12be4d", null ],
+    [ "s_RaycastRay", "class_unity_engine_1_1_x_r_1_1_a_r_foundation_1_1_samples_1_1_raycast_event_controller.html#ab161ef2e8e162c85f1883f5f2d4bbdb9", null ],
+    [ "raycastHitEventAsset", "class_unity_engine_1_1_x_r_1_1_a_r_foundation_1_1_samples_1_1_raycast_event_controller.html#a704e80228cf34c794822ff8ca2d35b43", null ],
+    [ "trackableType", "class_unity_engine_1_1_x_r_1_1_a_r_foundation_1_1_samples_1_1_raycast_event_controller.html#a478853b584e5233dc54f203f8be96cc9", null ]
+];

@@ -1,0 +1,6 @@
+var class_signin_response =
+[
+    [ "SigninResponse", "class_signin_response.html#af0ac1d533e258bf8d1554600d4b03a93", null ],
+    [ "access_token", "class_signin_response.html#af4bfc938bc2044d1b8861e67770c8379", null ],
+    [ "error", "class_signin_response.html#a754aed938fe7c60d771a6b6169ec5930", null ]
+];

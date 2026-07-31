@@ -1,0 +1,8 @@
+var struct_network_registry_bridge_1_1_username_dictionary_serializable =
+[
+    [ "UsernameDictionarySerializable", "struct_network_registry_bridge_1_1_username_dictionary_serializable.html#ab857ca2ec50dd106e4df76e1518a1bcc", null ],
+    [ "NetworkSerialize< T >", "struct_network_registry_bridge_1_1_username_dictionary_serializable.html#a1885e08ea5e756f75a8bca569451db4f", null ],
+    [ "ToDictionary", "struct_network_registry_bridge_1_1_username_dictionary_serializable.html#aa2ff836504116ad9b4a26f617ccddc62", null ],
+    [ "clientIds", "struct_network_registry_bridge_1_1_username_dictionary_serializable.html#aaea4f6289ac9067443631d4c4150eb1a", null ],
+    [ "usernames", "struct_network_registry_bridge_1_1_username_dictionary_serializable.html#a8213206a6f155e7d57b5922521b05a5b", null ]
+];

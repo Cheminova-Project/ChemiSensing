@@ -1,0 +1,351 @@
+using System.Collections.Generic;
+using UIControllers;
+using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.UIElements;
+
+public enum SiteType
+{
+    Site,
+    Collection,
+    MyList,
+    None
+}
+
+public class SiteItem
+{
+    public int id { get; set; }
+    public string name { get; set; }
+    public string description { get; set; }
+    public int? icon { get; set; }
+}
+
+public class SiteItemList
+{
+    public List<SiteItem> items { get; set; }
+    public int? page { get; set; }
+    public int? prev_page { get; set; }
+    public int? next_page { get; set; }
+}
+
+/// <summary>
+/// Controlador de UI para mostrar y gestionar la lista de sitios.
+/// Permite paginación, filtrado y visualización de detalles de cada sitio.
+/// </summary>
+public class SiteListUI : BaseUI
+{
+    // Map things
+    /// <summary>
+    /// Plantilla visual para cada sitio de la lista.
+    /// </summary>
+    public VisualTreeAsset siteTemplate;
+    /// <summary>
+    /// Referencia al controlador de la página principal.
+    /// </summary>
+    public HomePageUI homePageUI;
+    /// <summary>
+    /// Icono por defecto para los sitios.
+    /// </summary>
+    public Texture2D defaultIcon;
+    
+    // UI Elements
+    private string returnButtonName = "back-button";
+    private string prevPageButtonName = "prev-page-button";
+    private string nextPageButtonName = "next-page-button";
+    private string currentPageLabelName = "current-page-label";
+    private string usernameName = "username-text";
+    private string filtersCountName = "filters-count";
+    private string itemsContainerName = "sites-container";
+    private string itemLabelName = "site-name";
+    private string itemLabelDescriptionName = "site-description";
+    private string itemImageName = "site-image";
+    
+    // Internal variables
+    private int currentPage = 1;
+    private int perPage = 10;
+    private int? page;
+    private int? nextPage;
+    private int? prevPage;
+    
+    // Other variables
+    private SiteType currentSiteType = SiteType.None;
+    private SiteItemList siteItems;
+    
+    /// <summary>
+    /// Callback que se ejecuta al recibir la lista de sitios.
+    /// </summary>
+    /// <param name="sites">Respuesta con la lista de sitios.</param>
+    /// <param name="success">Indica si la obtención fue exitosa.</param>
+    private void OnSiteListReceived(SiteResponse sites, bool success)
+    {
+        if (success)
+        {
+            siteItems = new SiteItemList();
+            siteItems.items = new List<SiteItem>();
+            siteItems.page = sites.page;
+            siteItems.next_page = sites.next_page;
+            siteItems.prev_page = sites.prev_page;
+            foreach (var site in sites.items)
+            {
+                SiteItem siteItem = new SiteItem();
+                siteItem.id = site.id;
+                siteItem.name = site.name;
+                siteItem.description = site.description;
+                siteItem.icon = site.icon;
+                siteItems.items.Add(siteItem);
+            }
+            InsertItems();
+        }
+        else
+        {
+            Debug.LogWarning("Error when obtaining sites list.");
+        }
+    }
+    
+    private void OnCollectionListReceived(CollectionResponse collections, bool success)
+    {
+        if (success)
+        {
+            siteItems = new SiteItemList();
+            siteItems.items = new List<SiteItem>();
+            siteItems.page = collections.page;
+            siteItems.next_page = collections.next_page;
+            siteItems.prev_page = collections.prev_page;
+            foreach (var site in collections.items)
+            {
+                SiteItem siteItem = new SiteItem();
+                siteItem.id = site.id;
+                siteItem.name = site.name;
+                siteItem.description = site.description;
+                siteItem.icon = site.icon;
+                siteItems.items.Add(siteItem);
+            }
+            InsertItems();
+        }
+        else
+        {
+            Debug.LogWarning("Error when obtaining sites list.");
+        }
+    }
+    
+    private void OnMyListListReceived(MyListResponse myList, bool success)
+    {
+        if (success)
+        {
+            siteItems = new SiteItemList();
+            siteItems.items = new List<SiteItem>();
+            siteItems.page = myList.page;
+            siteItems.next_page = myList.next_page;
+            siteItems.prev_page = myList.prev_page;
+            foreach (var site in myList.items)
+            {
+                SiteItem siteItem = new SiteItem();
+                siteItem.id = site.id;
+                siteItem.name = site.name;
+                siteItem.description = site.description;
+                siteItem.icon = site.icon;
+                siteItems.items.Add(siteItem);
+            }
+            InsertItems();
+        }
+        else
+        {
+            Debug.LogWarning("Error when obtaining sites list.");
+        }
+    }
+
+    /// <summary>
+    /// Inserta los sitios en la UI.
+    /// </summary>
+    /// <param name="siteResponse">Respuesta con la lista de sitios.</param>
+    private void InsertItems()
+    { 
+        var itemsContainer = rootElement.Q<ScrollView>(itemsContainerName);
+
+        foreach (var site in siteItems.items)
+        {
+            var element = siteTemplate.CloneTree();
+            itemsContainer.Add(element);
+            // Asignar el nombre y la descripción al elemento
+            var nameLabel = element.Q<Label>(itemLabelName);
+            if (nameLabel != null)
+                nameLabel.text = site.name;
+            var descriptionLabel = element.Q<Label>(itemLabelDescriptionName);
+            if (descriptionLabel != null)
+                descriptionLabel.text = site.description;
+            element.RegisterCallback<ClickEvent>(ev =>
+            {
+                if (ev.button == 0)
+                {
+                    UIDocumentManager.Instance.SwitchContext("chElementListSite", scripts =>
+                    {
+                        foreach (var script in scripts)
+                            if (script is ChElementSiteListUI chElementSiteListUI)
+                            {
+                                switch (currentSiteType)
+                                {
+                                    case SiteType.MyList:
+                                        chElementSiteListUI.SetParentSite(site.id, site.name, SiteType.MyList);
+                                        break;
+                                    case SiteType.Collection:
+                                        chElementSiteListUI.SetParentSite(site.id, site.name, SiteType.Collection);
+                                        break;
+                                    case SiteType.Site:
+                                        chElementSiteListUI.SetParentSite(site.id, site.name, SiteType.Site);
+                                        break;
+                                }
+                            }
+                    });
+                }
+            });
+            var image = element.Q<VisualElement>(itemImageName);
+            if (image != null)
+                DownloadAndFillSiteIcon(image, site.icon);
+            else
+            {
+                Debug.LogWarning("ERROR: "+ itemImageName +" not found in UI Document.");
+            }
+        }
+        
+        var itemsCountLabel = rootElement.Q<Label>(filtersCountName);
+        if (itemsCountLabel != null)
+            itemsCountLabel.text = siteItems.items.Count + " results";
+        
+        UpdatePagination();
+    }
+
+    /// <summary>
+    /// Descarga y asigna el icono del sitio.
+    /// </summary>
+    /// <param name="image">Elemento visual donde se asignará la imagen.</param>
+    /// <param name="siteIcon">ID del icono del sitio.</param>
+    private void DownloadAndFillSiteIcon(VisualElement image, int? siteIcon)
+    {
+        switch (currentSiteType)
+        {
+            case SiteType.MyList:
+                StartCoroutine(MyListDB.GetMyListIcon(siteIcon, FillImage(image)));
+                break;
+            case SiteType.Collection:
+                StartCoroutine(CollectionDB.GetCollectionIcon(siteIcon, FillImage(image)));
+                break;
+            case SiteType.Site:
+                StartCoroutine(SiteDB.GetSiteIcon(siteIcon, FillImage(image)));
+                break;
+        }
+        
+    }
+
+    /// <summary>
+    /// Devuelve una acción para rellenar la imagen de un elemento visual.
+    /// </summary>
+    /// <param name="imageToFill">Elemento visual a rellenar.</param>
+    /// <returns>Acción que asigna la textura.</returns>
+    private UnityAction<Texture2D, bool> FillImage(VisualElement imageToFill)
+    {
+        return (texture, success) =>
+        {
+            if (success && texture != null)
+            {
+                imageToFill.style.backgroundImage = texture;
+            }
+            else
+            {
+                imageToFill.style.backgroundImage = defaultIcon;
+                Debug.LogWarning("Couldn't load site image.");
+            }
+        };
+    }
+    
+    /// <summary>
+    /// Actualiza la paginación de la lista de sitios.
+    /// </summary>
+    /// <param name="siteResponse">Respuesta con la lista de sitios.</param>
+    private void UpdatePagination()
+    {
+        var prevPageButton = rootElement.Q<Button>(prevPageButtonName);
+        var nextPageButton = rootElement.Q<Button>(nextPageButtonName);
+        var currentPageLabel = rootElement.Q<Label>(currentPageLabelName);
+
+        if (prevPageButton != null && nextPageButton != null && currentPageLabel != null)
+        {
+            currentPageLabel.text = $"Page {siteItems.page ?? 0}";
+            prevPageButton.SetEnabled(siteItems.prev_page != null);
+            nextPageButton.SetEnabled(siteItems.next_page != null);
+        }
+        else
+        {
+            Debug.LogWarning("ERROR: Pagination buttons or current page label not found in UI Document.");
+        }
+    }
+    
+    /// <summary>
+    /// Inicializa la UI, los botones y ejecuta la búsqueda inicial de sitios.
+    /// </summary>
+    protected override void InitializeUI()
+    {
+        var username = rootElement.Q<Label>(usernameName);
+        if (username != null)
+            username.text = GlobalManagement.Instance.username;
+        
+        var returnButton = rootElement.Q<Button>(returnButtonName);
+        if (returnButton != null)
+        {
+            returnButton.clicked += ReturnHome;
+        }
+    }
+    
+    /// <summary>
+    /// Ejecuta la búsqueda de sitios con los parámetros actuales.
+    /// </summary>
+    public void ExecuteSearch()
+    {
+        ClearItems();
+        
+        switch (currentSiteType)
+        {
+            case SiteType.MyList:
+                StartCoroutine(MyListDB.GetMyListList(OnMyListListReceived, currentPage, perPage, homePageUI.GetSearchText()));
+                break;
+            case SiteType.Collection:
+                StartCoroutine(CollectionDB.GetCollectionList(OnCollectionListReceived, currentPage, perPage, homePageUI.GetSearchText()));
+                break;
+            case SiteType.Site:
+                StartCoroutine(SiteDB.GetSiteList(OnSiteListReceived, currentPage, perPage, homePageUI.GetSearchText()));
+                break;
+        }
+    }
+
+    /// <summary>
+    /// Limpia los elementos visuales de la lista de sitios.
+    /// </summary>
+    private void ClearItems()
+    {
+        var itemsContainer = rootElement.Q<ScrollView>(itemsContainerName);
+        itemsContainer.Clear();
+    }
+
+    /// <summary>
+    /// Vuelve a la pantalla principal.
+    /// </summary>
+    private void ReturnHome()
+    {
+        UIDocumentManager.Instance.SwitchContext("chElementList", scripts =>
+        {
+            foreach (var script in scripts)
+                if(script is ChElementListUI chElementListUI)
+                    chElementListUI.ListChElements();
+        });
+    }
+
+    public SiteType GetCurrentSiteType()
+    {
+        return currentSiteType;
+    }
+
+    public void SetCurrentSiteType(SiteType siteType)
+    {
+        currentSiteType = siteType;
+        ExecuteSearch();
+    }
+}

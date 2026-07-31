@@ -1,0 +1,11 @@
+var class_geo_data =
+[
+    [ "admin1", "class_geo_data.html#ab6b810262c73eceb60053bbd79d69ffe", null ],
+    [ "admin2", "class_geo_data.html#a8efc24b3450502f7b6ff9da335b67f99", null ],
+    [ "asciiname", "class_geo_data.html#abf8ecc784ef57ba7a9ac9d51cac8569d", null ],
+    [ "country", "class_geo_data.html#a4aa914a566f9d1de12db55df20ba24f7", null ],
+    [ "error", "class_geo_data.html#a36f795788bfbc5289654116223c026bb", null ],
+    [ "fcode", "class_geo_data.html#ad90284c648a2dd482d482f08148eda8f", null ],
+    [ "geonameid", "class_geo_data.html#a5a74d4983ed3859db27cf050578c95d9", null ],
+    [ "name", "class_geo_data.html#a8c074c07c3b6589ecc875c6c0d0de99b", null ]
+];

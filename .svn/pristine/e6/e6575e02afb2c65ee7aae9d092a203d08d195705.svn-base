@@ -1,0 +1,179 @@
+using UnityEngine;
+using UnityEngine.UIElements;
+using Unity.Netcode;
+
+public class GlobalInvitationManager : MonoBehaviour
+{
+    [Header("Referencias UI")]
+    private UIDocument uiDocument; // Asigna el UIDocument principal de tu escena
+    [SerializeField] private VisualTreeAsset invitationTemplate; // Asigna el InvitationPanel.uxml
+    
+    private string invitationPanelName = "invitation-panel";
+
+    private void OnEnable()
+    {
+        // Nos suscribimos al evento estático siempre que este objeto esté activo
+        UserControllerPlayer.OnInvitationReceived += ShowInvitationPanel;
+    }
+
+    private void OnDisable()
+    {
+        UserControllerPlayer.OnInvitationReceived -= ShowInvitationPanel;
+    }
+
+    private void ShowInvitationPanel(ulong senderClientId)
+    {
+        if (uiDocument == null)
+            uiDocument = FindAnyObjectByType<UIDocument>();
+        
+        if (uiDocument == null || invitationTemplate == null)
+        {
+            Debug.LogError("Faltan referencias en GlobalInvitationManager");
+            return;
+        }
+
+        // 1. Crear el panel
+        VisualElement root = uiDocument.rootVisualElement;
+        
+        // Si ya hay un panel abierto, solo reiniciamos el tiempo y salimos
+        if (root.Q(invitationPanelName) != null) 
+        {
+            CancelInvoke(nameof(CloseInvitationPanel));
+            Invoke(nameof(CloseInvitationPanel), 10f);
+            return;
+        }
+
+        VisualElement panel = invitationTemplate.CloneTree();
+        panel.name = invitationPanelName;
+        panel.style.position = Position.Absolute;
+        panel.style.width = Length.Percent(100);
+        panel.style.height = Length.Percent(100);
+        root.Add(panel);
+        
+        Invoke(nameof(CloseInvitationPanel), 10f);
+
+        // 2. Configurar Texto
+        Label msgLabel = panel.Q<Label>("message");
+        if (msgLabel != null)
+        {
+            string senderName = "Unknown user";
+            // Intentamos obtener el nombre del registro local si existe
+            if (LocalRegistry.Instance != null)
+            {
+                var info = LocalRegistry.Instance.GetClientInfo(senderClientId);
+                senderName = info.Username;
+            }
+
+            msgLabel.text = msgLabel.text.Replace("XXXXXX", senderName);
+        }
+
+        // 3. Botón Aceptar
+        Button acceptBtn = panel.Q<Button>("accept-button");
+        if (acceptBtn != null)
+        {
+            acceptBtn.clicked += () =>
+            {
+                CancelInvoke(nameof(CloseInvitationPanel));
+                TeleportToLocalPlayer(senderClientId);
+                panel.RemoveFromHierarchy();
+            };
+        }
+
+        // 4. Botón Rechazar
+        Button rejectBtn = panel.Q<Button>("reject-button");
+        if (rejectBtn != null)
+        {
+            rejectBtn.clicked += () =>
+            {
+                CancelInvoke(nameof(CloseInvitationPanel));
+                panel.RemoveFromHierarchy();
+            };
+        }
+    }
+    
+    private void CloseInvitationPanel()
+    {
+        if (uiDocument == null) return;
+    
+        VisualElement root = uiDocument.rootVisualElement;
+        VisualElement panel = root?.Q(invitationPanelName);
+    
+        // Si el panel sigue existiendo, lo destruimos
+        if (panel != null)
+        {
+            panel.RemoveFromHierarchy();
+        }
+    }
+
+    /// <summary>
+    /// Lógica de teletransporte independiente de la lista visual de usuarios
+    /// </summary>
+    private void TeleportToLocalPlayer(ulong targetClientId)
+    {
+        Debug.Log($"[Teleport] Buscando al jugador remoto ID: {targetClientId}...");
+
+        if (NetworkManager.Singleton == null)
+            return;
+
+        // -----------------------------------------------------------------------
+        // CORRECCIÓN CRÍTICA: Búsqueda correcta del objeto Jugador por ClientID
+        // -----------------------------------------------------------------------
+        NetworkObject senderNetObj = null;
+
+        if (NetworkManager.Singleton.ConnectedClients.TryGetValue(targetClientId, out NetworkClient client))
+        {
+            senderNetObj = client.PlayerObject;
+        }
+        else
+        {
+            Debug.LogError($"[Teleport] El cliente {targetClientId} no aparece en la lista de conectados.");
+            return;
+        }
+
+        // Validación extra: ¿Existe el objeto?
+        if (senderNetObj == null)
+        {
+            Debug.LogError($"[Teleport] El cliente {targetClientId} está conectado, pero NO TIENE un PlayerObject asignado.");
+            return;
+        }
+
+        // -----------------------------------------------------------------------
+        // OBTENCIÓN DE COMPONENTES (Con búsqueda en hijos por seguridad)
+        // -----------------------------------------------------------------------
+        
+        // Buscamos en el objeto raíz o en sus hijos
+        var senderController = senderNetObj.GetComponent<UserControllerPlayer>();
+        if (senderController == null) senderController = senderNetObj.GetComponentInChildren<UserControllerPlayer>();
+
+        // Buscamos nuestro propio jugador local
+        if (NetworkManager.Singleton.SpawnManager.GetLocalPlayerObject() == null) return;
+        var localNetObj = NetworkManager.Singleton.SpawnManager.GetLocalPlayerObject();
+        
+        var localController = localNetObj.GetComponent<UserControllerPlayer>();
+        if (localController == null) localController = localNetObj.GetComponentInChildren<UserControllerPlayer>();
+
+        // -----------------------------------------------------------------------
+        // VALIDACIÓN FINAL Y MOVIMIENTO
+        // -----------------------------------------------------------------------
+
+        if (senderController == null)
+        {
+            Debug.LogError($"[Teleport] ENCONTRADO el objeto {senderNetObj.name} pero NO TIENE el script 'UserControllerPlayer'.");
+            return;
+        }
+
+        if (localController != null)
+        {
+            // Usamos playerCapsule si existe, sino fallback al transform
+            Transform targetT = senderController.playerCapsule != null ? senderController.playerCapsule : senderController.transform;
+
+            Debug.Log($"[Teleport] Moviendo local hacia {senderController.name} en posición {targetT.position}");
+
+            localController.MoveToUser(
+                targetT,
+                senderController.actualCamera,
+                senderController.GetPlatform()
+            );
+        }
+    }
+}

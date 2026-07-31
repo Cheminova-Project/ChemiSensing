@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7205f81df83d59d4393c42ffa83ae238, type: 3}
+  m_Name: Measure
+  m_EditorClassIdentifier: Assembly-CSharp::ToolDefinition
+  Id: tools-measure
+  DisplayName: Measurement
+  Icon: {fileID: 21300000, guid: d4319d1de754ebf41a202cdd86caed0a, type: 3}
+  BehaviourType: 0
+  isPersistent: 0
+  isAudioTool: 0
+  SupportedPlatforms: 01000000020000000300000004000000
+  IsSubmenu: 1
+  WindowAsset: {fileID: 0}
+  ScriptsContainer: {fileID: 0}
+  SubmenuTools:
+  - {fileID: 11400000, guid: 2ad792b1eb0e9a6428ee641e849acb5c, type: 2}
+  - {fileID: 11400000, guid: 3fbd4b435af002849b2451935219afd0, type: 2}
+  disabled: 0

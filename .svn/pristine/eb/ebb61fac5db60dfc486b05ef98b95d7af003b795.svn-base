@@ -1,0 +1,6 @@
+var class_client_post =
+[
+    [ "client_name", "class_client_post.html#aedc58ad775d37c956d100f0febdb537d", null ],
+    [ "client_uri", "class_client_post.html#aacd1b8cc9b67546f66616ce177dfa2dc", null ],
+    [ "redirect_uris", "class_client_post.html#a19edf1fcc3e11eb719c0e1015b325731", null ]
+];

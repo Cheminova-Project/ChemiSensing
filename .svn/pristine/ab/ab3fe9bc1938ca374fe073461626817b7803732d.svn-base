@@ -1,0 +1,16 @@
+var class_connection_state =
+[
+    [ "ApprovalCheck", "class_connection_state.html#a0fc3f6b6faa327dc6780123833909998", null ],
+    [ "Enter", "class_connection_state.html#addb861a44eaea1626cc93fe9b53bf26b", null ],
+    [ "Exit", "class_connection_state.html#a227d3b82050d3ec470f52ef9620f180c", null ],
+    [ "OnClientConnected", "class_connection_state.html#a8c0b8577d451c03cd268ee818863f1d8", null ],
+    [ "OnClientDisconnect", "class_connection_state.html#ab1745dbb8cce2952658fb3f6c84258de", null ],
+    [ "OnServerStarted", "class_connection_state.html#ae8cba863ea4b309b02adfdadcc67313d", null ],
+    [ "OnServerStopped", "class_connection_state.html#a30355ba5edc3d2e6b07b29939df6be8a", null ],
+    [ "OnTransportFailure", "class_connection_state.html#a6d9de60a0a2a240c06fd0ce90792b62f", null ],
+    [ "OnUserRequestedShutdown", "class_connection_state.html#a85ec85b525ea5e61087336f2b49ba33c", null ],
+    [ "StartClient", "class_connection_state.html#a526603f47d1b6c24827c0824805486b5", null ],
+    [ "StartServerIP", "class_connection_state.html#aef835085604ef5883d2a7d15c0d176d2", null ],
+    [ "StartServerMatchmaker", "class_connection_state.html#a42178b5bac99b0b40a40a714a40fbf60", null ],
+    [ "ConnectionManager", "class_connection_state.html#af0b365c00d502c8f11be52d8a4802fc7", null ]
+];

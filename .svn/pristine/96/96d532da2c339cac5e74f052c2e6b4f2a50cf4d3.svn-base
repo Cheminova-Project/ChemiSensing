@@ -1,0 +1,21 @@
+var class_annotation_data =
+[
+    [ "annotation_infos", "class_annotation_data.html#aa212fbcfa3580def57851569c2647a81", null ],
+    [ "created_on", "class_annotation_data.html#a1c593cc04cec4cf12dd23ae794776940", null ],
+    [ "description", "class_annotation_data.html#ab500c789f30ca6c8e8366be9fddc9c76", null ],
+    [ "error", "class_annotation_data.html#ad7e7a926c5e906c5d6f1e80de820c966", null ],
+    [ "GUID", "class_annotation_data.html#abc0ef53b2eac9540f59b04ed8611162f", null ],
+    [ "icon", "class_annotation_data.html#a82dfa452269ef1708398d91782fa27b1", null ],
+    [ "icon_path", "class_annotation_data.html#a8522c27e42d8351091a5d08cc352b5e1", null ],
+    [ "id", "class_annotation_data.html#ae8c64c3801f5e77deac86e7b81988dfa", null ],
+    [ "id_3dinstance", "class_annotation_data.html#ae5ebb042399cc950dc766459150be76e", null ],
+    [ "id_group", "class_annotation_data.html#adbd6fd7c0f95cd6c50255499e0e30ae7", null ],
+    [ "id_user", "class_annotation_data.html#a55f6693c51ccf6363198db8e672c8f85", null ],
+    [ "name", "class_annotation_data.html#acf513ed7e635f9724a83fd76d2603d01", null ],
+    [ "parent", "class_annotation_data.html#abf3408fb0459e4aec2ff7e3293a3a6d3", null ],
+    [ "shape_and_context", "class_annotation_data.html#a9124ece32593331c9204e62d616a2f11", null ],
+    [ "shape_and_context_name", "class_annotation_data.html#aba67a62fe4e9b8e7eeafeca6f1002199", null ],
+    [ "texture_layers", "class_annotation_data.html#a68685a9334626f5331a9756dc2328858", null ],
+    [ "type", "class_annotation_data.html#a1a594bf3fd44116c8decee948dec15e0", null ],
+    [ "username", "class_annotation_data.html#ae7f15a4be8d844fa3da3aa25d158f0c5", null ]
+];

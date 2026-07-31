@@ -1,0 +1,10 @@
+var class_annotation_info =
+[
+    [ "AnnotationInfo", "class_annotation_info.html#a17164e0cc40b31b215efbf8618268b8b", null ],
+    [ "annotation_info_name", "class_annotation_info.html#ac8c3bde56e8242a660f86dcf32b70810", null ],
+    [ "created_on", "class_annotation_info.html#a8cb7f30d2d362d97da158fa4aa9326b7", null ],
+    [ "file", "class_annotation_info.html#a042fc675711cecac4228b432174302f7", null ],
+    [ "id", "class_annotation_info.html#ad1485343a660d5b832b2a041f71102d9", null ],
+    [ "id_annotation", "class_annotation_info.html#a7ce1f533ff0b13c71b71edcf301b7903", null ],
+    [ "type", "class_annotation_info.html#a75edc5d7af5e6c4ac3e03bfd148bca74", null ]
+];

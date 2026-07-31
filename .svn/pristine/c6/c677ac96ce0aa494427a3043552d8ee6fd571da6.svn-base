@@ -1,0 +1,5 @@
+var class_online_state =
+[
+    [ "OnTransportFailure", "class_online_state.html#aa2c0a0a305051c1d59243e201ba15de2", null ],
+    [ "OnUserRequestedShutdown", "class_online_state.html#a6b74bfae8a500bb53f41ac39b66050c5", null ]
+];

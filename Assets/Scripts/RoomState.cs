@@ -1,0 +1,5 @@
+public static class RoomState
+{
+    public static int CurrentRoomPort = -1;
+    public static string CurrentRoomCreator = "";
+}
