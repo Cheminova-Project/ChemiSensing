@@ -255,6 +255,32 @@ public class ManipulableObject : NetworkBehaviour
         }
     }
     
+    public void RequestSyncTransform()
+    {
+        if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsConnectedClient)
+        {
+            RequestSyncTransformServerRpc(NetworkManager.Singleton.LocalClientId);
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void RequestSyncTransformServerRpc(ulong clientId)
+    {
+        ClientRpcParams clientRpcParams = new ClientRpcParams
+        {
+            Send = new ClientRpcSendParams { TargetClientIds = new ulong[] { clientId } }
+        };
+        SyncTransformClientRpc(transform.localPosition, transform.localRotation, transform.localScale, clientRpcParams);
+    }
+
+    [ClientRpc]
+    private void SyncTransformClientRpc(Vector3 pos, Quaternion rot, Vector3 scale, ClientRpcParams clientRpcParams = default)
+    {
+        transform.localPosition = pos;
+        transform.localRotation = rot;
+        transform.localScale = scale;
+    }
+    
     private void OnServerClientDisconnect(ulong clientId)
     {
         if (_networkObject != null && _networkObject.IsSpawned && _networkObject.OwnerClientId == clientId)

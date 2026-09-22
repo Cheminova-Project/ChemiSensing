@@ -44,10 +44,10 @@ public class NetworkPlayerName : NetworkBehaviour
         {
             if (RoomColorManager.Instance != null)
                 RoomColorManager.Instance.ReturnColor(playerColor.Value);
-            
-            if (LocalRegistry.Instance != null)
-                LocalRegistry.Instance.OnClientUsernameReceived -= HandleUsernameReceived;
         }
+
+        if (LocalRegistry.Instance != null)
+                LocalRegistry.Instance.OnClientUsernameReceived -= HandleUsernameReceived;
     }
     
     private void HandleUsernameReceived(ulong clientId, string newUsername)

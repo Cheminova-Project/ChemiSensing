@@ -31,8 +31,7 @@ public class ToolMessageHandler : MonoBehaviour
     {
         if (Instance != null && Instance != this)
         {
-            Debug.LogError("Ya existe una instancia de ToolMessageHandler. Destruyendo duplicado.");
-            Destroy(this.gameObject);
+            Destroy(gameObject);
             return;
         }
 
@@ -44,22 +43,24 @@ public class ToolMessageHandler : MonoBehaviour
         HideMessage();
     }
 
-    /// <summary>
-    /// Oculta el cuadro de mensaje en la interfaz de usuario.
-    /// </summary>
+    private bool EnsureUIDocument()
+    {
+        if (uIDocument == null && ToolMenuController.Instance != null)
+            uIDocument = ToolMenuController.Instance.GetUIDocument();
+        
+        return uIDocument != null;
+    }
+    
     void HideMessage()
     {   
-        if(!uIDocument)
-            uIDocument = ToolMenuController.Instance.GetUIDocument();
-
-        if(uIDocument == null)
-        {
-            Debug.LogWarning("ToolMessageHandler: UIDocument is not assigned.");
+        if (!EnsureUIDocument())
             return;
-        }
+        
         var root = uIDocument.rootVisualElement;
         var messageBox = root.Q<VisualElement>(messageBoxName);
-        messageBox.style.display = DisplayStyle.None;
+        
+        if (messageBox != null)
+            messageBox.style.display = DisplayStyle.None;
     }
 
     /// <summary>
@@ -67,16 +68,14 @@ public class ToolMessageHandler : MonoBehaviour
     /// </summary>
     public void ShowMessage(string message, float displayDuration = 3f, MessageType messageType = MessageType.Info)
     {
-        if (uIDocument == null)
+        if (!EnsureUIDocument())
         {
-            Debug.LogWarning("ToolMessageHandler: UIDocument is not assigned.");
+            Debug.LogWarning("ToolMessageHandler: UIDocument is not assigned and ToolMenuController is unavailable.");
             return;
         }
 
         if (currentMessageCoroutine != null)
-        {
             StopCoroutine(currentMessageCoroutine);
-        }
 
         currentMessageCoroutine = StartCoroutine(DisplayMessageCoroutine(message, displayDuration, messageType));
     }
@@ -96,7 +95,6 @@ public class ToolMessageHandler : MonoBehaviour
             yield break;
         }
 
-        // Configurar el color según el tipo de mensaje
         switch (messageType)
         {
             case MessageType.Info:

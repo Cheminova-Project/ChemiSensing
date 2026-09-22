@@ -503,7 +503,6 @@ public static class ThreeDInstanceDB
         };
         
         string query = ApiUrl + "/" + id + "/annotations" + QueryManagement.ToQueryString(queryParams);
-        //Debug.Log("API URL: " + query);
         UnityWebRequest request = new UnityWebRequest(query, "GET");
         request.SetRequestHeader("Authorization", "Bearer " + GlobalManagement.Instance.token);
         request.SetRequestHeader("Content-Type", "application/json");
@@ -564,6 +563,11 @@ public static class ThreeDInstanceDB
             type = HelpFunctionsConditionReport.AnnotationTypeToString(type),
             user_transformation_matrix = userTransformationMatrix,
             vizualization_type = HelpFunctionsConditionReport.AnnotationVisualizationTypeToString(visualizationType)
+        };
+        
+        var settings = new JsonSerializerSettings
+        {
+            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
         };
 
         string jsonData = JsonConvert.SerializeObject(annotationPostData);

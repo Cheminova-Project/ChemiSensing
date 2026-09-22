@@ -15,9 +15,13 @@ MonoBehaviour:
   Id: tools-annotations
   DisplayName: Annotations
   Icon: {fileID: 21300000, guid: ae781da12a9ca5043b1e35e3745f48dd, type: 3}
+  ActiveIcon: {fileID: 0}
+  BehaviourType: 0
+  isPersistent: 0
+  isAudioTool: 0
   SupportedPlatforms: 03000000020000000100000004000000
   IsSubmenu: 0
-  WindowAsset: {fileID: 0}
-  ScriptsContainer: {fileID: 0}
+  WindowAsset: {fileID: 9197481963319205126, guid: c6d864d649f2026478b52c437e81150e, type: 3}
+  ScriptsContainer: {fileID: 4387277265330116982, guid: e21306b66e106b947875485d899f043c, type: 3}
   SubmenuTools: []
-  disabled: 1
+  disabled: 0

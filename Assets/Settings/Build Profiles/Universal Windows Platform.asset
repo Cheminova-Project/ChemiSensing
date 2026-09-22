@@ -1012,7 +1012,7 @@ MonoBehaviour:
     - line: '|     Desktop: True'
     - line: '|   metroFTAName: '
     - line: '|   metroFTAFileTypes: []'
-    - line: '|   metroProtocolName: '
+    - line: '|   metroProtocolName: chemisensing'
     - line: '|   vcxProjDefaultLanguage: '
     - line: '|   XboxOneProductId: '
     - line: '|   XboxOneUpdateKey: '

@@ -20,6 +20,10 @@ public class VRRaycaster : MonoBehaviour
     private Transform selectedObject;
     
     [SerializeField]private bool laserEnabled = true;
+    
+    private VisualizationModeController _visController;
+    private TextureManager _texManager;
+    
     protected virtual void OnEnable()
     {
         InitListeners();
@@ -76,6 +80,19 @@ public class VRRaycaster : MonoBehaviour
         Physics.Raycast(raycastOrigin.position, raycastOrigin.forward, out RaycastHit hit, Mathf.Infinity, layerMask);
         bool hitSomething = hit.collider != null;
         
+        if (hitSomething)
+        {
+            Transform inspected = GetInspectedObject();
+            
+            if (inspected != null && (hit.transform == inspected || hit.transform.IsChildOf(inspected)))
+            {
+                if (!IsPointVisibleOnSectionPlane(hit.point, inspected))
+                {
+                    hitSomething = false;
+                }
+            }
+        }
+        
         if (!hitSomething)
         {
             raycastLineRenderer.SetPoints(new List<Vector3>());
@@ -106,6 +123,12 @@ public class VRRaycaster : MonoBehaviour
         Ray ray = new Ray(controllerPosition, raycastCamera.transform.forward);
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
+            Transform inspected = GetInspectedObject();
+            if (inspected != null && (hit.transform == inspected || hit.transform.IsChildOf(inspected)))
+            {
+                if (!IsPointVisibleOnSectionPlane(hit.point, inspected))
+                    return null;
+            }
             return hit.collider.gameObject;
         }
         return null;
@@ -114,9 +137,47 @@ public class VRRaycaster : MonoBehaviour
     public void SetLaserColor(Color newColor)
     {
         if (raycastLineRenderer != null)
-        {
-            // Ahora usamos el método sincronizado por red
             raycastLineRenderer.SetColor(newColor);
+    }
+    
+    private Transform GetInspectedObject()
+    {
+        if (InspectedObjectController.Instance != null)
+        {
+            var obj = InspectedObjectController.Instance.GetInspectedObject();
+            if (obj != null) return obj.transform;
         }
+        return null;
+    }
+
+    private bool IsPointVisibleOnSectionPlane(Vector3 hitPoint, Transform objTransform)
+    {
+        if (objTransform == null) return true;
+
+        if (_visController == null) _visController = FindFirstObjectByType<VisualizationModeController>();
+        if (_texManager == null) _texManager = FindFirstObjectByType<TextureManager>();
+
+        if (_visController != null && _texManager != null && _texManager.GetModelRenderer() != null)
+        {
+            Material mat = _texManager.GetModelRenderer().sharedMaterial;
+
+            if (mat != null && mat.HasProperty("_CutPosition") && mat.HasProperty("_CutNormal") && 
+                mat.shader != null && mat.shader.name.Contains("sectionPlaneShader"))
+            {
+                Vector3 planePosition = mat.GetVector("_CutPosition");
+                Vector3 planeNormal = mat.GetVector("_CutNormal");
+
+                Vector3 localP = objTransform.InverseTransformPoint(hitPoint);
+                Vector3 toPoint = localP - planePosition;
+
+                float projection = Vector3.Dot(toPoint, planeNormal);
+
+                bool isVisible = (projection <= 0f && !_visController.runtimeReverse) || 
+                                 (projection >= 0f && _visController.runtimeReverse);
+
+                return isVisible;
+            }
+        }
+        return true;
     }
 }

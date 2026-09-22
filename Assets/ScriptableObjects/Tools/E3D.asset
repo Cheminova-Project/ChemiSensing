@@ -15,11 +15,16 @@ MonoBehaviour:
   Id: e3d
   DisplayName: E3D
   Icon: {fileID: 21300000, guid: 3e476a6c67445f548b1a1d0e2eca34cb, type: 3}
+  ActiveIcon: {fileID: 0}
+  BehaviourType: 0
+  isPersistent: 0
+  isAudioTool: 0
   SupportedPlatforms: 01000000030000000200000004000000
   IsSubmenu: 1
   WindowAsset: {fileID: 9197481963319205126, guid: 3b681c24ae556d34ea370544cf33eee5, type: 3}
+  SecondWindowAsset: {fileID: 0}
   ScriptsContainer: {fileID: 0}
   SubmenuTools:
-  - {fileID: 11400000, guid: 5ce491eddbdb39d4e955d5d738210d6d, type: 2}
-  - {fileID: 11400000, guid: 6823560f896c8ce429301828243b8b30, type: 2}
   - {fileID: 11400000, guid: bef1b6b77f936434cbd219aeb862c670, type: 2}
+  - {fileID: 11400000, guid: 6823560f896c8ce429301828243b8b30, type: 2}
+  disabled: 0

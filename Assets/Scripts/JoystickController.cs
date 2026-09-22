@@ -44,16 +44,13 @@ public class JoystickController : ToolComponent
         //Eliminar el joystick de aux-window
         if (uIDocument != null && uIDocument.rootVisualElement != null)
         {
-            VisualElement root = uIDocument.rootVisualElement;
-            VisualElement auxWindow = root.Q<VisualElement>("aux-window");
-            
-            if (auxWindow != null)
+            VisualElement auxWindow = uIDocument.rootVisualElement.Q<VisualElement>("aux-window");
+            if (auxWindow != null && joystickContainer != null && auxWindow.Contains(joystickContainer))
             {
-                if (joystickContainer != null && auxWindow.Contains(joystickContainer))
-                    auxWindow.Remove(joystickContainer);
+                auxWindow.Remove(joystickContainer);
                 
-                if (joystickUSS != null && auxWindow.styleSheets.Contains(joystickUSS))
-                    auxWindow.styleSheets.Remove(joystickUSS);
+                if (auxWindow.childCount == 0)
+                    auxWindow.style.display = DisplayStyle.None;
             }
         }
     }
@@ -61,10 +58,12 @@ public class JoystickController : ToolComponent
     {
         VisualElement root = uIDocument.rootVisualElement;
         VisualElement auxWindow = root.Q<VisualElement>("aux-window");
+        if (auxWindow != null)
+            auxWindow.style.display = DisplayStyle.Flex;
         joystickContainer = joystickUXML.CloneTree();
         joystickContainer.style.height = new StyleLength(new Length(100, LengthUnit.Percent));
         joystickContainer.style.width = new StyleLength(new Length(100, LengthUnit.Percent));
-
+        joystickContainer.styleSheets.Add(joystickUSS);
         joystickTouchArea = joystickContainer.Q<VisualElement>("JoystickTouchArea");
         joystickElement = joystickContainer.Q("JoystickOuterBorder"); // There is a parent node named "JoystickOuterBorder" in Joystick.uxml file, just leave it as it is, you will need this variable to show/hide joystick later
         joystickKnob = joystickElement.Q("JoystickKnob"); // There is a child node named "JoystickKnob" in Joystick.uxml file, just leave it as it is, you will need this variable to move the little circle on the middle of the joystick later
@@ -72,7 +71,8 @@ public class JoystickController : ToolComponent
         joystickElement.style.width = size; // applying width of joystick
         joystickElement.style.height = size; // applying height of joystick
 
-        joystickKnob.style.transformOrigin = new TransformOrigin(Length.Percent(100), 0, 0);
+        joystickElement.style.display = DisplayStyle.None;
+        joystickElement.style.position = Position.Absolute;
 
         auxWindow.styleSheets.Add(joystickUSS); // add joystick uss file to aux-window, it is needed to apply joystick styles
         auxWindow.Add(joystickContainer); // add complete joystick UI as child of aux-window
@@ -117,13 +117,14 @@ public class JoystickController : ToolComponent
     private void ShowJoystick(PointerDownEvent _ev)
     {
         detectJoystickMovement = true;
+        joystickTouchArea.CapturePointer(_ev.pointerId);
         
-        // Usar coordenadas locales del touch area directamente
         Vector2 localPosition = _ev.localPosition;
         startPos = localPosition;
         
-        joystickElement.style.left = localPosition.x - size / 2;
-        joystickElement.style.top = localPosition.y - size / 2;
+        joystickElement.style.position = Position.Absolute;
+        joystickElement.style.left = localPosition.x - (size / 2f);
+        joystickElement.style.top = localPosition.y - (size / 2f);
         joystickElement.style.display = DisplayStyle.Flex;
     }
 
@@ -131,20 +132,21 @@ public class JoystickController : ToolComponent
     {
         if (detectJoystickMovement)
         {
-            // Usar coordenadas locales del touch area directamente
             Vector2 localPosition = _ev.localPosition;
             
             float deltaX = localPosition.x - startPos.x;
-            float deltaY = startPos.y - localPosition.y;
-            input = new Vector3(deltaX, deltaY, 0);
-            input = input.normalized;
-
-            ApplySensitivity(ref input, deltaX, deltaY, sensitivity);
+            float deltaY = localPosition.y - startPos.y;
             
-            // Almacenar el input actual para enviarlo continuamente
-            currentInput = new Vector2(input.x, input.y);
+            Vector2 delta = new Vector2(deltaX, deltaY);
             
-            joystickKnob.style.translate = new StyleTranslate(new Translate(new Length(input.x * size / 2, LengthUnit.Pixel), new Length(-input.y * size / 2, LengthUnit.Pixel)));
+            float maxRadius = size / 2f;
+            
+            Vector2 clampedDelta = Vector2.ClampMagnitude(delta, maxRadius);
+            
+            currentInput = new Vector2(clampedDelta.x / maxRadius, -clampedDelta.y / maxRadius);
+            input = new Vector3(currentInput.x, currentInput.y, 0);
+            
+            joystickKnob.style.translate = new StyleTranslate(new Translate(new Length(clampedDelta.x, LengthUnit.Pixel), new Length(clampedDelta.y, LengthUnit.Pixel)));
         }
     }
 
@@ -160,55 +162,30 @@ public class JoystickController : ToolComponent
     private void HideJoystick(PointerUpEvent _ev)
     {
         input = Vector3.zero;
-        currentInput = Vector2.zero; // Limpiar el input actual
+        currentInput = Vector2.zero; 
         detectJoystickMovement = false;
+        
+        joystickTouchArea.ReleasePointer(_ev.pointerId);
+        
         joystickElement.style.display = DisplayStyle.None;
         joystickKnob.style.translate = new StyleTranslate(new Translate(new Length(0, LengthUnit.Pixel), new Length(0, LengthUnit.Pixel)));
         
-        // Asegurar que se envíe input cero cuando se suelta
         if (mobileFirstPersonController != null)
-        {
             mobileFirstPersonController.InputMove(Vector2.zero);
-        }
     }
 
     private void HideJoystick(PointerLeaveEvent _ev)
     {
         input = Vector3.zero;
-        currentInput = Vector2.zero; // Limpiar el input actual
+        currentInput = Vector2.zero; 
         detectJoystickMovement = false;
+
+        joystickTouchArea.ReleasePointer(_ev.pointerId); 
+
         joystickElement.style.display = DisplayStyle.None;
         joystickKnob.style.translate = new StyleTranslate(new Translate(new Length(0, LengthUnit.Pixel), new Length(0, LengthUnit.Pixel)));
         
-        // Asegurar que se envíe input cero cuando se sale del área
         if (mobileFirstPersonController != null)
-        {
             mobileFirstPersonController.InputMove(Vector2.zero);
-        }
-    }
-
-    private static void ApplySensitivity(ref Vector3 input, float _deltaX, float _deltaY, float sensitivity)
-    {
-
-
-        if (Mathf.Abs(_deltaX) >= sensitivity || Mathf.Abs(_deltaY) >= sensitivity) { return; } // it is to avoid stuttering when one of directions is above sensitivity limit, you can assume it as a bug fixer line
-
-        if (_deltaX > 0) // if finger movement is towards right
-        {
-            input.x = (_deltaX >= sensitivity) ? input.x : Mathf.Lerp(0f, 1f, _deltaX / sensitivity);
-        }
-        else // if finger movement is towards left
-        {
-            input.x = (_deltaX <= -sensitivity) ? input.x : Mathf.Lerp(0f, -1f, _deltaX / -sensitivity);
-        }
-
-        if (_deltaY > 0) // if finger movement is towards up
-        {
-            input.y = (_deltaY >= sensitivity) ? input.y : Mathf.Lerp(0f, 1f, _deltaY / sensitivity);
-        }
-        else // if finger movement is towards down
-        {
-            input.y = (_deltaY <= -sensitivity) ? input.y : Mathf.Lerp(0f, -1f, _deltaY / -sensitivity);
-        }
     }
 }

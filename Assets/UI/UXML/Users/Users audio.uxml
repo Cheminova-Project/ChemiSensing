@@ -9,7 +9,8 @@
                        mode="Vertical" 
                        touch-scroll-behavior="Clamped" 
                        horizontal-scroller-visibility="Hidden" 
-                       vertical-scroller-visibility="Auto" 
+                       vertical-scroller-visibility="Auto"
+                       mouse-wheel-scroll-size="40"
                        style="flex-grow: 1; width: 100%;">
         </ui:ScrollView>
     </ui:VisualElement>

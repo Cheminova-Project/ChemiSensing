@@ -1457,7 +1457,16 @@ namespace Paroxe.PdfRenderer
             }
             else if (m_FileSource == FileSourceType.FilePath)
             {
-                buffer = File.ReadAllBytes(GetFileLocation());
+                string location = GetFileLocation();
+    
+                if (!string.IsNullOrEmpty(location) && File.Exists(location))
+                    buffer = File.ReadAllBytes(location);
+                else
+                {
+                    Debug.LogWarning($"[PDFViewer] No se pudo cargar el PDF. La ruta está vacía o el archivo no existe: '{location}'");
+                    buffer = null; 
+                }
+    
                 OnLoadingBufferFinished(buffer);
             }
             else if (m_FileSource == FileSourceType.Resources)

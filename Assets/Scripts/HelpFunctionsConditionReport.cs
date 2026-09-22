@@ -134,18 +134,17 @@ public class HelpFunctionsConditionReport : MonoBehaviour
         }
     }
     
-    public static string AnnotationVisualizationTypeToString(AnnotationVisualizationType? annotationVisualizationType)
+    public static string AnnotationVisualizationTypeToString(AnnotationVisualizationType? type)
     {
-        switch (annotationVisualizationType)
+        switch (type)
         {
-            case AnnotationVisualizationType.horizontal_split:
-                return "horizontal_split";
-            case AnnotationVisualizationType.vertical_split:
-                return "vertical_split";
-            case AnnotationVisualizationType.spot:
-                return "spot";
-            default:
-                return "default";
+            case AnnotationVisualizationType.split: return "split";
+            case AnnotationVisualizationType.horizontal_split: return "horizontal_split";
+            case AnnotationVisualizationType.vertical_split: return "vertical_split";
+            case AnnotationVisualizationType.spot: return "spot";
+            case AnnotationVisualizationType.ring: return "ring";
+            case AnnotationVisualizationType.section_plane: return "section_plane";
+            default: return "default";
         }
     }
     

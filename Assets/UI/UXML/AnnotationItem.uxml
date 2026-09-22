@@ -1,0 +1,11 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/CheminovaUI/Resources/UI/USS/utils.uss?fileID=7433441132597879392&amp;guid=9bc8afcbc8187b149860a5a14fc82d8c&amp;type=3#utils"/>
+    <ui:VisualElement name="AnnotationItem" class="interactive-item" style="flex-grow: 1; height: 200px; flex-direction: column; justify-content: center; padding-left: 30px; padding-right: 30px; background-color: rgb(249, 223, 170); margin-left: 20px; margin-right: 20px; margin-top: 15px; margin-bottom: 15px; border-radius: 15px; overflow: hidden;">
+        <ui:Label text="Nombre" name="annotation-name" style="font-size: 45px; -unity-text-align: middle-left; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; -unity-font-style: bold; margin-bottom: 5px;"/>
+        <ui:Label text="User: Unknown" name="annotation-username" style="font-size: 30px; -unity-text-align: middle-left; color: rgb(100, 100, 100); width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 10px; -unity-font-style: normal;"/>
+        <ui:VisualElement name="details-row" style="flex-direction: row; justify-content: space-between; align-items: center; width: 100%;">
+            <ui:Label text="Categoría" name="annotation-category" style="font-size: 30px; -unity-text-align: middle-left; color: rgb(80, 80, 80); flex-shrink: 1; overflow: hidden; text-overflow: ellipsis;"/>
+            <ui:Label text="DD/MM/YYYY" name="annotation-date" style="font-size: 25px; -unity-text-align: middle-right; color: rgb(130, 130, 130); flex-shrink: 0;"/>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

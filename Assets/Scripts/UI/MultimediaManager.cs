@@ -157,37 +157,33 @@ public class MultimediaManager : MonoBehaviour
                 
                 element.RegisterCallback<ClickEvent>(ev =>
                 {
-                    if (ev.button == 0)
+                    CloseMultimedia();
+                    if (doc.content_type.Contains("pdf"))
                     {
-                        //Debo desactivar todos los elementos multimedia antes de activar uno nuevo
-                        CloseMultimedia();
-                        if (doc.content_type.Contains("pdf"))
-                        {
-                            canvas.SetActive(true);
-                            pdfViewer.gameObject.SetActive(true);
-                            DownloadAndFillAnnexDataPdf(pdfViewer, doc.id);
-                        }
-                        else if (doc.content_type.Contains("image"))
-                        {
-                            canvas.SetActive(true);
-                            annexDataImage.gameObject.SetActive(true);
-                            DownloadAndFillAnnexDataImage(annexDataImage, doc.id);
-                        }
-                        else if (doc.content_type.Contains("audio"))
-                        {
-                            canvas.SetActive(true);
-                            audioSource.gameObject.SetActive(true);
-                            DownloadAndPlayAnnexDataAudio(audioSource, doc.name, doc.id);
-                        }
-                        else if (doc.content_type.Contains("video"))
-                        {
-                            canvas.SetActive(true);
-                            dynamicVideoDisplay.gameObject.SetActive(true);
-                            videoController.gameObject.SetActive(true);
-                            DownloadAndFillAnnexDataVideo(doc.id);
-                        }
-                        closeButton.gameObject.SetActive(true);
+                        canvas.SetActive(true);
+                        pdfViewer.gameObject.SetActive(true);
+                        DownloadAndFillAnnexDataPdf(pdfViewer, doc.id);
                     }
+                    else if (doc.content_type.Contains("image"))
+                    {
+                        canvas.SetActive(true);
+                        annexDataImage.gameObject.SetActive(true);
+                        DownloadAndFillAnnexDataImage(annexDataImage, doc.id);
+                    }
+                    else if (doc.content_type.Contains("audio"))
+                    {
+                        canvas.SetActive(true);
+                        audioSource.gameObject.SetActive(true);
+                        DownloadAndPlayAnnexDataAudio(audioSource, doc.name, doc.id);
+                    }
+                    else if (doc.content_type.Contains("video"))
+                    {
+                        canvas.SetActive(true);
+                        dynamicVideoDisplay.gameObject.SetActive(true);
+                        videoController.gameObject.SetActive(true);
+                        DownloadAndFillAnnexDataVideo(doc.id);
+                    }
+                    closeButton.gameObject.SetActive(true);
                 });
             }
         }
@@ -297,6 +293,8 @@ public class MultimediaManager : MonoBehaviour
         audioSource.gameObject.SetActive(false);
         ClearRawImage(annexDataImage, true);
         annexDataImage.gameObject.SetActive(false);
+        if (pdfViewer != null && pdfViewer.IsLoaded)
+            pdfViewer.UnloadDocument();
         pdfViewer.gameObject.SetActive(false);
         dynamicVideoDisplay.ResetVideoPlayer();
         dynamicVideoDisplay.gameObject.SetActive(false);

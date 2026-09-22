@@ -15,6 +15,7 @@
                        horizontal-scroller-visibility="Hidden" 
                        vertical-scroller-visibility="Auto" 
                        touch-scroll-behavior="Clamped"
+                       mouse-wheel-scroll-size="40"
                        style="flex-grow: 1; width: 100%;">
         </ui:ScrollView>
     </ui:VisualElement>

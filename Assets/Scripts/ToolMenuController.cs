@@ -29,6 +29,8 @@ public class ToolMenuController : MonoBehaviour
 
     private VisualElement windowContainer;
     private VisualElement toolbarContainer;
+    private VisualElement auxWindowContainer;
+    private VisualElement hiddenContainer;
     private VisualElement activeWindow;
     private GameObject activeScriptsContainer;
     private GameObject activeSubmenuContainer; // Para mantener el container del submenú activo
@@ -39,9 +41,7 @@ public class ToolMenuController : MonoBehaviour
     private Dictionary<string, GameObject> activeIndependentContainers = new Dictionary<string, GameObject>();
     private string activeToolId = null;
     private bool isInitialized = false;
-
-
-
+    
     void Awake()
     {
         if (Instance != null && Instance != this)
@@ -66,6 +66,8 @@ public class ToolMenuController : MonoBehaviour
         {
             var root = uiDocument.rootVisualElement;
             windowContainer = root.Q<VisualElement>("tool-window");
+            auxWindowContainer = root.Q<VisualElement>("aux-window");
+            hiddenContainer = root.Q<VisualElement>("hidden-window");
             toolbarContainer = root.Q<VisualElement>("bottom-menu");
             
             OnUIDocumentEnabled();
@@ -85,6 +87,8 @@ public class ToolMenuController : MonoBehaviour
     {
         var root = uiDocument.rootVisualElement;
         windowContainer = root.Q<VisualElement>("tool-window");
+        auxWindowContainer = root.Q<VisualElement>("aux-window");
+        hiddenContainer = root.Q<VisualElement>("hidden-window");
         toolbarContainer = root.Q<VisualElement>("bottom-menu");
 
         // Mostrar menú inicial solo la primera vez
@@ -193,6 +197,8 @@ public class ToolMenuController : MonoBehaviour
         if (windowContainer != null)
         {
             windowContainer.Clear();
+            auxWindowContainer.Clear();
+            hiddenContainer.Clear();
         }
         ShowWindowContainer(false);
         activeWindow = null;
@@ -243,6 +249,8 @@ public class ToolMenuController : MonoBehaviour
         toolbarContainer.Clear();
         currentTools = tools;
         ShowWindowContainer(false);
+        ShowAuxWindowContainer(false);
+        ShowHiddenContainer(false);
         PlayerCharacterType currentPlatform = PlatformController.Instance != null
             ? PlatformController.Instance.GetPlayerCharacterType()
             : PlayerCharacterType.Desktop;
@@ -344,6 +352,8 @@ public class ToolMenuController : MonoBehaviour
                     if (tool.BehaviourType == ToolBehaviourType.GroupToggle)
                     {
                         windowContainer.Clear();
+                        auxWindowContainer.Clear();
+                        hiddenContainer.Clear();
                         if (activeScriptsContainer != null)
                         {
                             Destroy(activeScriptsContainer);
@@ -382,17 +392,51 @@ public class ToolMenuController : MonoBehaviour
     {
         windowContainer.style.display = show ? DisplayStyle.Flex : DisplayStyle.None;
     }
+    
+    private void ShowAuxWindowContainer(bool show)
+    {
+        auxWindowContainer.style.display = show ? DisplayStyle.Flex : DisplayStyle.None;
+    }
+
+    private void ShowHiddenContainer(bool show)
+    {
+        hiddenContainer.style.display = show ? DisplayStyle.Flex : DisplayStyle.None;
+    }
 
     private void OpenTool(ToolDefinition tool)
     {
         if (tool.BehaviourType == ToolBehaviourType.GroupToggle)
         {
             windowContainer.Clear();
+            auxWindowContainer.Clear();
+            hiddenContainer.Clear();
 
             if (activeScriptsContainer != null)
             {
                 Destroy(activeScriptsContainer);
                 activeScriptsContainer = null;
+            }
+        }
+        
+        if (tool.BehaviourType == ToolBehaviourType.GroupToggle && tool.Id == "ring")
+        {
+            Debug.Log("Abriendo herramienta Ring");
+
+            auxWindowContainer.Clear();
+            hiddenContainer.Clear();
+
+            if (tool.SecondWindowAsset != null)
+            {
+                var auxWindow = tool.SecondWindowAsset.CloneTree();
+
+                auxWindow.style.width = Length.Percent(100);
+                auxWindow.style.height = Length.Percent(100);
+                auxWindow.style.flexGrow = 1;
+                auxWindow.style.flexShrink = 0;
+
+                auxWindowContainer.Add(auxWindow);
+                ShowAuxWindowContainer(true);
+                ShowHiddenContainer(true);
             }
         }
 
@@ -431,31 +475,115 @@ public class ToolMenuController : MonoBehaviour
     private void OpenSubmenu(ToolDefinition tool)
     {
         CleanupNonPersistentTools();
-        // Guardar menú actual y mostrar submenú
         menuStack.Push(currentTools);
         ShowMenu(tool.SubmenuTools);
+        auxWindowContainer.Clear();
+        hiddenContainer.Clear();
         windowContainer.Clear();
         
-        // Destruir solo el container de herramienta activo, no el del submenú anterior
         if (activeScriptsContainer != null)
         {
             Destroy(activeScriptsContainer);
             activeScriptsContainer = null;
         }
 
-        // Guardar el container del submenú anterior en el stack
         if (activeSubmenuContainer != null)
             submenuContainerStack.Push(activeSubmenuContainer);
 
-        // Instanciar el container del nuevo submenú
         if (tool.ScriptsContainer != null)
-        {
             activeSubmenuContainer = Instantiate(tool.ScriptsContainer, transform);
-            // Los ToolComponents se activarán automáticamente con OnEnable
+        else
+            activeSubmenuContainer = null;
+        
+        if (tool.Id == "visualization-modes")
+            TryAutoSelectVisualizationMode(tool.SubmenuTools);
+    }
+    
+    private void TryAutoSelectVisualizationMode(ToolDefinition[] submenuTools)
+    {
+        var visController = FindFirstObjectByType<VisualizationModeController>();
+        if (visController == null)
+            return;
+        
+
+        if (visController.netVisualizationMode.Value == VisualizationMode.Standard) 
+            return;
+
+        string activeModeStr = visController.netVisualizationMode.Value.ToString().ToLower();
+
+        foreach (var tool in submenuTools)
+        {
+            string toolIdLower = tool.Id.ToLower();
+            
+            if (toolIdLower.Contains(activeModeStr) || 
+                (activeModeStr == "sectionplane" && toolIdLower.Contains("section")))
+            {
+                var toggle = toolbarContainer.Q<Toggle>(tool.Id);
+                if (toggle != null)
+                {
+                    toggle.SetValueWithoutNotify(true);
+                    OpenTool(tool);
+                }
+                break;
+            }
+        }
+    }
+    
+    /// <summary>
+    /// Activa una herramienta por su ID. Navega automáticamente por submenús si es necesario.
+    /// </summary>
+    public void ActivateToolById(string toolId)
+    {
+        if (toolbarContainer == null) return;
+
+        while (menuStack.Count > 0)
+        {
+            GoBackToPreviousMenu();
+        }
+
+        var toggle = toolbarContainer.Q<Toggle>(toolId);
+        if (toggle != null)
+        {
+            toggle.value = true;
+            return;
+        }
+
+        if (toolId.Contains("-"))
+        {
+            string parentId = toolId.Split('-')[0]; 
+            
+            var parentToggle = toolbarContainer.Q<Toggle>(parentId);
+            if (parentToggle != null)
+            {
+                parentToggle.value = true; 
+                
+                StartCoroutine(ClickChildToggleDelayed(toolId));
+                return;
+            }
+        }
+
+        ToolDefinition tool = FindToolById(toolId);
+        if (tool != null)
+        {
+            if (tool.IsSubmenu && tool.SubmenuTools != null && tool.SubmenuTools.Length > 0) OpenSubmenu(tool);
+            else OpenTool(tool);
+        }
+    }
+
+    private System.Collections.IEnumerator ClickChildToggleDelayed(string toolId)
+    {
+        yield return null; // Esperamos exactamente 1 frame visual
+
+        var childToggle = toolbarContainer.Q<Toggle>(toolId);
+        if (childToggle != null)
+        {
+            childToggle.value = true; // Ahora sí existe y podemos pulsarlo
         }
         else
         {
-            activeSubmenuContainer = null;
+            // Fallback extremo
+            ToolDefinition tool = FindToolById(toolId);
+            if (tool != null) OpenTool(tool);
         }
     }
     
@@ -505,9 +633,15 @@ public class ToolMenuController : MonoBehaviour
             var previousMenu = menuStack.Pop();
             ShowMenu(previousMenu);
             windowContainer.Clear();
+            auxWindowContainer.Clear();
+            hiddenContainer.Clear();
 
             if (activeScriptsContainer != null)
             {
+                var visManager = activeScriptsContainer.GetComponentInChildren<VisualizationModeManager>();
+                if (visManager != null) 
+                    visManager.CloseFromBackButton();
+                
                 Destroy(activeScriptsContainer);
                 activeScriptsContainer = null;
             }

@@ -1,18 +1,14 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
 using Unity.Collections;
 using Unity.Netcode;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Networking;
 
 public class TextureManager : NetworkBehaviour
 {
     private const int MAX_DOWNLOADED_TEXTURES = 3;
+    public Dictionary<int, string> textureLayers = new();
     
     private MeshRenderer modelRenderer; // Renderer of the model to apply textures 
 
@@ -22,7 +18,7 @@ public class TextureManager : NetworkBehaviour
     
     private static float lastTextureMessageTime = 0f;
     private static ulong lastTextureChangerId = ulong.MaxValue;
-    
+    private bool isIsolated = false;
     public UnityAction<RemoteTexture> onRemoteTexturesValueChanged;
     public UnityAction<int> onTextureStartedDownload;
     public UnityAction<int> onMemoryLimitReached; // Notificacion cuando se alcanza el limite
@@ -62,6 +58,15 @@ public class TextureManager : NetworkBehaviour
     private void RecordTextureAccess(int textureID)
     {
         lastAccessTime[textureID] = Time.realtimeSinceStartup;
+    }
+    
+    public void SetIsolatedMode(bool isolated)
+    {
+        isIsolated = isolated;
+        if (!isolated)
+        {
+            SyncTextureVisualState();
+        }
     }
 
     /// <summary>
@@ -158,14 +163,16 @@ public class TextureManager : NetworkBehaviour
     private void RefreshUIWithExistingTextures()
     {
         if (currentUI == null)
+        {
+            Debug.LogError("[DEBUG TextureManager] currentUI es NULL en RefreshUIWithExistingTextures");
             return;
+        }
         
         foreach (var texture in remoteTextures)
         {
             currentUI.AddTextureItem(texture);
         }
         
-
         // Importante: sincronizar el estado de todos los elementos después de añadirlos
         currentUI.RefreshAllUIStates();
     }
@@ -294,63 +301,75 @@ public class TextureManager : NetworkBehaviour
     
     private void RemoveTextureModel(RemoteTexture remoteTexture)
     {
-        if (NetworkManager.Singleton.IsServer)
-            return;
-        Texture2D texture = localTextureData[remoteTexture.id].localTexture2D;
+        if (NetworkManager.Singleton.IsServer) return;
+        if (isIsolated) return;
+        if (!localTextureData.ContainsKey(remoteTexture.id)) return;
         
-        switch (remoteTexture.textureType)
+        Texture2D texture = localTextureData[remoteTexture.id].localTexture2D;
+
+        try
         {
-            case TextureTypeFake.AO:
-                var ao = modelRenderer.material.GetTexture("_OcclusionMap");
-                if(texture == ao)
-                    modelRenderer.material.SetTexture("_OcclusionMap", null);
-                break;
-            case TextureTypeFake.ALBEDO:
-                //var albedo = modelRenderer.material.GetTexture("_BaseMap");
-                var albedo = modelRenderer.material.GetTexture("_AlphaLayer");;
-                if(texture == albedo)
-                    //modelRenderer.material.SetTexture("_BaseMap", null);
-                    modelRenderer.material.SetTexture("_AlphaLayer", null);
-                break;
-            case TextureTypeFake.NORMAL:
-                var normal = modelRenderer.material.GetTexture("_BumpMap");
-                if(texture == normal)
-                    modelRenderer.material.SetTexture("_BumpMap", null);
-                break;
+            switch (remoteTexture.textureType)
+            {
+                case TextureTypeFake.AO:
+                    if (modelRenderer.sharedMaterial.HasProperty("_OcclusionMap"))
+                    {
+                        var ao = modelRenderer.sharedMaterial.GetTexture("_OcclusionMap");
+                        if (texture == ao) modelRenderer.sharedMaterial.SetTexture("_OcclusionMap", null);
+                    }
+                    break;
+                    
+                case TextureTypeFake.ALBEDO:
+                    if (modelRenderer.sharedMaterial.HasProperty("_AlphaLayer"))
+                    {
+                        var albedo = modelRenderer.sharedMaterial.GetTexture("_AlphaLayer");
+                        if (texture == albedo) modelRenderer.sharedMaterial.SetTexture("_AlphaLayer", null);
+                    }
+                    break;
+                    
+                case TextureTypeFake.NORMAL:
+                    if (modelRenderer.material.HasProperty("_BumpMap"))
+                    {
+                        var normal = modelRenderer.sharedMaterial.GetTexture("_BumpMap");
+                        if (texture == normal) modelRenderer.sharedMaterial.SetTexture("_BumpMap", null);
+                    }
+                    break;
+            }
         }
+        catch (System.Exception) { /* Ignorar error silenciosamente si el shader no es compatible */ }
     }
 
     private void ApplyTextureModel(RemoteTexture remoteTexture)
     {
-        if (NetworkManager.Singleton.IsServer)
-            return;
+        if (NetworkManager.Singleton.IsServer) return;
+        if (isIsolated) return;
+        if (!remoteTexture.isVisible) return;
+        if (!localTextureData.ContainsKey(remoteTexture.id)) return;
 
-        if (!remoteTexture.isVisible)
-            return;
-        
         Texture2D texture = localTextureData[remoteTexture.id].localTexture2D;
-        if (texture == null)
-        {
-            Debug.LogError($"Texture with ID {remoteTexture.id} is not downloaded or is null.");
-            return;
-        }
-        
-        // Registrar acceso cuando se aplica la textura
+        if (texture == null) return;
+
         RecordTextureAccess(remoteTexture.id);
-        
-        switch (remoteTexture.textureType)
+
+        try
         {
-            case TextureTypeFake.AO:
-                modelRenderer.material.SetTexture("_OcclusionMap", texture);
-                break;
-            case TextureTypeFake.ALBEDO:
-                //modelRenderer.material.SetTexture("_BaseMap", texture);
-                modelRenderer.material.SetTexture("_AlphaLayer", texture);
-                break;
-            case TextureTypeFake.NORMAL:
-                modelRenderer.material.SetTexture("_BumpMap", texture);
-                break;
+            switch (remoteTexture.textureType)
+            {
+                case TextureTypeFake.AO:
+                    if (modelRenderer.sharedMaterial.HasProperty("_OcclusionMap"))
+                        modelRenderer.sharedMaterial.SetTexture("_OcclusionMap", texture);
+                    break;
+                case TextureTypeFake.ALBEDO:
+                    if (modelRenderer.sharedMaterial.HasProperty("_AlphaLayer"))
+                        modelRenderer.sharedMaterial.SetTexture("_AlphaLayer", texture);
+                    break;
+                case TextureTypeFake.NORMAL:
+                    if (modelRenderer.sharedMaterial.HasProperty("_BumpMap"))
+                        modelRenderer.sharedMaterial.SetTexture("_BumpMap", texture);
+                    break;
+            }
         }
+        catch (System.Exception) { /* Ignorar error silenciosamente si el shader no es compatible */ }
     }
 
     private void ChangeVisibilityInServer(bool visibility, int id)
@@ -442,7 +461,6 @@ public class TextureManager : NetworkBehaviour
         }
     }
     
-    
     private int GetIndexByID(int id)
     {
         for (var index = 0; index < remoteTextures.Count; index++)
@@ -478,20 +496,10 @@ public class TextureManager : NetworkBehaviour
             //We can deduce that the textures involved in the gltf are already downloaded. We suppose: Albedo, Ambient occlusion, Normal map (This can change in the future, it depends on E3D implementation)
             if (modelRenderer == null)
             {
-                Debug.LogError("No MeshRenderer found on the inspected object.");
+                Debug.LogError("[DEBUG TextureManager] No MeshRenderer found on the inspected object.");
                 return;
             }
-
-            Material modelMaterial = modelRenderer.material;
-            //We clear all previous textures
-
-            /*
-            modelMaterial.SetTexture("_BaseMap", null);
-            modelMaterial.SetTexture("_BumpMap", null);
-            modelMaterial.SetTexture("_OcclusionMap", null);
-            */
-
-
+            
             InitializeClientUI();
             remoteTextures.OnListChanged += OnRemoteTexturesChanged;
 
@@ -523,7 +531,8 @@ public class TextureManager : NetworkBehaviour
 
         foreach (var item in response.items)
         {
-           foreach (var tex in item.textures)
+            textureLayers[item.id] = item.name;
+            foreach (var tex in item.textures)
             {
                 if (tex.name.ToLower().Contains("albedo"))
                     continue;
@@ -584,8 +593,8 @@ public class TextureManager : NetworkBehaviour
         // Inicializar registro de acceso para LRU
         lastAccessTime[remoteTexture.id] = Time.realtimeSinceStartup;
         
-        // Use event to notify UI
-        currentUI?.AddTextureItem(remoteTexture);
+        if (currentUI != null)
+            currentUI.AddTextureItem(remoteTexture);
     }
     
     private void OnRemoteTexturesChanged(NetworkListEvent<RemoteTexture> changeEvent)
@@ -628,12 +637,48 @@ public class TextureManager : NetworkBehaviour
         return localTextureData.ContainsKey(textureID) && localTextureData[textureID].isDownloading;
     }
     
+    public bool IsAnyTextureDownloading()
+    {
+        foreach (var data in localTextureData.Values)
+        {
+            if (data.isDownloading)
+                return true;
+        }
+        return false;
+    }
+    
     /// <summary>
     /// Obtiene los datos locales completos de una textura
     /// </summary>
     public LocalTextureData GetLocalTextureData(int textureID)
     {
         return localTextureData.ContainsKey(textureID) ? localTextureData[textureID] : null;
+    }
+    
+    public NetworkList<RemoteTexture> GetAllRemoteTextures()
+    {
+        return remoteTextures;
+    }
+
+    public Renderer GetModelRenderer()
+    {
+        return modelRenderer;
+    }
+    
+    public int GetMaxDownloadedTextures()
+    {
+        return MAX_DOWNLOADED_TEXTURES;
+    }
+    
+    public int GetTextureIdDB(string name)
+    {
+        foreach (var pair in textureLayers)
+        {
+            if (pair.Value == name)
+                return pair.Key;
+        }
+
+        return -1;
     }
 
     public void SetTextureDownloaded(int textureID, Texture2D texture)

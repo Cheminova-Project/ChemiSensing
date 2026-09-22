@@ -36,13 +36,11 @@ public class PersistentGyroLongPress : MonoBehaviour
 
             if (activationToggle != null)
             {
-                // Registramos los eventos
                 activationToggle.RegisterCallback<PointerDownEvent>(OnPointerDown, TrickleDown.TrickleDown);
                 activationToggle.RegisterCallback<PointerUpEvent>(OnPointerUp, TrickleDown.TrickleDown);
                 activationToggle.RegisterCallback<PointerLeaveEvent>(OnPointerLeave, TrickleDown.TrickleDown);
                 activationToggle.RegisterCallback<ClickEvent>(OnClick, TrickleDown.TrickleDown);
                 
-                // Marcamos como inicializado para que el Update no vuelva a ejecutar esto
                 isInitialized = true; 
             }
         }
@@ -50,7 +48,6 @@ public class PersistentGyroLongPress : MonoBehaviour
 
     private void OnDisable()
     {
-        // Limpiamos los eventos si se destruye o desactiva este manager
         if (activationToggle != null)
         {
             activationToggle.UnregisterCallback<PointerDownEvent>(OnPointerDown, TrickleDown.TrickleDown);
@@ -58,6 +55,7 @@ public class PersistentGyroLongPress : MonoBehaviour
             activationToggle.UnregisterCallback<PointerLeaveEvent>(OnPointerLeave, TrickleDown.TrickleDown);
             activationToggle.UnregisterCallback<ClickEvent>(OnClick, TrickleDown.TrickleDown);
         }
+        
         isInitialized = false;
     }
     
@@ -113,11 +111,6 @@ public class PersistentGyroLongPress : MonoBehaviour
     
     private void TriggerReset()
     {
-        if (activationToggle is Toggle toggleUI)
-        {
-            toggleUI.value = false;
-        }
-
         if (NetworkManager.Singleton != null)
         {
             GameObject playerObject = LocalRegistry.Instance.GetPlayerGameObject(NetworkManager.Singleton.LocalClientId);
@@ -128,12 +121,9 @@ public class PersistentGyroLongPress : MonoBehaviour
                 if (mobileFirstPersonController != null)
                 {
                     mobileFirstPersonController.ResetCameraPosition();
-                    mobileFirstPersonController.isGyroEnabled = false;
                     
-                    if (!mobileFirstPersonController.isJoystickEnabled)
-                    {
-                        mobileFirstPersonController.EnableCameraMovement(false);
-                    }
+                    if (ToolMessageHandler.Instance != null)
+                        ToolMessageHandler.Instance.ShowMessage("Camera re-centered.", 2.5f, MessageType.Info);
                 }
             }
         }

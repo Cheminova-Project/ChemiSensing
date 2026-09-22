@@ -450,12 +450,13 @@ public class Ruler : ToolComponent
     public void DeleteSegmentLocalOnly(int start, int end)
     {
         RemoveSavedSegment(start, end);
-        OnSegmentRemoved(start, end); // Esto también mata las animaciones gracias al update
+        OnSegmentRemoved(start, end);
         
         if (rulerSync != null && rulerSync.sharedSegment.Value.IsSharing && 
             rulerSync.sharedSegment.Value.StartPoint == start && rulerSync.sharedSegment.Value.EndPoint == end)
         {
-            if (rulerSync.IsOwner) rulerSync.RequestShareSegment(0, 0, false, false);
+            if (rulerSync.IsOwner)
+                rulerSync.RequestShareSegment(0, 0, false, false, 0f);
         }
 
         OnSharedSegmentDeleted?.Invoke(start, end);
@@ -523,14 +524,12 @@ public class Ruler : ToolComponent
 
     public void SyncSharedSegment(int startPoint, int endPoint, bool directConnection, bool isSharing)
     {
+        float distance = GetDistanceBetweenPoints(startPoint, endPoint, directConnection);
+
         if (rulerSync != null && rulerSync.IsSpawned && NetworkManager.Singleton.IsConnectedClient)
-        {
-            rulerSync.RequestShareSegment(startPoint, endPoint, directConnection, isSharing);
-        }
+            rulerSync.RequestShareSegment(startPoint, endPoint, directConnection, isSharing, distance);
         else
-        {
-            ApplySharedSegmentFromNetwork(new SharedSegmentData { StartPoint = startPoint, EndPoint = endPoint, DirectConnection = directConnection, IsSharing = isSharing });
-        }
+            ApplySharedSegmentFromNetwork(new SharedSegmentData { StartPoint = startPoint, EndPoint = endPoint, DirectConnection = directConnection, IsSharing = isSharing, Distance = distance });
     }
 
     public virtual void ApplySharedSegmentFromNetwork(SharedSegmentData data)
@@ -541,14 +540,6 @@ public class Ruler : ToolComponent
         {
             return;
         }
-        
-        float distance = GetDistanceBetweenPoints(data.StartPoint, data.EndPoint, data.DirectConnection);
-    
-        string connectionType = data.DirectConnection ? "Direct Distance" : "Path Distance";
-        string message = $"Shared measurement: {connectionType} ({data.StartPoint}-{data.EndPoint}): {distance * 100f:F2} cm";
-    
-        if (ToolMessageHandler.Instance != null)
-            ToolMessageHandler.Instance.ShowMessage(message, 4f, MessageType.Info);
 
         sharedSegmentCoroutine = StartCoroutine(AnimateSegmentTracing(data.StartPoint, data.EndPoint, data.DirectConnection, sharedSegmentLineRenderer, true));
     }

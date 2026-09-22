@@ -1,0 +1,124 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:VisualElement name="Background" style="flex-grow: 1; background-color: rgb(255, 249, 249); width: 100%; height: 100%;">
+        <ui:ScrollView vertical-scroller-visibility="AlwaysVisible" name="main-scroll-view" mouse-wheel-scroll-size="40" style="flex-grow: 1; width: 100%; height: 100%; padding: 20px;">
+            <ui:VisualElement name="general-info" style="flex-direction: column; background-color: rgb(255, 255, 255); border-radius: 12px; border-width: 2px; border-color: rgb(226, 232, 240); padding: 40px; margin-bottom: 40px; align-items: center;">
+                <ui:VisualElement name="item-icon" style="width: 400px; height: 400px; flex-shrink: 0; background-color: rgb(241, 245, 249); border-radius: 12px; margin-bottom: 40px; -unity-background-scale-mode: scale-and-crop; background-image: resource(&quot;UI/Icons/general/defaultImage2&quot;);"/>
+                <ui:VisualElement style="flex-direction: column; justify-content: flex-start; width: 100%;">
+                    <ui:Label name="item-name-general" text="Item Name" style="font-size: 50px; -unity-font-style: bold; color: rgb(15, 23, 42); margin-bottom: 40px; padding: 0; white-space: normal; -unity-text-align: middle-center;"/>
+                    <ui:VisualElement style="flex-direction: column; margin-bottom: 30px; width: 100%; padding: 20px; background-color: rgb(248, 250, 252); border-radius: 12px;">
+                        <ui:VisualElement style="flex-direction: row; align-items: flex-start; margin-bottom: 25px; width: 100%;">
+                            <ui:VisualElement name="icon-creator" style="width: 50px; height: 50px; margin-right: 25px; margin-top: 5px; flex-shrink: 0; -unity-background-scale-mode: scale-to-fit; background-image: resource(&quot;UI/Icons/ch_elements/person&quot;);"/>
+                            <ui:Label name="creator-label" enable-rich-text="true" text="Creator" style="font-size: 40px; color: rgb(71, 85, 105); padding: 0; white-space: normal; flex-shrink: 1;"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement style="flex-direction: row; align-items: flex-start; margin-bottom: 25px; width: 100%;">
+                            <ui:VisualElement name="icon-guid" style="width: 50px; height: 50px; margin-right: 25px; margin-top: 5px; flex-shrink: 0; -unity-background-scale-mode: scale-to-fit; background-image: resource(&quot;UI/Icons/general/esfera&quot;);"/>
+                            <ui:Label name="guid-label" enable-rich-text="true" text="GUID" style="font-size: 40px; color: rgb(71, 85, 105); padding: 0; white-space: normal; flex-shrink: 1;"/>
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                    <ui:VisualElement name="e3ditem-counts" style="flex-direction: column; width: 100%; padding: 25px 20px; border-top-width: 2px; border-color: rgb(226, 232, 240);">
+                        <ui:VisualElement style="flex-direction: row; align-items: flex-start; margin-bottom: 25px; width: 100%;">
+                            <ui:VisualElement name="icon-annotations" style="width: 50px; height: 50px; margin-right: 25px; margin-top: 5px; flex-shrink: 0; -unity-background-scale-mode: scale-and-crop; background-image: url(&quot;project://database/Assets/Images/Edit.png?fileID=21300000&amp;guid=2207355f558e2a3449301187620b885f&amp;type=3#Edit&quot;);"/>
+                            <ui:Label name="annotations-count" text="0 annotations" style="font-size: 40px; -unity-font-style: bold; color: rgb(51, 65, 85); padding: 0; white-space: normal; flex-shrink: 1;"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement style="flex-direction: row; align-items: flex-start; width: 100%;">
+                            <ui:VisualElement name="icon-documents" style="width: 50px; height: 50px; margin-right: 25px; margin-top: 5px; flex-shrink: 0; -unity-background-scale-mode: scale-to-fit; background-image: resource(&quot;UI/Icons/menu/document&quot;); -unity-background-image-tint-color: rgb(51, 65, 85);"/>
+                            <ui:Label name="documents-count" text="0 documents" style="font-size: 40px; -unity-font-style: bold; color: rgb(51, 65, 85); padding: 0; white-space: normal; flex-shrink: 1;"/>
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement name="ch-element-details-container" style="background-color: rgb(255, 255, 255); border-radius: 12px; border-width: 2px; border-color: rgb(226, 232, 240); margin-bottom: 40px; overflow: hidden; width: 100%;">
+                <ui:VisualElement style="background-color: rgb(242, 189, 102); padding: 30px 40px; border-bottom-width: 2px; border-color: rgb(226, 232, 240);">
+                    <ui:Label text="Cultural Heritage Asset Details" style="font-size: 50px; -unity-font-style: bold; color: rgb(30, 30, 30); padding: 0; -unity-text-align: middle-center; white-space: normal;"/>
+                </ui:VisualElement>
+                <ui:VisualElement style="padding: 30px;">
+                    <ui:Label name="ch-description-text" text="" style="font-size: 40px; color: rgb(71, 85, 105); margin-bottom: 40px; white-space: normal; -unity-text-align: middle-center; flex-shrink: 1;"/>
+                    <ui:VisualElement style="flex-direction: column; width: 100%; background-color: rgb(255, 255, 255); border-radius: 8px; border-width: 2px; border-color: rgb(0, 0, 0);">
+                        <ui:VisualElement style="flex-direction: row; padding: 25px 20px; border-bottom-width: 2px; border-color: rgb(0, 0, 0); background-color: rgb(224, 224, 224);">
+                            <ui:Label text="Property" style="flex-basis: 50%; font-size: 40px; -unity-font-style: bold; color: rgb(30, 30, 30); white-space: normal; padding-right: 15px;"/>
+                            <ui:Label text="Value" style="flex-basis: 50%; font-size: 40px; -unity-font-style: bold; color: rgb(30, 30, 30); white-space: normal;"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement style="flex-direction: row; padding: 20px; border-bottom-width: 1px; border-color: rgb(220, 220, 220); background-color: rgb(245, 245, 245);">
+                            <ui:Label text="Creator" style="flex-basis: 50%; flex-shrink: 1; font-size: 40px; color: rgb(50, 50, 50); white-space: normal; padding-right: 15px;"/>
+                            <ui:Label name="creator-value" text="Unknown" style="flex-basis: 50%; flex-shrink: 1; font-size: 40px; color: rgb(50, 50, 50); white-space: normal;"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement style="flex-direction: row; padding: 20px; border-bottom-width: 1px; border-color: rgb(220, 220, 220); background-color: rgb(224, 224, 224);">
+                            <ui:Label text="Scale" style="flex-basis: 50%; flex-shrink: 1; font-size: 40px; color: rgb(50, 50, 50); white-space: normal; padding-right: 15px;"/>
+                            <ui:Label name="scale-value" text="Unknown" style="flex-basis: 50%; flex-shrink: 1; font-size: 40px; color: rgb(50, 50, 50); white-space: normal;"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement style="flex-direction: row; padding: 20px; border-bottom-width: 1px; border-color: rgb(220, 220, 220); background-color: rgb(245, 245, 245);">
+                            <ui:Label text="Category" style="flex-basis: 50%; flex-shrink: 1; font-size: 40px; color: rgb(50, 50, 50); white-space: normal; padding-right: 15px;"/>
+                            <ui:Label name="heritage-category-value" text="Unknown" style="flex-basis: 50%; flex-shrink: 1; font-size: 40px; color: rgb(50, 50, 50); white-space: normal;"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement style="flex-direction: row; padding: 20px; border-bottom-width: 1px; border-color: rgb(220, 220, 220); background-color: rgb(224, 224, 224);">
+                            <ui:Label text="Start year" style="flex-basis: 50%; flex-shrink: 1; font-size: 40px; color: rgb(50, 50, 50); white-space: normal; padding-right: 15px;"/>
+                            <ui:Label name="start-year-value" text="Unknown" style="flex-basis: 50%; flex-shrink: 1; font-size: 40px; color: rgb(50, 50, 50); white-space: normal;"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement style="flex-direction: row; padding: 20px; border-bottom-width: 1px; border-color: rgb(220, 220, 220); background-color: rgb(245, 245, 245);">
+                            <ui:Label text="End year" style="flex-basis: 50%; flex-shrink: 1; font-size: 40px; color: rgb(50, 50, 50); white-space: normal; padding-right: 15px;"/>
+                            <ui:Label name="end-year-value" text="Unknown" style="flex-basis: 50%; flex-shrink: 1; font-size: 40px; color: rgb(50, 50, 50); white-space: normal;"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement style="flex-direction: row; padding: 20px; border-bottom-width: 1px; border-color: rgb(220, 220, 220); background-color: rgb(224, 224, 224);">
+                            <ui:Label text="Approx. dates" style="flex-basis: 50%; flex-shrink: 1; font-size: 40px; color: rgb(50, 50, 50); white-space: normal; padding-right: 15px;"/>
+                            <ui:Label name="approx-dates-value" text="Unknown" style="flex-basis: 50%; flex-shrink: 1; font-size: 40px; color: rgb(50, 50, 50); white-space: normal;"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement style="flex-direction: row; padding: 20px; border-bottom-width: 1px; border-color: rgb(220, 220, 220); background-color: rgb(245, 245, 245);">
+                            <ui:Label text="Materials" style="flex-basis: 50%; flex-shrink: 1; font-size: 40px; color: rgb(50, 50, 50); white-space: normal; padding-right: 15px;"/>
+                            <ui:Label name="materials-value" text="None" style="flex-basis: 50%; flex-shrink: 1; font-size: 40px; color: rgb(50, 50, 50); white-space: normal;"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement style="flex-direction: row; padding: 20px; border-bottom-width: 1px; border-color: rgb(220, 220, 220); background-color: rgb(224, 224, 224);">
+                            <ui:Label text="Country" style="flex-basis: 50%; flex-shrink: 1; font-size: 40px; color: rgb(50, 50, 50); white-space: normal; padding-right: 15px;"/>
+                            <ui:Label name="country-value" text="Unknown" style="flex-basis: 50%; flex-shrink: 1; font-size: 40px; color: rgb(50, 50, 50); white-space: normal;"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement style="flex-direction: row; padding: 20px; border-bottom-width: 1px; border-color: rgb(220, 220, 220); background-color: rgb(245, 245, 245);">
+                            <ui:Label text="Province" style="flex-basis: 50%; flex-shrink: 1; font-size: 40px; color: rgb(50, 50, 50); white-space: normal; padding-right: 15px;"/>
+                            <ui:Label name="province-value" text="Unknown" style="flex-basis: 50%; flex-shrink: 1; font-size: 40px; color: rgb(50, 50, 50); white-space: normal;"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement style="flex-direction: row; padding: 20px; border-bottom-width: 1px; border-color: rgb(220, 220, 220); background-color: rgb(224, 224, 224);">
+                            <ui:Label text="Municipality" style="flex-basis: 50%; flex-shrink: 1; font-size: 40px; color: rgb(50, 50, 50); white-space: normal; padding-right: 15px;"/>
+                            <ui:Label name="municipality-value" text="Unknown" style="flex-basis: 50%; flex-shrink: 1; font-size: 40px; color: rgb(50, 50, 50); white-space: normal;"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement style="flex-direction: row; padding: 20px; border-bottom-width: 1px; border-color: rgb(220, 220, 220); background-color: rgb(245, 245, 245);">
+                            <ui:Label text="Latitude" style="flex-basis: 50%; flex-shrink: 1; font-size: 40px; color: rgb(50, 50, 50); white-space: normal; padding-right: 15px;"/>
+                            <ui:Label name="latitude-value" text="Unknown" style="flex-basis: 50%; flex-shrink: 1; font-size: 40px; color: rgb(50, 50, 50); white-space: normal;"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement style="flex-direction: row; padding: 20px; background-color: rgb(224, 224, 224);">
+                            <ui:Label text="Longitude" style="flex-basis: 50%; flex-shrink: 1; font-size: 40px; color: rgb(50, 50, 50); white-space: normal; padding-right: 15px;"/>
+                            <ui:Label name="longitude-value" text="Unknown" style="flex-basis: 50%; flex-shrink: 1; font-size: 40px; color: rgb(50, 50, 50); white-space: normal;"/>
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement name="record-details-container" style="display: none; background-color: rgb(255, 255, 255); border-radius: 12px; border-width: 2px; border-color: rgb(226, 232, 240); overflow: hidden; width: 100%; margin-bottom: 40px;">
+                <ui:VisualElement style="background-color: rgb(242, 189, 102); padding: 30px 40px; border-bottom-width: 2px; border-color: rgb(226, 232, 240);">
+                    <ui:Label text="Record Details" style="font-size: 50px; -unity-font-style: bold; color: rgb(30, 30, 30); padding: 0; -unity-text-align: middle-center; white-space: normal;"/>
+                </ui:VisualElement>
+                <ui:VisualElement style="padding: 30px;">
+                    <ui:Label name="record-subtitle" text="" style="font-size: 40px; color: rgb(71, 85, 105); margin-bottom: 40px; white-space: normal; flex-shrink: 1;"/>
+                    <ui:VisualElement style="flex-grow: 1; background-color: rgb(255, 255, 255); border-radius: 8px; border-width: 2px; border-color: rgb(0, 0, 0); width: 100%;">
+                        <ui:VisualElement style="flex-direction: row; padding: 25px 20px; border-bottom-width: 2px; border-color: rgb(0, 0, 0); background-color: rgb(224, 224, 224);">
+                            <ui:Label text="Property" style="flex-basis: 50%; font-size: 45px; -unity-font-style: bold; color: rgb(30, 30, 30); white-space: normal; padding-right: 15px;"/>
+                            <ui:Label text="Value" style="flex-basis: 50%; font-size: 45px; -unity-font-style: bold; color: rgb(30, 30, 30); white-space: normal;"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement style="flex-direction: row; padding: 20px; border-bottom-width: 1px; border-color: rgb(220, 220, 220); background-color: rgb(245, 245, 245);">
+                            <ui:Label text="Unit" style="flex-basis: 50%; flex-shrink: 1; font-size: 40px; color: rgb(50, 50, 50); white-space: normal; padding-right: 15px;"/>
+                            <ui:Label name="record-unit" text="centimeter" style="flex-basis: 50%; flex-shrink: 1; font-size: 40px; color: rgb(50, 50, 50); white-space: normal;"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement style="flex-direction: row; padding: 20px; border-bottom-width: 1px; border-color: rgb(220, 220, 220); background-color: rgb(224, 224, 224);">
+                            <ui:Label text="Width" style="flex-basis: 50%; flex-shrink: 1; font-size: 40px; color: rgb(50, 50, 50); white-space: normal; padding-right: 15px;"/>
+                            <ui:Label name="record-width" text="N/A" style="flex-basis: 50%; flex-shrink: 1; font-size: 40px; color: rgb(50, 50, 50); white-space: normal;"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement style="flex-direction: row; padding: 20px; border-bottom-width: 1px; border-color: rgb(220, 220, 220); background-color: rgb(245, 245, 245);">
+                            <ui:Label text="Length" style="flex-basis: 50%; flex-shrink: 1; font-size: 40px; color: rgb(50, 50, 50); white-space: normal; padding-right: 15px;"/>
+                            <ui:Label name="record-length" text="N/A" style="flex-basis: 50%; flex-shrink: 1; font-size: 40px; color: rgb(50, 50, 50); white-space: normal;"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement style="flex-direction: row; padding: 20px; background-color: rgb(224, 224, 224);">
+                            <ui:Label text="Height" style="flex-basis: 50%; flex-shrink: 1; font-size: 40px; color: rgb(50, 50, 50); white-space: normal; padding-right: 15px;"/>
+                            <ui:Label name="record-height" text="N/A" style="flex-basis: 50%; flex-shrink: 1; font-size: 40px; color: rgb(50, 50, 50); white-space: normal;"/>
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:ScrollView>
+    </ui:VisualElement>
+</ui:UXML>

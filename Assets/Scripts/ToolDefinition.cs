@@ -63,6 +63,10 @@ public class ToolDefinition : ScriptableObject
     /// </summary>
     public VisualTreeAsset WindowAsset;
     /// <summary>
+    /// Segundo asset de la ventana UI para esta herramienta.
+    /// </summary>
+    public VisualTreeAsset SecondWindowAsset;
+    /// <summary>
     /// GameObject que contiene los scripts de la herramienta.
     /// </summary>
     public GameObject ScriptsContainer;
@@ -113,7 +117,7 @@ public class ToolDefinitionEditor : Editor
         else
         {
             EditorGUILayout.PropertyField(serializedObject.FindProperty("WindowAsset"));
-
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("SecondWindowAsset"));
         }
         EditorGUILayout.PropertyField(serializedObject.FindProperty("ScriptsContainer"));
         serializedObject.ApplyModifiedProperties();

@@ -306,7 +306,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PrintTrace: 0
-  connectMode: 2
+  connectMode: 1
   remoteIP: aulamac08.uv.es
   localIP: 127.0.0.1
 --- !u!114 &698531135

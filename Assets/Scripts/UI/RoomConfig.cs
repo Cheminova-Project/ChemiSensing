@@ -64,6 +64,7 @@ public class RoomConfig : BaseUI
     
     private void OnBackButtonClicked()
     {
+        GlobalVariables.Instance.SetSelectedCHElementData(null);
         GlobalVariables.Instance.SetSelectedE3DModelData(null);
         UIDocumentManager.Instance.SwitchContext("mode-selector");
     }

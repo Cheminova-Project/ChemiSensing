@@ -9,6 +9,10 @@ using UnityEngine;
 public class GlobalVariables : MonoBehaviourSingleton<GlobalVariables>
 {
     /// <summary>
+    /// Datos del CHElement actualmente seleccionado.
+    /// </summary>
+    private CHElementData _selectedCHElementData;
+    /// <summary>
     /// Datos del modelo E3D actualmente seleccionado.
     /// </summary>
     private E3DModelData _selectedE3DModelData;
@@ -38,6 +42,24 @@ public class GlobalVariables : MonoBehaviourSingleton<GlobalVariables>
     protected override void SingletonAwakened()
     {
         base.SingletonAwakened();
+    }
+    
+    /// <summary>
+    /// Establece el CHElement seleccionado.
+    /// </summary>
+    /// <param name="chElementData">Datos del CHElement a seleccionar.</param>
+    public void SetSelectedCHElementData(CHElementData chElementData)
+    {
+        _selectedCHElementData = chElementData;
+    }
+    
+    /// <summary>
+    /// Obtiene el CHElement actualmente seleccionado.
+    /// </summary>
+    /// <returns>Datos del CHElement seleccionado.</returns>
+    public CHElementData GetSelectedCHElementData()
+    {
+        return _selectedCHElementData;
     }
     
     /// <summary>

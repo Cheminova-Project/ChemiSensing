@@ -372,6 +372,9 @@ public class AngleRulerUI : ToolComponent
             entryData.angleLabel.text = $"{angleValue:F2}°";
             entryData.angleLabel.ForceRecalculate();
         }
+        
+        if (entryData.shareAngleToggle != null && entryData.shareAngleToggle.value)
+            current.SyncSharedAngle(idxA, idxV, idxC, true);
     }
 
     private void OnHighlightButtonClicked(VisualElement container)
@@ -386,7 +389,10 @@ public class AngleRulerUI : ToolComponent
             bool isShared = data.shareAngleToggle != null ? data.shareAngleToggle.value : false;
 
             if (isShared)
+            {
                 current.HighlightAngleNetworked(data.currentAngle.x, data.currentAngle.y, data.currentAngle.z);
+                current.SyncSharedAngle(data.currentAngle.x, data.currentAngle.y, data.currentAngle.z, true);
+            }
             else
                 current.HighlightAngle(data.currentAngle.x, data.currentAngle.y, data.currentAngle.z);
         }

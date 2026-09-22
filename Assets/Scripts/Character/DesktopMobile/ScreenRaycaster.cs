@@ -48,6 +48,9 @@ public class ScreenRaycaster : MonoBehaviour
     
     private Transform inspectedObject;
     
+    private VisualizationModeController _visController;
+    private TextureManager _texManager;
+    
     protected virtual void OnEnable()
     {
         InitListeners();
@@ -157,6 +160,17 @@ public class ScreenRaycaster : MonoBehaviour
         Ray ray = _camera.ScreenPointToRay(inputPointerPosition);
         bool hitSomething = Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, layerMask);
         
+        if (hitSomething && inspectedObject != null)
+        {
+            if (hit.transform == inspectedObject || hit.transform.IsChildOf(inspectedObject))
+            {
+                if (!IsPointVisibleOnSectionPlane(hit.point, inspectedObject))
+                {
+                    hitSomething = false;
+                }
+            }
+        }
+        
         Vector3 targetPosition = hitSomething
             ? hit.point + hit.normal * 0.00001f
             : _camera.ScreenToWorldPoint(new Vector3(inputPointerPosition.x, inputPointerPosition.y, baseDistance));
@@ -223,9 +237,37 @@ public class ScreenRaycaster : MonoBehaviour
     public void SetLaserColor(Color newColor)
     {
         if (laserLineRenderer != null)
-        {
-            // Ahora usamos el método sincronizado por red
             laserLineRenderer.SetColor(newColor);
+    }
+    
+    private bool IsPointVisibleOnSectionPlane(Vector3 hitPoint, Transform objTransform)
+    {
+        if (objTransform == null) return true;
+
+        if (_visController == null) _visController = FindFirstObjectByType<VisualizationModeController>();
+        if (_texManager == null) _texManager = FindFirstObjectByType<TextureManager>();
+
+        if (_visController != null && _texManager != null && _texManager.GetModelRenderer() != null)
+        {
+            Material mat = _texManager.GetModelRenderer().sharedMaterial;
+
+            if (mat != null && mat.HasProperty("_CutPosition") && mat.HasProperty("_CutNormal") && 
+                mat.shader != null && mat.shader.name.Contains("sectionPlaneShader"))
+            {
+                Vector3 planePosition = mat.GetVector("_CutPosition");
+                Vector3 planeNormal = mat.GetVector("_CutNormal");
+
+                Vector3 localP = objTransform.InverseTransformPoint(hitPoint);
+                Vector3 toPoint = localP - planePosition;
+
+                float projection = Vector3.Dot(toPoint, planeNormal);
+
+                bool isVisible = (projection <= 0f && !_visController.runtimeReverse) || 
+                                 (projection >= 0f && _visController.runtimeReverse);
+
+                return isVisible;
+            }
         }
+        return true;
     }
 }

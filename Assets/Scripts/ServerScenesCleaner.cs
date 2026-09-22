@@ -15,6 +15,7 @@ public class ServerScenesCleaner : NetworkBehaviour
     private int serverRealPort = -1;
     
     private Coroutine shutdownCoroutine;
+    private Coroutine periodicUpdateCoroutine;
 
     public override void OnNetworkSpawn()
     {
@@ -35,6 +36,7 @@ public class ServerScenesCleaner : NetworkBehaviour
         NetworkManager.Singleton.OnClientDisconnectCallback += OnClientChanged;
 
         CheckForEmptyRoom();
+        periodicUpdateCoroutine = StartCoroutine(PeriodicUpdateRoutine());
     }
 
     public override void OnNetworkDespawn()
@@ -45,6 +47,21 @@ public class ServerScenesCleaner : NetworkBehaviour
         {
             NetworkManager.Singleton.OnClientConnectedCallback -= OnClientChanged;
             NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientChanged;
+        }
+        
+        if (periodicUpdateCoroutine != null)
+        {
+            StopCoroutine(periodicUpdateCoroutine);
+            periodicUpdateCoroutine = null;
+        }
+    }
+    
+    private IEnumerator PeriodicUpdateRoutine()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(5f);
+            NotifyPythonOfChange();
         }
     }
 
@@ -76,6 +93,9 @@ public class ServerScenesCleaner : NetworkBehaviour
 
     private IEnumerator ShutdownTimer()
     {
+        if (NetworkServerConfiguration.Instance.connectMode == ConnectMode.LOCAL)
+            yield break;
+        
         yield return new WaitForSeconds(emptyRoomTimeout);
         Debug.LogWarning("[ZombieCleaner] Apagando servidor por inactividad...");
         
@@ -88,12 +108,15 @@ public class ServerScenesCleaner : NetworkBehaviour
     
     private void NotifyPythonOfChange()
     {
-        if (RoomsManager.Instance == null || RoomState.CurrentRoomPort == -1)
+        if (RoomsManager.Instance == null || serverRealPort == -1)
             return;
         
         List<string> usersActivos = new List<string>();
         foreach (ulong id in NetworkManager.Singleton.ConnectedClientsIds)
         {
+            if (id == NetworkManager.ServerClientId && !NetworkManager.Singleton.IsHost)
+                continue;
+            
             if (LocalRegistry.Instance != null)
             {
                 var info = LocalRegistry.Instance.GetClientInfo(id);

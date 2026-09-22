@@ -10,7 +10,6 @@ public class GyroscopeController : ToolComponent
 
     private void Start()
     {
-        // Solo buscamos el botón de reset normal
         gyroResetButton = uIDocument.rootVisualElement.Q<Button>("reset-button");
 
         if (gyroResetButton != null)
@@ -19,7 +18,6 @@ public class GyroscopeController : ToolComponent
 
     protected override void OnToolActivatedInternal()
     {
-        // Lógica de conexión del Player al activar la herramienta
         if (mobileFirstPersonController == null && NetworkManager.Singleton != null)
         {
             GameObject playerObject = LocalRegistry.Instance.GetPlayerGameObject(NetworkManager.Singleton.LocalClientId);
@@ -35,16 +33,12 @@ public class GyroscopeController : ToolComponent
 
     private void OnGyroResetButtonClicked()
     {
-        // Función del botón físico de reset (clic normal)
         if (mobileFirstPersonController != null)
-        {
             mobileFirstPersonController.ResetCameraPosition();
-        }
     }
 
     protected override void OnToolDeactivatedInternal()
     {
-        // Apagamos todo al desactivar la herramienta
         if (mobileFirstPersonController != null)
         {
             mobileFirstPersonController.isGyroEnabled = false;
@@ -56,14 +50,12 @@ public class GyroscopeController : ToolComponent
     
     private void OnDestroy()
     {
-        // Limpiamos el evento del botón
         if (gyroResetButton != null)
         {
             gyroResetButton.clicked -= OnGyroResetButtonClicked;
             gyroResetButton = null;
         }
         
-        // Garantiza que al destruir el script, la cámara se bloquee
         OnToolDeactivatedInternal(); 
     }
 }

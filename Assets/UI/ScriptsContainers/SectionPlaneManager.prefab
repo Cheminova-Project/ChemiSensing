@@ -1,0 +1,90 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4387277265330116982
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4762103967542760569}
+  - component: {fileID: 4840861292344786535}
+  - component: {fileID: 2924496505931342969}
+  m_Layer: 0
+  m_Name: SectionPlaneManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4762103967542760569
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4387277265330116982}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.94678, y: 1.93937, z: 2.17824}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4840861292344786535
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4387277265330116982}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f70667e07add94046be43a47763771f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlatformToolsManager
+  platformGroups:
+  - platformType: 1
+    components: []
+    destroyInsteadOfDisable: 1
+    isEnabled: 1
+  - platformType: 3
+    components: []
+    destroyInsteadOfDisable: 1
+    isEnabled: 1
+  - platformType: 2
+    components: []
+    destroyInsteadOfDisable: 1
+    isEnabled: 1
+  - platformType: 4
+    components: []
+    destroyInsteadOfDisable: 1
+    isEnabled: 1
+  autoDetectPlatform: 1
+  updateOnPlatformChange: 0
+  forcedPlatform: 1
+--- !u!114 &2924496505931342969
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4387277265330116982}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1edbbec6cbe7e348bbc5d085c6bc7af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VisualizationModeManager
+  labelItemAsset: {fileID: 9197481963319205126, guid: 82243954ff10d1645b20883230b6bd78, type: 3}
+  sliderItemAsset: {fileID: 0}
+  toggleItemAsset: {fileID: 9197481963319205126, guid: f52fa8cc5d81fc043abb6f6637371f91, type: 3}
+  dropdownItemAsset: {fileID: 9197481963319205126, guid: 15724230372f25a4380b2d5bcefa550d, type: 3}
+  buttonItemAsset: {fileID: 0}
+  imageItemAsset: {fileID: 0}
+  selectedShader: {fileID: -6465566751694194690, guid: e9de3821b62eca3449e586b3ef788007, type: 3}
+  standardShader: {fileID: -6465566751694194690, guid: 99716c452c4a7d548a1abf7da61861a8, type: 3}
+  visualizationMode: 4
+  mainTextureId: -1
+  secondaryTextureId: -1

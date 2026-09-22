@@ -7,7 +7,7 @@
                 <ui:Label text="Label" name="username" style="-unity-text-align: middle-left; padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 10px; margin-top: 2px; margin-left: 4px;"/>
             </ui:VisualElement>
             <ui:VisualElement name="bottom-bar" style="flex-grow: 0; width: auto; flex-direction: row; margin-left: 0%; height: 50%;">
-                <ui:Slider label="Volume" value="1" high-value="1" name="volume-slider" fill="true" show-input-field="false" inverted="false" focusable="true" style="min-height: auto; width: 100%; -unity-text-align: middle-left; font-size: 35px; padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 10px;"/>
+                <ui:Slider label="Volume" value="1" high-value="1" name="volume-slider" fill="true" show-input-field="false" inverted="false" focusable="false" style="min-height: auto; width: 100%; -unity-text-align: middle-left; font-size: 35px; padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 10px;"/>
             </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement name="right-side" style="flex-grow: 1; width: 25%;">

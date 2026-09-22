@@ -15,4 +15,4 @@ MonoBehaviour:
   BuildType: 10
   buildProfile: {fileID: 11400000, guid: 55feabac577d6b940bc585d49e2f4606, type: 2}
   buildTarget: 21
-  isEnabled: 1
+  isEnabled: 0

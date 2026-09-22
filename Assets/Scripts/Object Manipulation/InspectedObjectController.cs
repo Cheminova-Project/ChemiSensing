@@ -1,14 +1,23 @@
+using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using GLTFast;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
 
+[Serializable]
+public enum ViewerMode
+{
+    basic = 0,
+    vr = 1
+}
+
 /// <summary>
 /// Controlador para gestionar la inspección y manipulación de objetos en la escena.
 /// Permite mostrar información y controlar el estado del objeto inspeccionado.
 /// </summary>
-public class InspectedObjectController : MonoBehaviour
+public class InspectedObjectController : NetworkBehaviour
 {
     /// <summary>
     /// Instancia estática del controlador de objeto inspeccionado.
@@ -40,6 +49,13 @@ public class InspectedObjectController : MonoBehaviour
     /// Evento que se dispara cuando los datos de instancia 3D son descargados.
     /// </summary>
     public UnityAction onThreeDInstanceDataDownloaded;
+    
+    public GameObject activeModelInstance { get; private set; }
+    public ViewerMode viewerMode = ViewerMode.basic;
+    
+    private int chElementID = -1;
+    private int e3DInstanceID = -1;
+    private LineRenderer lineRenderer;
 
     private void Awake()
     {
@@ -53,6 +69,24 @@ public class InspectedObjectController : MonoBehaviour
 
         Instance = this;
         OnInspectedObjectControllerInitialized?.Invoke();
+        
+        NetworkedPlayerCharacter[] allPlayers = FindObjectsOfType<NetworkedPlayerCharacter>();
+        
+        foreach (NetworkedPlayerCharacter player in allPlayers)
+        {
+            if (player.IsOwner)
+            {
+                if (player.gameObject.name.Contains("VR"))
+                {
+                    viewerMode = ViewerMode.vr;
+                }
+                
+                break;
+            }
+        }
+        
+        if (GlobalVariables.Instance != null && GlobalVariables.Instance.GetSelectedCHElementData() != null)
+            chElementID = GlobalVariables.Instance.GetSelectedCHElementData().id;
     }
 
     /// <summary>
@@ -66,7 +100,7 @@ public class InspectedObjectController : MonoBehaviour
 
     private void Start()
     {
-        if (NetworkManager.Singleton && NetworkManager.Singleton.IsServer)
+        if (NetworkManager.Singleton && NetworkManager.Singleton.IsServer && !NetworkManager.Singleton.IsClient)
             return;
 
         // Inicialmente desactivamos los behaviours
@@ -83,7 +117,8 @@ public class InspectedObjectController : MonoBehaviour
     {
         //Obtenemos la url
         E3DModelData e3DModelData = GlobalVariables.Instance.GetSelectedE3DModelData();
-        StartCoroutine(E3DModelDB.GetThreeDInstanceListFromE3DModel(LoadGltf, e3DModelData.id));
+        if (e3DModelData != null)
+            StartCoroutine(E3DModelDB.GetThreeDInstanceListFromE3DModel(LoadGltf, e3DModelData.id));
     }
 
     private void LoadGltf(ThreeDInstanceResponse response, bool listSuccess)
@@ -127,6 +162,7 @@ public class InspectedObjectController : MonoBehaviour
         }
         
         GlobalVariables.Instance.SetSelected3DInstanceData(selectedInstance);
+        e3DInstanceID = selectedInstance.id;
         onThreeDInstanceDataDownloaded?.Invoke();
         DownloadGltfObject(selectedInstance.id);
     }
@@ -171,7 +207,7 @@ public class InspectedObjectController : MonoBehaviour
         
     }
 
-    private void OnGLTFLoaded(bool success)
+    async void OnGLTFLoaded(bool success)
     {
         foreach (var behaviour in behavioursToEnableWhenGLTFLoaded)
             if (behaviour != null)
@@ -236,6 +272,8 @@ public class InspectedObjectController : MonoBehaviour
         MeshCollider convexMeshCollider = gameObject.GetComponent<MeshCollider>();
         convexMeshCollider.sharedMesh = sourceFilter.sharedMesh;
         convexMeshCollider.convex = true;
+        
+        activeModelInstance = targetObjectToCopyMesh.gameObject;
 
         Destroy(sourceGO);
         
@@ -246,6 +284,12 @@ public class InspectedObjectController : MonoBehaviour
             netAudio.InitializeAudioChannel();
         
         AutoFitModel(gameObject);
+
+        if (success)
+        {
+            await Task.Delay(500);
+            ChangeRGBTexture();
+        }
         
         OnInspectedObjectLoaded?.Invoke();
         XRFade.Instance?.FadeIn();
@@ -304,5 +348,40 @@ public class InspectedObjectController : MonoBehaviour
         }
         else
             targetTransform.localScale = currentScaleBeforeMeasuring;
+    }
+    
+    public void ChangeRGBTexture()
+    {
+        if (activeModelInstance == null)
+            return;
+
+        Renderer[] renderers = activeModelInstance.GetComponentsInChildren<Renderer>();
+
+        foreach (Renderer r in renderers)
+        {
+            // Accedemos a sharedMaterials para asegurar que afecte al asset interno
+            foreach (Material mat in r.sharedMaterials)
+            {
+                if (mat == null) continue;
+
+                Texture baseTex = mat.GetTexture("_BaseMap") ?? mat.mainTexture;
+
+                if (baseTex != null)
+                {
+                    baseTex.filterMode = FilterMode.Point;
+                    mat.SetTexture("_BaseMap", baseTex);
+                }
+            }
+        }
+    }
+    
+    public int GetE3DInstanceID()
+    {
+        return e3DInstanceID;
+    }
+
+    public int GetChElementID()
+    {
+        return chElementID;
     }
 }

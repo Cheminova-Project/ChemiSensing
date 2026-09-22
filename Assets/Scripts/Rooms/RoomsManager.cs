@@ -22,6 +22,7 @@ public class message
     public string creator { get; set; }
     public string roomName { get; set; }
     public int chElementId { get; set; }
+    public int e3dModelId { get; set; }
     public string bearerToken { get; set; }
     public bool hasAudio { get; set; }
     public string user { get; set; }
@@ -48,6 +49,7 @@ public class Servicio
     public string creator { get; set; }
     public string roomName { get; set; }
     public int chElementId { get; set; }
+    public int e3dModelId { get; set; }
     public int port { get; set; }
     public bool hasAudio { get; set; }
     public List<string> acceptedUsers { get; set; }
@@ -133,7 +135,10 @@ public class RoomsManager : MonoBehaviour
         }
 
         if (GlobalVariables.Instance != null)
+        {
+            GlobalVariables.Instance.SetSelectedCHElementData(null);
             GlobalVariables.Instance.SetSelectedE3DModelData(null);
+        }
 
         if (this != null && this.gameObject != null)
             Destroy(this.gameObject);
@@ -155,17 +160,22 @@ public class RoomsManager : MonoBehaviour
     public void ConnectToRoom(int port)
     {
         RoomState.CurrentRoomPort = port;
+        if (NetworkServerConfiguration.Instance.connectMode == ConnectMode.LOCAL)
+        {
+            StartClientDelayed("127.0.0.1", (ushort)port);
+            return;
+        }
         EnviarMensaje("ENTER_ROOM", port: port, user: GlobalManagement.Instance.username);
     }
     
     public void LeaveRoom()
     {
-        // Usamos el estado estático
         if (RoomState.CurrentRoomPort != -1)
         {
             string uname = GlobalManagement.Instance != null ? GlobalManagement.Instance.username : "Unknown";
-            EnviarMensaje("EXIT_ROOM", port: RoomState.CurrentRoomPort, user: uname);
-            RoomState.CurrentRoomPort = -1; // Reseteamos el estado estático
+            if (NetworkServerConfiguration.Instance.connectMode != ConnectMode.LOCAL)
+                EnviarMensaje("EXIT_ROOM", port: RoomState.CurrentRoomPort, user: uname);
+            RoomState.CurrentRoomPort = -1;
         }
 
         if (NetworkManager.Singleton != null)
@@ -216,7 +226,14 @@ public class RoomsManager : MonoBehaviour
     /// </summary>
     public void CreateRoom(UnityAction<RespuestaServidor> onRoomCreated = null)
     {
+        CHElementData selectedElement = GlobalVariables.Instance.GetSelectedCHElementData();
         E3DModelData selectedModel = GlobalVariables.Instance.GetSelectedE3DModelData();
+
+        if (selectedElement == null)
+        {
+            Debug.LogError("[RoomsManager] No hay CH element seleccionado para crear la sala");
+            return;
+        }
         
         if (selectedModel == null)
         {
@@ -233,7 +250,17 @@ public class RoomsManager : MonoBehaviour
         //Comprobación de modo development local
         if(NetworkServerConfiguration.Instance.connectMode == ConnectMode.LOCAL)
         {
-            //Esto significa que no hay una instancia de servidor corriendo, sino que estamos en multiplayer play mode, así que ejecutamos el direct connect
+            // Simulamos una respuesta exitosa para desbloquear la UI
+            RespuestaServidor mockResponse = new RespuestaServidor 
+            { 
+                status = "active", 
+                port = 7777, // Puerto por defecto en local
+                message = "Local room active" 
+            };
+
+            if (onRoomCreated != null)
+                onRoomCreated.Invoke(mockResponse);
+
             return;
         }
         
@@ -242,13 +269,13 @@ public class RoomsManager : MonoBehaviour
         
         if(XRFade.Instance == null)
         {
-            EnviarMensaje("OPEN_ROOM", selectedModel.id, GlobalManagement.Instance.username, GlobalVariables.Instance.GetRoomName(), hasAudio:isAudioRoom, acceptedUsers: acceptedUsers, onRoomCreated: onRoomCreated);
+            EnviarMensaje("OPEN_ROOM", selectedElement.id, selectedModel.id, GlobalManagement.Instance.username, GlobalVariables.Instance.GetRoomName(), hasAudio:isAudioRoom, acceptedUsers: acceptedUsers, onRoomCreated: onRoomCreated);
         }
         else
         {
             XRFade.Instance?.FadeOut(() =>
             {
-                EnviarMensaje("OPEN_ROOM", selectedModel.id, GlobalManagement.Instance.username, GlobalVariables.Instance.GetRoomName(), hasAudio:isAudioRoom, acceptedUsers: acceptedUsers, onRoomCreated: onRoomCreated);
+                EnviarMensaje("OPEN_ROOM", selectedElement.id, selectedModel.id, GlobalManagement.Instance.username, GlobalVariables.Instance.GetRoomName(), hasAudio:isAudioRoom, acceptedUsers: acceptedUsers, onRoomCreated: onRoomCreated);
             });
         }
         
@@ -267,16 +294,17 @@ public class RoomsManager : MonoBehaviour
     /// </summary>
     /// <param name="comando">Comando a enviar (ABRIR_SALA, CONSULTAR_SALAS, CERRAR_SALA)</param>
     /// <param name="chelementID">ID del elemento (opcional)</param>
+    /// <param name="e3dmodelID">ID del modelo (opcional)</param>
     /// <param name="creator">Nombre del creator de la sala (opcional)</param>
     /// <param name="nombreSala">Nombre de la sala (opcional)</param>
     /// <param name="port">port de la sala (para CERRAR_SALA)</param>
-    public void EnviarMensaje(string comando, int chelementID = -1, string creator = "", string nombreSala = "", int port = -1, bool hasAudio = false, List<string> acceptedUsers = null, string user = "", UnityAction<RespuestaServidor> onRoomCreated = null, string customHeaderKey = null, string customHeaderValue = null)
+    public void EnviarMensaje(string comando, int chelementID = -1, int e3dmodelID = -1, string creator = "", string nombreSala = "", int port = -1, bool hasAudio = false, List<string> acceptedUsers = null, string user = "", UnityAction<RespuestaServidor> onRoomCreated = null, string customHeaderKey = null, string customHeaderValue = null)
     {
-        StartCoroutine(EnviarMensajeRoutine(comando, chelementID, creator, nombreSala, port, hasAudio,
+        StartCoroutine(EnviarMensajeRoutine(comando, chelementID, e3dmodelID, creator, nombreSala, port, hasAudio,
             acceptedUsers, user, onRoomCreated, customHeaderKey, customHeaderValue));
     }
     
-    private IEnumerator EnviarMensajeRoutine(string comando, int chelementID, string creator, string nombreSala, int port, bool hasAudio, List<string> acceptedUsers, string user, UnityAction<RespuestaServidor> onRoomCreated, string customHeaderKey, string customHeaderValue)
+    private IEnumerator EnviarMensajeRoutine(string comando, int chelementID, int e3dmodelID, string creator, string nombreSala, int port, bool hasAudio, List<string> acceptedUsers, string user, UnityAction<RespuestaServidor> onRoomCreated, string customHeaderKey, string customHeaderValue)
     {
         // Validación de entrada
         if (string.IsNullOrEmpty(comando))
@@ -307,6 +335,7 @@ public class RoomsManager : MonoBehaviour
                 creator = creator,
                 roomName = nombreSala,
                 chElementId = chelementID,
+                e3dModelId = e3dmodelID,
                 hasAudio = hasAudio,
                 acceptedUsers = acceptedUsers,
                 user = safeUser,
@@ -331,7 +360,9 @@ public class RoomsManager : MonoBehaviour
         if (!string.IsNullOrEmpty(customHeaderKey))
             request.SetRequestHeader(customHeaderKey, customHeaderValue);
         else
+        {
             request.SetRequestHeader("Authorization", "Bearer " + safeToken);
+        }
         
         request.timeout = (int)tiempoTimeoutSocket;
         
@@ -403,6 +434,7 @@ public class RoomsManager : MonoBehaviour
                     break;
                 
                 case "EXIT_ROOM":
+                case "UPDATE_USERS":
                     break;
                     
                 default:
@@ -487,6 +519,7 @@ public class RoomsManager : MonoBehaviour
                     sala.port,
                     serverIP,
                     sala.chElementId,
+                    sala.e3dModelId,
                     sala.hasAudio,
                     sala.acceptedUsers,
                     sala.actualPlayers
@@ -581,6 +614,8 @@ public class RoomsManager : MonoBehaviour
                 return "/room/enter";
             case "EXIT_ROOM":
                 return "/room/exit";
+            case "UPDATE_USERS":
+                return "/room/update";
             default:
                 return "";
         }

@@ -21,6 +21,10 @@ public class LaserTool : ToolComponent
     /// Referencia guardada para poder desuscribirnos del evento del color.
     /// </summary>
     private NetworkPlayerName currentNetworkName;
+    
+    private Transform inspectedObject;
+    private Camera raycastCamera;
+    private bool isLaserCurrentlyVisible = true;
 
     /// <summary>
     /// Se llama al habilitar la herramienta. Activa el láser y muestra mensajes informativos.
@@ -29,19 +33,14 @@ public class LaserTool : ToolComponent
     {
         base.OnEnable();
 
-        // 1. PROTECCIÓN CONTRA NULLREFERENCEEXCEPTION
-        // Evitamos que crashee si se ejecuta durante el Instantiate antes de que la red esté lista.
         if (NetworkManager.Singleton == null || !NetworkManager.Singleton.IsListening) return;
         if (LocalRegistry.Instance == null) return;
 
-        // Intentamos obtener el NetworkObject de esta herramienta o de su padre
         NetworkObject netObj = GetComponent<NetworkObject>();
         if (netObj == null) netObj = GetComponentInParent<NetworkObject>();
 
-        // Si la herramienta es un objeto de red pero aún no ha "nacido" (Spawn), esperamos.
         if (netObj != null && !netObj.IsSpawned) return;
 
-        // 2. OBTENER EL JUGADOR CORRECTO (Arregla el fallo de que todos controlen tu láser)
         ulong ownerId = netObj != null ? netObj.OwnerClientId : NetworkManager.Singleton.LocalClientId;
         GameObject userGameobject = LocalRegistry.Instance.GetPlayerGameObject(ownerId);
         
@@ -51,7 +50,6 @@ public class LaserTool : ToolComponent
             return;
         }
 
-        // Buscamos los Raycasters
         screenRaycaster = userGameobject.GetComponentInChildren<ScreenRaycaster>();
         vrRaycaster = userGameobject.GetComponentInChildren<VRRaycaster>();
 
@@ -61,21 +59,15 @@ public class LaserTool : ToolComponent
             return;
         }
         
-        // 3. BUSCAR EL COLOR DEL JUGADOR (Arregla que el láser sea siempre rojo)
-        // Buscamos en toda la jerarquía del jugador
         currentNetworkName = userGameobject.GetComponentInChildren<NetworkPlayerName>();
         if (currentNetworkName == null)
-        {
             currentNetworkName = userGameobject.GetComponentInParent<NetworkPlayerName>();
-        }
 
-        Color userColor = Color.red; // Color por defecto por si algo falla
+        Color userColor = Color.red;
         
         if (currentNetworkName != null)
         {
             userColor = currentNetworkName.playerColor.Value;
-            
-            // Nos suscribimos al evento por si el servidor asigna el color una fracción de segundo tarde
             currentNetworkName.playerColor.OnValueChanged += OnPlayerColorChanged;
         }
         else
@@ -83,15 +75,15 @@ public class LaserTool : ToolComponent
             Debug.LogWarning("[LaserTool] No se encontró NetworkPlayerName en el jugador.");
         }
         
-        // Aplicamos el color inicial
         ApplyLaserColor(userColor);
+        raycastCamera = Camera.main;
+        isLaserCurrentlyVisible = true;
 
-        // 4. ACTIVAR LÁSER SEGÚN PLATAFORMA
         if(vrRaycaster != null)
         {
             vrRaycaster.EnableLaser(true);
             ToolMessageHandler.Instance.ShowMessage("Your laser pointer is being shown to others", 4f, MessageType.Info);
-            return; // Salimos porque ya es VR
+            return;
         }
 
         if (screenRaycaster != null)
@@ -109,7 +101,6 @@ public class LaserTool : ToolComponent
     {
         base.OnDisable();
         
-        // IMPORTANTE: Nos desuscribimos para evitar Memory Leaks
         if (currentNetworkName != null)
         {
             currentNetworkName.playerColor.OnValueChanged -= OnPlayerColorChanged;

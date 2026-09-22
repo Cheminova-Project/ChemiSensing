@@ -51,20 +51,23 @@ public class UploadDB
         byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonData);
         
         UnityWebRequest request = new UnityWebRequest(ApiUrl, "POST");
+        string token = (GlobalManagement.Instance != null && !string.IsNullOrEmpty(GlobalManagement.Instance.token)) 
+            ? GlobalManagement.Instance.token 
+            : PlayerPrefs.GetString("AuthToken", "");
+        request.SetRequestHeader("Authorization", "Bearer " + token);
         request.SetRequestHeader("Content-Type", "application/json");
-        request.SetRequestHeader("Authorization", "Bearer " + GlobalManagement.Instance.token);
         request.uploadHandler = new UploadHandlerRaw(bodyRaw);
         request.downloadHandler = new DownloadHandlerBuffer();
         yield return request.SendWebRequest();
         
         if (request.result == UnityWebRequest.Result.Success)
         {
-           //Debug.Log("Successful creation of upload: " + request.downloadHandler.text);
+            //Debug.Log("Successful creation of upload: " + request.downloadHandler.text);
             UploadData uploadData = JsonConvert.DeserializeObject<UploadData>(request.downloadHandler.text);
             
             if (string.IsNullOrEmpty(uploadData.error))
             {
-               //Debug.Log("Upload added " + uploadData.username);
+                //Debug.Log("Upload added " + uploadData.username);
                 onCompleted?.Invoke(uploadData, true);
             }
             else
@@ -116,62 +119,80 @@ public class UploadDB
     }
     
     // todo: request body schema -> multipart/form-data
-    /*public static IEnumerator PostNewUploadChunks(int id, UnityAction<UploadData, bool> onCompleted)
+    public static IEnumerator PostNewUploadChunks(UnityAction<UploadData, bool> onCompleted, int id, byte[] chunk, int chunkNumber, string md5Checksum)
     {
-        UploadDataPost uploadDataPost = new UploadDataPost(fileChecksum, fileName, fileType, id, totalChunks);
-        
-        string jsonData = JsonConvert.SerializeObject(uploadDataPost);
-        byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonData);
-        
-        UnityWebRequest request = new UnityWebRequest(ApiUrl, "POST");
-        request.SetRequestHeader("Content-Type", "application/json");
-        request.SetRequestHeader("Authorization", "Bearer " + GlobalManagement.Instance.token);
-        request.uploadHandler = new UploadHandlerRaw(bodyRaw);
-        request.downloadHandler = new DownloadHandlerBuffer();
-        yield return request.SendWebRequest();
-        
-        if (request.result == UnityWebRequest.Result.Success)
+        UploadDataChunksPost uploadDataChunksPost = new UploadDataChunksPost()
         {
-           //Debug.Log("Successful creation of upload: " + request.downloadHandler.text);
-            UploadData uploadData = JsonConvert.DeserializeObject<UploadData>(request.downloadHandler.text);
-            
-            if (string.IsNullOrEmpty(uploadData.error))
+            chunk_number = chunkNumber,
+            md5_checksum = md5Checksum
+        };
+        
+        string jsonData = JsonConvert.SerializeObject(uploadDataChunksPost);
+        
+        // Crear formulario multipart/form-data
+        WWWForm form = new WWWForm();
+
+        // Añadir el binario
+        form.AddBinaryData("chunk", chunk, $"chunk_{chunkNumber}.bin", "application/octet-stream");
+
+        // Añadir el JSON como campo (puede ser un solo campo con el JSON completo o campos separados)
+        form.AddField("metadata", jsonData);
+        
+        using (UnityWebRequest request = UnityWebRequest.Post($"{ApiUrl}/{id}/chunks", form))
+        {
+            string token = (GlobalManagement.Instance != null && !string.IsNullOrEmpty(GlobalManagement.Instance.token)) 
+                ? GlobalManagement.Instance.token 
+                : PlayerPrefs.GetString("AuthToken", "");
+            request.SetRequestHeader("Authorization", "Bearer " + token);
+
+            // Enviar
+            yield return request.SendWebRequest();
+
+            if (request.result == UnityWebRequest.Result.Success)
             {
-               //Debug.Log("Upload added " + uploadData.username);
-                onCompleted?.Invoke(uploadData, true);
+                //Debug.Log("Successful creation of upload: " + request.downloadHandler.text);
+                UploadData uploadData = JsonConvert.DeserializeObject<UploadData>(request.downloadHandler.text);
+
+                if (string.IsNullOrEmpty(uploadData.error))
+                {
+                    //Debug.Log("Upload added " + uploadData.username);
+                    onCompleted?.Invoke(uploadData, true);
+                }
+                else
+                {
+                    Debug.LogWarning("Error in server reply: " + uploadData.error);
+                    onCompleted?.Invoke(uploadData, false);
+                }
             }
             else
             {
-                Debug.LogWarning("Error in server reply: " + uploadData.error);
-                onCompleted?.Invoke(uploadData, false);
+                Debug.LogWarning("Error: " + request.error);
+                Debug.LogWarning("Server reply: " + request.downloadHandler.text);
+                onCompleted?.Invoke(null, false);
             }
+            
+            request.Dispose();
         }
-        else
-        {
-            Debug.LogWarning("Error: " + request.error);
-            Debug.LogWarning("Server reply: " + request.downloadHandler.text);
-            onCompleted?.Invoke(null, false);
-        }
-        
-        request.Dispose();
-    }*/
+    }
     
     public static IEnumerator PostNewUploadComplete(UnityAction<UploadData, bool> onCompleted, int id)
     {
         UnityWebRequest request = new UnityWebRequest(ApiUrl + "/" + id + "/complete", "POST");
-        request.SetRequestHeader("Content-Type", "application/json");
-        request.SetRequestHeader("Authorization", "Bearer " + GlobalManagement.Instance.token);
+        string token = (GlobalManagement.Instance != null && !string.IsNullOrEmpty(GlobalManagement.Instance.token)) 
+            ? GlobalManagement.Instance.token 
+            : PlayerPrefs.GetString("AuthToken", "");
+        request.SetRequestHeader("Authorization", "Bearer " + token);
         request.downloadHandler = new DownloadHandlerBuffer();
         yield return request.SendWebRequest();
         
         if (request.result == UnityWebRequest.Result.Success)
         {
-           //Debug.Log("Successful creation of upload complete: " + request.downloadHandler.text);
+            //Debug.Log("Successful creation of upload complete: " + request.downloadHandler.text);
             UploadData uploadData = JsonConvert.DeserializeObject<UploadData>(request.downloadHandler.text);
             
             if (string.IsNullOrEmpty(uploadData.error))
             {
-               //Debug.Log("Upload complete added " + uploadData.username);
+                //Debug.Log("Upload complete added " + uploadData.username);
                 onCompleted?.Invoke(uploadData, true);
             }
             else

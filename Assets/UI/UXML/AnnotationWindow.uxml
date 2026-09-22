@@ -1,0 +1,100 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/USS/texture-window.uss?fileID=7433441132597879392&amp;guid=88361b8b011b5df43968b0d0699d6199&amp;type=3#texture-window"/>
+    <Style src="project://database/Assets/UI/USS/toggles.uss?fileID=7433441132597879392&amp;guid=4547cd0213cd73549b5193f5aaa286d3&amp;type=3#toggles"/>
+    <ui:VisualElement name="Background" style="flex-grow: 1; background-color: rgb(255, 249, 249); width: 100%; height: 100%;">
+        <ui:VisualElement name="Header" style="flex-grow: 0; flex-shrink: 0; height: 10%; background-color: rgba(18, 171, 195, 0.87); min-height: 80px;">
+            <ui:Label text="Annotation manager" name="header-text" style="height: 100%; color: rgb(0, 0, 0); -unity-text-align: middle-center; font-size: 50px;"/>
+        </ui:VisualElement>
+        <ui:VisualElement name="list-view-container" style="flex-grow: 1; width: 100%; display: flex;">
+            <ui:VisualElement style="flex-direction: row; justify-content: center; padding: 20px; flex-shrink: 0;">
+                <ui:Button text="Create annotation" name="btn-add-annotation" style="border-radius: 20px; width: 80%; height: 80px; background-color: rgb(249, 223, 170); font-size: 40px; -unity-font-style: bold; border-width: 0;"/>
+            </ui:VisualElement>
+            <ui:VisualElement style="padding: 10px; width: 95%; align-items: stretch; align-self: center; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; margin-bottom: 20px;">
+                <ui:Label text="Category" style="font-size: 50px;"/>
+                <ui:DropdownField name="filter-category-dropdown" choices="All,Information,Alteration" value="info" style="font-size: 40px; height: 60px;"/>
+            </ui:VisualElement>
+            <ui:VisualElement style="flex-grow: 1; width: 95%; align-self: center; margin-bottom: 20px; border-width: 5px; border-color: rgb(0, 0, 0);">
+                <ui:ScrollView name="annotations-list-container" touch-scroll-behavior="Clamped" mouse-wheel-scroll-size="40" style="width: 100%;">
+                    <ui:Label text="There are no annotations associated to the model." name="empty-list-text" style="align-self: center; font-size: 40px; margin-top: 50px; color: rgb(0, 0, 0); white-space: normal; -unity-text-align: upper-center;"/>
+                </ui:ScrollView>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:ScrollView name="form-view-container" touch-scroll-behavior="Clamped" mouse-wheel-scroll-size="40" style="width: 100%; display: none;">
+            <ui:Label text="Add annotation" name="form-info-text" style="font-size: 50px; -unity-font-style: bold; -unity-text-align: middle-center; margin: 20px;"/>
+            <ui:VisualElement style="padding: 10px;">
+                <ui:Label text="Title" style="font-size: 50px;"/>
+                <ui:TextField placeholder-text="Insert title here..." name="input-name-textfield" style="font-size: 40px;"/>
+            </ui:VisualElement>
+            <ui:VisualElement style="padding: 10px;">
+                <ui:Label text="Description" style="font-size: 50px;"/>
+                <ui:TextField placeholder-text="Insert description here..." name="input-description-textfield" multiline="true" style="white-space: normal; height: 300px; font-size: 40px;"/>
+            </ui:VisualElement>
+            <ui:VisualElement style="padding: 10px;">
+                <ui:Label text="Category" style="font-size: 50px;"/>
+                <ui:DropdownField name="input-category-dropdown" choices="Information,Alteration" value="info" style="font-size: 40px; height: 60px;"/>
+            </ui:VisualElement>
+            <ui:Foldout text="Materials" name="material-input" style="font-size: 40px; margin: 10px;">
+                <ui:ScrollView name="material-container" mouse-wheel-scroll-size="40" style="border-width: 5px; border-color: rgb(0, 0, 0); width: 95%; max-height: 400px;"/>
+            </ui:Foldout>
+            <ui:Foldout text="Alterations" name="alteration-input" style="font-size: 40px; margin: 10px;">
+                <ui:ScrollView name="alteration-container" style="border-width: 5px; border-color: rgb(0, 0, 0); width: 95%; max-height: 500px;"/>
+            </ui:Foldout>
+            <ui:VisualElement name="3d-data" style="flex-grow: 1; display: none; padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 10px;">
+                <ui:Label text="3D" style="font-size: 50px;"/>
+                <ui:VisualElement style="font-size: 40px; height: 300px; background-color: rgb(240, 240, 240); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-left-color: rgb(77, 77, 77); border-right-color: rgb(77, 77, 77); border-top-color: rgb(77, 77, 77); border-bottom-color: rgb(77, 77, 77); padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;">
+                    <ui:ScrollView name="3d-container-list" touch-scroll-behavior="Clamped" mouse-wheel-scroll-size="40" style="width: 100%;"/>
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement name="multimedia-data" style="flex-grow: 1; display: none; padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 10px;">
+                <ui:Label text="Multimedia" style="font-size: 50px;"/>
+                <ui:VisualElement style="font-size: 40px; height: 300px; background-color: rgb(240, 240, 240); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-left-color: rgb(77, 77, 77); border-right-color: rgb(77, 77, 77); border-top-color: rgb(77, 77, 77); border-bottom-color: rgb(77, 77, 77); padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;">
+                    <ui:ScrollView name="multimedia-container-list" touch-scroll-behavior="Clamped" mouse-wheel-scroll-size="40" style="width: 100%;"/>
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:Button text="Add 3D information" name="select-point-button" style="border-radius: 20px; margin: 20px 30px; height: 80px; background-color: rgb(249, 223, 170); font-size: 40px; border-width: 0; -unity-font-style: bold;"/>
+            <ui:Button text="Add multimedia data" name="ad-multimedia-data" style="border-radius: 20px; margin: 20px 30px; height: 80px; background-color: rgb(249, 223, 170); font-size: 40px; border-width: 0; -unity-font-style: bold;"/>
+            <ui:Toggle name="share-toggle" label="" text=" Share annotation with other users" class="mi-checkbox-grande" style="margin-bottom: 15px; font-size: 30px; -unity-font-definition: url(&quot;project://database/Assets/Fonts/Mulish/static/Mulish-MediumItalic.ttf?fileID=12800000&amp;guid=b5e7563261657ef479195f1906fd1595&amp;type=3#Mulish-MediumItalic&quot;); align-self: center; -unity-text-align: middle-center; align-items: stretch;"/>
+            <ui:Button text="Post annotation" name="input-button-annotation" style="border-radius: 20px; margin: 20px 30px; height: 80px; background-color: rgb(249, 223, 170); font-size: 40px; border-width: 0; -unity-font-style: bold;"/>
+            <ui:Toggle label="Apply visualization mode" name="toggle-shader-annotation" style="display: none; font-size: 30px;"/>
+            <ui:Toggle label="Apply point of view" name="toggle-pov-annotation" style="display: none; font-size: 30px;"/>
+            <ui:Button text="Delete annotation" name="btn-delete-annotation" style="border-radius: 20px; margin: 20px 30px; height: 80px; background-color: rgb(255, 100, 100); color: rgb(255, 255, 255); font-size: 40px; border-width: 0; -unity-font-style: bold; display: none;"/>
+            <ui:Button text="Return" name="return-addition-button" style="border-radius: 20px; margin: 20px 30px 40px 30px; height: 80px; background-color: rgb(200, 200, 200); font-size: 40px; border-width: 0; -unity-font-style: bold;"/>
+        </ui:ScrollView>
+        <ui:VisualElement name="select-point-view-container" style="flex-grow: 1; width: 100%; display: none; padding: 20px; justify-content: space-between;">
+            <ui:VisualElement style="flex-shrink: 0; align-items: center;">
+                <ui:Label text="Select Annotation 3D Point" name="select-annotation-label" style="font-size: 50px; -unity-font-style: bold; margin-bottom: 10px; color: rgb(0, 0, 0); white-space: normal; -unity-text-align: upper-center;"/>
+                <ui:Label text="Tap or click directly on the 3D model to place the annotation marker." name="instruction-label" style="font-size: 30px; white-space: normal; -unity-text-align: middle-center; margin-bottom: 15px; color: rgb(80, 80, 80);"/>
+                <ui:VisualElement name="button-select-type" style="flex-direction: row; width: 80%; justify-content: center; margin-bottom: 15px;">
+                    <ui:Button text="Point" name="add-point-button" style="border-radius: 20px; width: 50%; height: 60px; background-color: rgb(249, 223, 170); font-size: 40px; -unity-font-style: bold; border-width: 0; margin-right: 5px;"/>
+                    <ui:Button text="Line" name="draw-line-button" style="border-radius: 20px; width: 50%; height: 60px; background-color: rgb(249, 223, 170); font-size: 40px; -unity-font-style: bold; border-width: 0; margin-left: 5px;"/>
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement style="flex-grow: 1; width: 100%; border-width: 5px; border-color: rgb(0, 0, 0); background-color: rgb(255, 255, 255); padding: 10px; margin-bottom: 20px; min-height: 150px;">
+                <ui:ScrollView name="points-list-container" touch-scroll-behavior="Clamped" mouse-wheel-scroll-size="40" style="width: 100%;"/>
+            </ui:VisualElement>
+            <ui:Button text="Return" name="cancel-select-point-button" style="border-radius: 20px; width: 80%; height: 70px; background-color: rgb(200, 200, 200); font-size: 40px; -unity-font-style: bold; border-width: 0; align-self: center; flex-shrink: 0; display: flex;"/>
+        </ui:VisualElement>
+        <ui:VisualElement name="record-audio-container" style="flex-direction: column; width: 90%; flex-shrink: 0; align-items: center; justify-content: space-between; align-self: center; align-content: auto; height: 90%; min-height: 90%; display: none; padding-bottom: 5%;">
+            <ui:VisualElement name="record-audio-container-two" style="flex-direction: column; width: 110%; flex-shrink: 0; align-items: stretch; justify-content: flex-start; align-self: center; align-content: auto; height: auto; min-height: 90%; display: flex;">
+                <ui:Button name="btn-record-audio" text="Hold To Record" icon-image="" style="border-radius: 20px; width: 100%; height: 40%; background-color: rgba(154, 154, 154, 0); color: rgb(0, 0, 0); font-size: 38px; -unity-font-style: bold; border-width: 0; margin-bottom: 15px; justify-content: flex-start; align-self: center; align-content: auto; align-items: center; background-image: url(&quot;project://database/Assets/VRTemplateAssets/Sprites/UI/CircleMask.png?fileID=2800000&amp;guid=79dfa83adcf72d541946168c849ba331&amp;type=3#CircleMask&quot;); -unity-background-scale-mode: scale-to-fit; background-size: contain; -unity-background-image-tint-color: rgb(188, 188, 188); margin-top: 60px; white-space: pre-wrap; -unity-text-align: middle-center; -unity-text-auto-size: none;"/>
+                <ui:ProgressBar value="0" title="00:00" name="progress-bar-record" low-value="0" high-value="1" style="height: 10%; width: 86%; align-self: center; opacity: 1; aspect-ratio: auto; font-size: 30px; margin-top: 4px; margin-right: 4px; margin-bottom: 4px; margin-left: 4px; scale: 1 1; transform-origin: center; background-size: 100% 100%; -unity-slice-left: 0; -unity-slice-top: 0; -unity-slice-right: 0; -unity-slice-bottom: 0; -unity-font-style: bold;"/>
+            </ui:VisualElement>
+            <ui:Button name="btn-cancel-record-audio" text="Return" style="border-radius: 20px; width: 100%; height: 100px; background-color: rgb(200, 200, 200); font-size: 40px; -unity-font-style: bold; border-width: 0; margin-bottom: 60px;"/>
+        </ui:VisualElement>
+        <ui:VisualElement name="ad-multimedia-view-container" style="flex-grow: 1; width: 100%; display: none; padding: 40px; justify-content: space-between; align-items: center;">
+            <ui:Label text="Add multimedia data" style="font-size: 50px; -unity-font-style: bold; margin-bottom: 20px; color: rgb(0, 0, 0); -unity-text-align: middle-center; white-space: normal; flex-shrink: 0;"/>
+            <ui:VisualElement style="flex-grow: 1; width: 100%; border-width: 5px; border-color: rgb(0, 0, 0); background-color: rgb(255, 255, 255); padding: 10px; margin-bottom: 20px;">
+                <ui:ScrollView name="multimedia-list-container" touch-scroll-behavior="Clamped" mouse-wheel-scroll-size="40" style="width: 100%;">
+                    <ui:VisualElement name="multimedia-doc-list" style="flex-grow: 1; width: 100%; flex-direction: row; flex-wrap: wrap;"/>
+                </ui:ScrollView>
+            </ui:VisualElement>
+            <ui:VisualElement style="flex-direction: column; width: 80%; flex-shrink: 0; align-items: center;">
+                <ui:Button name="btn-select-media" text="Select media" style="border-radius: 20px; width: 100%; height: 80px; background-color: rgb(249, 223, 170); font-size: 40px; -unity-font-style: bold; border-width: 0; margin-bottom: 15px; display: none;"/>
+                <ui:Button name="btn-open-camera-photo" text="Take Photo" style="border-radius: 20px; width: 100%; height: 80px; background-color: rgb(249, 223, 170); color: rgb(0, 0, 0); font-size: 40px; -unity-font-style: bold; border-width: 0; margin-bottom: 15px; display: none;"/>
+                <ui:Button name="btn-take-screenshot" text="Take Screenshot" style="border-radius: 20px; width: 100%; height: 80px; background-color: rgb(249, 223, 170); color: rgb(0, 0, 0); font-size: 40px; -unity-font-style: bold; border-width: 0; margin-bottom: 15px;"/>
+                <ui:Button name="btn-add-record-audio" text="Record Audio" style="border-radius: 20px; width: 100%; height: 80px; background-color: rgb(249, 223, 170); color: rgb(0, 0, 0); font-size: 40px; -unity-font-style: bold; border-width: 0; margin-bottom: 15px;"/>
+                <ui:Button name="btn-cancel-multimedia" text="Return" style="border-radius: 20px; width: 100%; height: 80px; background-color: rgb(200, 200, 200); font-size: 40px; -unity-font-style: bold; border-width: 0;"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

@@ -154,7 +154,7 @@ public class UserSearchController : BaseUI
 
     public void GetUsers()
     {
-        StartCoroutine(UserDB.GetUserList(OnSearchChanged, 5, searchField.value));
+        StartCoroutine(UserDB.GetUserList(OnSearchChanged, 3, searchField.value));
     }
     
     public List<int> GetUsersId()
@@ -222,7 +222,6 @@ public class UserSearchController : BaseUI
             names.Add(user.username);
         }
         
-        Debug.Log($"[DEBUG EXPORT] GetSelectedUsernames llamado. Retornando ({names.Count}): {string.Join(", ", names)}");
         return names;
     }
 }

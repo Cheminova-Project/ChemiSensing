@@ -1,0 +1,11 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <ui:VisualElement template="AlterationForm">
+        <ui:VisualElement name="VisualElement" style="flex-grow: 1; flex-direction: row; align-items: flex-start; align-self: flex-start; width: 100%;">
+            <ui:VisualElement name="AlterationForm" template="AlterationForm" style="width: 90%;">
+                <ui:Foldout text="Foldout" name="alteration-form-foldout">
+                    <ui:ScrollView name="alteration-scrollview" />
+                </ui:Foldout>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

@@ -113,7 +113,38 @@ public class ScreenRuler : Ruler
         RaycastHit hit;
         
         if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask))
+        {
+            VisualizationModeController visController = FindFirstObjectByType<VisualizationModeController>();
+            TextureManager texManager = FindFirstObjectByType<TextureManager>();
+
+            if (visController != null && texManager != null && texManager.GetModelRenderer() != null)
+            {
+                Material mat = texManager.GetModelRenderer().sharedMaterial;
+
+                if (mat != null && mat.HasProperty("_CutPosition") && mat.HasProperty("_CutNormal") && 
+                    mat.shader != null && mat.shader.name.Contains("sectionPlaneShader"))
+                {
+                    Vector3 planePosition = mat.GetVector("_CutPosition");
+                    Vector3 planeNormal = mat.GetVector("_CutNormal");
+
+                    Vector3 localP = originalObject.InverseTransformPoint(hit.point);
+                    Vector3 toPoint = localP - planePosition;
+
+                    float projection = Vector3.Dot(toPoint, planeNormal);
+
+                    bool isVisible = (projection <= 0f && !visController.runtimeReverse) || 
+                                     (projection >= 0f && visController.runtimeReverse);
+
+                    if (!isVisible)
+                    {
+                        Debug.LogWarning("[ScreenRuler] El punto cayó en la mitad invisible del Section Plane. Se ignora.");
+                        return;
+                    }
+                }
+            }
+
             RequestAddPoint(hit.point);
+        }
         else
             Debug.LogWarning("[Físicas] El rayo 3D ha atravesado la escena y no ha tocado nada.");
     }

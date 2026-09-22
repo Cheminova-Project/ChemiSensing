@@ -2149,8 +2149,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   urlBase: 
+  clientId: 
   token: 
   username: 
+  userID: 0
+  userRole: 
 --- !u!4 &1457672009
 Transform:
   m_ObjectHideFlags: 0
@@ -2527,7 +2530,6 @@ GameObject:
   - component: {fileID: 1826088537}
   - component: {fileID: 1826088543}
   - component: {fileID: 1826088544}
-  - component: {fileID: 1826088545}
   m_Layer: 0
   m_Name: UIDocument
   m_TagString: Untagged
@@ -2668,24 +2670,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 19.2, y: 10.8, z: 0.00000094416595}
   m_Center: {x: 0.0000009536743, y: 5.4000006, z: 0.00000047208295}
---- !u!114 &1826088545
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1826088536}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a40a44fee487e1f4f935805f3ee17b08, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GlobalKeyboard
-  offlineCustomSpawner: {fileID: 2052696660}
-  m_KeyboardPrefab: {fileID: 7339749990365776448, guid: 1aaf2dceef22d1147bfc70d706ddd188, type: 3}
-  m_Keyboard: {fileID: 0}
-  m_KeyboardOffset: {x: 0, y: -0.35, z: 0.25}
-  m_RepositionOutOfViewKeyboardOnOpen: 1
-  m_FacingKeyboardThreshold: 0.15
 --- !u!1 &1870791153
 GameObject:
   m_ObjectHideFlags: 0

@@ -67,28 +67,43 @@ public class TextureManagerUI : ToolComponent
         InitializeUI();
         FindTextureManager();
         
-        if (textureManager != null)
+        var visController = FindFirstObjectByType<VisualizationModeController>();
+        if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsConnectedClient)
         {
-            ulong currentOwner = textureManager.textureToolLockOwner.Value;
             ulong myId = NetworkManager.Singleton.LocalClientId;
+            
+            ulong texOwner = textureManager != null ? textureManager.textureToolLockOwner.Value : ulong.MaxValue;
+            ulong visOwner = visController != null ? visController.visToolLockOwner.Value : ulong.MaxValue;
 
-            if (currentOwner != ulong.MaxValue && currentOwner != myId)
+            if ((texOwner != ulong.MaxValue && texOwner != myId) || 
+                (visOwner != ulong.MaxValue && visOwner != myId))
             {
-                string ownerName = LocalRegistry.Instance != null ? LocalRegistry.Instance.GetClientUsername(currentOwner) : "Another user";
+                ulong blockingOwner = (texOwner != ulong.MaxValue && texOwner != myId) ? texOwner : visOwner;
+                string ownerName = LocalRegistry.Instance != null ? LocalRegistry.Instance.GetClientUsername(blockingOwner) : "Another user";
                 
                 if (ToolMessageHandler.Instance != null)
-                    ToolMessageHandler.Instance.ShowMessage($"{ownerName} is currently using the Texture Tool.", 4f, MessageType.Error);
+                    ToolMessageHandler.Instance.ShowMessage($"{ownerName} is using Textures or Visualization modes tool.", 4f, MessageType.Error);
 
                 if (ToolMenuController.Instance != null)
                     ToolMenuController.Instance.ForceCloseActiveGroupTool();
                 
                 return;
             }
-
-            textureManager.RequestTextureToolLockServerRpc(myId);
-
-            _isTrackingInactivity = true;
-            ResetActivityTimer();
+            
+            if (textureManager != null)
+            {
+                textureManager.RequestTextureToolLockServerRpc(myId);
+                _isTrackingInactivity = true;
+                ResetActivityTimer();
+            }
+        }
+        
+        if (visController != null && visController.netVisualizationMode.Value != VisualizationMode.Standard)
+        {
+            visController.ForceResetToStandard();
+            
+            if (textureManager != null)
+                textureManager.ResetModel();
         }
 
         OnTextureManagerUICreated?.Invoke(this);
@@ -128,7 +143,7 @@ public class TextureManagerUI : ToolComponent
         uiDocument = transform.parent.GetComponent<UIDocument>();
         if (uiDocument == null)
         {
-            Debug.LogError("[TextureManagerUI] UIDocument not assigned");
+            Debug.LogError("[DEBUG TextureManagerUI] UIDocument not assigned");
             return;
         }
 
@@ -152,9 +167,9 @@ public class TextureManagerUI : ToolComponent
         typeFilterDropdown = root.Q<DropdownField>(typeFilterDropdownName);
         
         if (typeFilterDropdown != null)
-        {
             typeFilterDropdown.RegisterValueChangedCallback(OnFilterChanged);
-        }
+        else
+            Debug.LogWarning("[DEBUG TextureManagerUI] typeFilterDropdown NO encontrado. Usaremos 'All' por defecto.");
         
         texturesContainer.RegisterCallback<PointerMoveEvent>(OnUserInteraction);
         texturesContainer.RegisterCallback<PointerDownEvent>(OnUserInteraction);
@@ -190,6 +205,9 @@ public class TextureManagerUI : ToolComponent
     
     private void Update()
     {
+        if (_isTrackingInactivity && textureManager != null && textureManager.IsAnyTextureDownloading())
+            ResetActivityTimer();
+        
         if (_isTrackingInactivity && Time.time - _lastInteractionTime > inactivityTimeoutSeconds)
             ExitTextureToolDueToTimeout();
     }
@@ -217,7 +235,10 @@ public class TextureManagerUI : ToolComponent
     public void AddTextureItem(RemoteTexture remoteTexture)
     {
         if (texturesContent == null)
+        {
+            Debug.LogError("[DEBUG TextureManagerUI] texturesContent es NULL en AddTextureItem");
             return;
+        }
         
         if (GetTextureDataByID(remoteTexture.id) != null)
             return;
@@ -236,12 +257,12 @@ public class TextureManagerUI : ToolComponent
     
     private void UpdateVisibleList()
     {
-        if (texturesContent == null || typeFilterDropdown == null)
+        if (texturesContent == null)
             return;
 
         texturesContent.Clear();
-        string selectedFilter = typeFilterDropdown.value;
-
+        string selectedFilter = typeFilterDropdown != null ? typeFilterDropdown.value : "All";
+        
         if (selectedFilter == "All")
         {
             RenderGroupSection("RGB TEXTURES", "RGB");
@@ -313,7 +334,10 @@ public class TextureManagerUI : ToolComponent
     private VisualElement CreateTextureElement(TextureItemData data)
     {
         if (textureItemAsset == null)
+        {
+            Debug.LogError("[DEBUG TextureManagerUI] textureItemAsset es NULL");
             return null;
+        }
 
         var textureElement = textureItemAsset.CloneTree();
         textureElement.userData = data;
@@ -418,6 +442,13 @@ public class TextureManagerUI : ToolComponent
     private void OnTextureDownloaded(TextureItemData data)
     {
         RefreshTextureItem(data.remoteTextureID);
+        
+        if (textureManager != null)
+        {
+            var remoteTex = textureManager.GetRemoteTextureByID(data.remoteTextureID);
+            if (!remoteTex.isVisible)
+                textureManager.ToggleTextureVisibility(data.remoteTextureID);
+        }
     }
 
     /// <summary>
@@ -545,10 +576,8 @@ public class TextureManagerUI : ToolComponent
         var data = GetTextureDataByID(textureID);
         if (data?.uiElement != null)
         {
-            // Actualizar datos primero
             data.remoteTexture = textureManager.GetRemoteTextureByID(textureID);
             
-            // Solo actualizar los iconos y estados, NO reconfigurar los eventos
             var downloadButton = data.uiElement.Q<Button>(downloadButtonID);
             var visualizationButton = data.uiElement.Q<Button>(visualizationButtonID);
             

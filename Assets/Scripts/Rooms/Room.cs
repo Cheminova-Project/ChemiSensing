@@ -15,17 +15,19 @@ public class Room : MonoBehaviour
     private string ip = null;
     private string creatorName = "";
     private int chelementID = -1;
+    private int e3dmodelID = -1;
     private bool hasAudio = false;
     private List<string> usuariosAceptados = new List<string>();
     private int jugadoresActuales = 0;
 
-    public Room(string roomName, string creatorName, ushort port, string ip, int chelementID, bool hasAudio, List<string> usuariosAceptados, int jugadoresActuales)
+    public Room(string roomName, string creatorName, ushort port, string ip, int chelementID, int e3dmodelID, bool hasAudio, List<string> usuariosAceptados, int jugadoresActuales)
     {
         this.roomName = roomName;
         this.creatorName = creatorName;
         this.port = port;
         this.ip = ip;
         this.chelementID = chelementID;
+        this.e3dmodelID = e3dmodelID;
         this.hasAudio = hasAudio;
         this.usuariosAceptados = usuariosAceptados ?? new List<string>();
         this.jugadoresActuales = jugadoresActuales;
@@ -64,6 +66,11 @@ public class Room : MonoBehaviour
     public int getCHElementID()
     {
         return chelementID;
+    }
+
+    public int getE3DModelID()
+    {
+        return e3dmodelID;
     }
 
     public void setHasAudio(bool hasAudio)

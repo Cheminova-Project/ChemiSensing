@@ -155,6 +155,7 @@ public class SceneCleanerRunner : MonoBehaviour
     {
         if (GlobalVariables.Instance != null)
         {
+            GlobalVariables.Instance.SetSelectedCHElementData(null);
             GlobalVariables.Instance.SetSelectedE3DModelData(null);
         }
 

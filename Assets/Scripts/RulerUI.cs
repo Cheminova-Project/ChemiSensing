@@ -189,15 +189,23 @@ public class RulerUI : ToolComponent
 
         UpdateSegmentDropdowns(startDropdown, endDropdown);
 
-        if (segment != default)
+        if (startDropdown != null && endDropdown != null)
         {
-            int startIdx = FindPointIndexInDropdown(startDropdown, segment.x);
-            int endIdx = FindPointIndexInDropdown(endDropdown, segment.y);
+            if (segment != default)
+            {
+                int startIdx = FindPointIndexInDropdown(startDropdown, segment.x);
+                int endIdx = FindPointIndexInDropdown(endDropdown, segment.y);
 
-            if (startIdx != -1)
-                startDropdown.index = startIdx;
-            if (endIdx != -1)
-                endDropdown.index = endIdx;
+                if (startIdx != -1)
+                    startDropdown.index = startIdx;
+                if (endIdx != -1)
+                    endDropdown.index = endIdx;
+            }
+            else
+            {
+                startDropdown.index = -1;
+                endDropdown.index = -1;
+            }
         }
 
         var localHighlight = newEntry.Q<Button>(highlightButtonName);
@@ -308,16 +316,36 @@ public class RulerUI : ToolComponent
         int pointCount = current.GetPointCount();
         int startIndex = startDropdown.index;
 
+        string previousEndValue = endDropdown.index >= 0 && endDropdown.index < endDropdown.choices.Count 
+            ? endDropdown.choices[endDropdown.index] 
+            : null;
+
         List<string> endOptions = new List<string>();
         
+        int loopStart = startIndex != -1 ? startIndex + 2 : 2;
+        
         for (int i = startIndex + 2; i <= pointCount; i++)
-        {
             endOptions.Add($"{i}");
-        }
 
         endDropdown.choices = endOptions;
         
-        if (endDropdown.index >= endOptions.Count)
+        if (endOptions.Count > 0)
+        {
+            if (startIndex == -1)
+                endDropdown.index = -1;
+            else
+            {
+                int newIndex = -1;
+                if (!string.IsNullOrEmpty(previousEndValue))
+                    newIndex = endOptions.IndexOf(previousEndValue);
+
+                if (newIndex == -1)
+                    endDropdown.index = 0;
+                else
+                    endDropdown.index = newIndex;
+            }
+        }
+        else
         {
             endDropdown.index = -1;
         }

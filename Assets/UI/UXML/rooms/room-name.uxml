@@ -12,15 +12,19 @@
                 <ui:Label text="Introduce a name for the room" name="text-label" style="margin-bottom: 10px; font-size: 60px; -unity-font-definition: url(&quot;project://database/Assets/Fonts/Mulish/static/Mulish-Bold.ttf?fileID=12800000&amp;guid=fd0307a780a3b2347bcc299540a23ab8&amp;type=3#Mulish-Bold&quot;);"/>
                 <ui:TextField name="room-name-input" label="" style="width: 80%; -unity-font-definition: url(&quot;project://database/Assets/Fonts/Mulish/static/Mulish-Regular.ttf?fileID=12800000&amp;guid=722f676cd3b8d41469ff5fc9c286d6a3&amp;type=3#Mulish-Regular&quot;); font-size: 50px; white-space: normal;"/>
                 <ui:Label text="The name of the room can&apos;t be empty." name="error-label" style="margin-bottom: 20px; font-size: 40px; -unity-font-definition: url(&quot;project://database/Assets/Fonts/Mulish/static/Mulish-Bold.ttf?fileID=12800000&amp;guid=fd0307a780a3b2347bcc299540a23ab8&amp;type=3#Mulish-Bold&quot;); color: rgb(255, 0, 0); display: none;"/>
-                <ui:VisualElement name="users-section" style="width: 80%; margin-top: 40px;">
-                    <ui:Label text="Invite users (Optional, Max 4)" name="users-label" style="margin-bottom: 10px; font-size: 50px; -unity-font-definition: url(&quot;project://database/Assets/Fonts/Mulish/static/Mulish-Bold.ttf?fileID=12800000&amp;guid=fd0307a780a3b2347bcc299540a23ab8&amp;type=3#Mulish-Bold&quot;);"/>
-                    <ui:ScrollView name="container-contributor-list" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Auto" style="height: 250px; border-width: 3px; border-color: rgb(0, 0, 0); margin-bottom: 20px; padding: 10px; background-color: rgb(245, 245, 245);">
-                        <ui:VisualElement name="user-list" style="flex-direction: row; flex-wrap: wrap;"/>
-                    </ui:ScrollView>
-                    <ui:VisualElement name="search-root" style="flex-grow: 1;">
-                        <ui:TextField label="Search user" name="searchField" style="font-size: 50px; -unity-font-definition: url(&quot;project://database/Assets/Fonts/Mulish/static/Mulish-Regular.ttf?fileID=12800000&amp;guid=722f676cd3b8d41469ff5fc9c286d6a3&amp;type=3#Mulish-Regular&quot;);"/>
-                        <ui:Label text="You can only invite up to 4 users." name="user-error-label" style="margin-top: 10px; font-size: 40px; -unity-font-definition: url(&quot;project://database/Assets/Fonts/Mulish/static/Mulish-Bold.ttf?fileID=12800000&amp;guid=fd0307a780a3b2347bcc299540a23ab8&amp;type=3#Mulish-Bold&quot;); color: rgb(255, 0, 0); display: none;"/>
-                        <ui:ScrollView name="dropdown" style="border-width: 2px; border-color: rgb(0, 0, 0); display: none; background-color: rgb(255, 255, 255); max-height: 350px; font-size: 50px; position: absolute; top: 100%; left: 0; right: 0; z-index: 10;"/>
+                <ui:VisualElement name="split-container" style="flex-direction: row; width: 80%; margin-top: 40px; justify-content: space-between;">
+                    <ui:VisualElement name="left-half" style="width: 48%; flex-direction: column;">
+                        <ui:Label text="Invite users (Optional, Max 4)" name="users-label" style="margin-bottom: 10px; font-size: 45px; -unity-font-definition: url(&quot;project://database/Assets/Fonts/Mulish/static/Mulish-Bold.ttf?fileID=12800000&amp;guid=fd0307a780a3b2347bcc299540a23ab8&amp;type=3#Mulish-Bold&quot;);"/>
+                        <ui:ScrollView name="container-contributor-list" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Auto" style="height: 400px; border-width: 3px; border-color: rgb(0, 0, 0); margin-bottom: 20px; padding: 10px; background-color: rgb(245, 245, 245);">
+                            <ui:VisualElement name="user-list" style="flex-direction: row; flex-wrap: wrap;"/>
+                        </ui:ScrollView>
+                    </ui:VisualElement>
+                    <ui:VisualElement name="right-half" style="width: 48%; flex-direction: column;">
+                        <ui:VisualElement name="search-root" style="flex-grow: 1;">
+                            <ui:TextField label="Search user" name="searchField" style="font-size: 50px; -unity-font-definition: url(&quot;project://database/Assets/Fonts/Mulish/static/Mulish-Regular.ttf?fileID=12800000&amp;guid=722f676cd3b8d41469ff5fc9c286d6a3&amp;type=3#Mulish-Regular&quot;);"/>
+                            <ui:Label text="You can only invite up to 4 users." name="user-error-label" style="margin-top: 10px; font-size: 40px; -unity-font-definition: url(&quot;project://database/Assets/Fonts/Mulish/static/Mulish-Bold.ttf?fileID=12800000&amp;guid=fd0307a780a3b2347bcc299540a23ab8&amp;type=3#Mulish-Bold&quot;); color: rgb(255, 0, 0); display: none;"/>
+                            <ui:ScrollView name="dropdown" style="border-width: 2px; border-color: rgb(0, 0, 0); display: none; background-color: rgb(255, 255, 255); max-height: 400px; font-size: 50px; position: absolute; top: 100%; left: 0; right: 0; z-index: 10;"/>
+                        </ui:VisualElement>
                     </ui:VisualElement>
                 </ui:VisualElement>
             </ui:VisualElement>
@@ -29,7 +33,6 @@
             <ui:Toggle name="audio-toggle" label="" text=" Include audio in the room" class="mi-checkbox-grande" style="margin-bottom: 15px; font-size: 60px; -unity-font-definition: url(&quot;project://database/Assets/Fonts/Mulish/static/Mulish-MediumItalic.ttf?fileID=12800000&amp;guid=b5e7563261657ef479195f1906fd1595&amp;type=3#Mulish-MediumItalic&quot;); align-self: center; -unity-text-align: middle-center;"/>
             <ui:Button name="create-room-btn" text="Create room" class="rounded-button" style="min-height: 75px; align-self: stretch; justify-content: center; align-content: center; align-items: center; font-size: 75px; -unity-font-definition: url(&quot;project://database/Assets/Fonts/Mulish/static/Mulish-Bold.ttf?fileID=12800000&amp;guid=fd0307a780a3b2347bcc299540a23ab8&amp;type=3#Mulish-Bold&quot;);"/>
         </ui:VisualElement>
-        <ui:Button name="quick-test-btn" text="DEV: Quick Test" style="position: absolute; top: 20px; right: 20px; font-size: 40px; background-color: rgb(255, 100, 100); color: white; border-radius: 15px; padding: 15px; z-index: 100; -unity-font-style: bold; border-width: 0; display: none;"/>
     </ui:VisualElement>
     <ui:VisualElement name="creating-room-panel" style="flex-grow: 1; position: absolute; width: 100%; height: 100%; background-color: rgb(18, 171, 195); align-self: center; justify-content: center; align-content: center; display: none;">
         <AutoSizeLabel min-font-size="20" text="The room is being created&#10;Please wait..." style="width: 90%; height: 90%; -unity-font-definition: url(&quot;project://database/Assets/Fonts/Mulish/static/Mulish-Regular.ttf?fileID=12800000&amp;guid=722f676cd3b8d41469ff5fc9c286d6a3&amp;type=3#Mulish-Regular&quot;); -unity-text-align: middle-center; align-self: center; justify-content: center; align-content: center;"/>

@@ -222,19 +222,25 @@ public enum AnnotationCategory
 
 public enum AnnotationVisualizationType
 {
- [EnumMember(Value = "Split")]
+ [EnumMember(Value = "split")]
  split,
- [EnumMember(Value = "Horizontal Split")]
+    
+ [EnumMember(Value = "horizontal_split")]
  horizontal_split,
- [EnumMember(Value = "Vertical Split")]
+    
+ [EnumMember(Value = "vertical_split")]
  vertical_split,
- [EnumMember(Value = "Spot")]
+    
+ [EnumMember(Value = "spot")]
  spot,
- [EnumMember(Value = "Ring")]
+    
+ [EnumMember(Value = "ring")]
  ring,
- [EnumMember(Value = "Section Plane")]
+    
+ [EnumMember(Value = "section_plane")]
  section_plane,
- [EnumMember(Value = "Default")]
+    
+ [EnumMember(Value = "default")]
  def
 }
 
@@ -358,11 +364,12 @@ public class AlterationEventData
 {
  public string GUID;
  public List<AlterationData> alterations;
- public List<string> annex_data;
+ public List<AnnexDataData> annex_data;
  public string created_on;
  public string description;
  public int id;
  public int? id_alteration_agent;
+ public int id_material;
  public string name;
  public string error;
 }
@@ -1709,6 +1716,13 @@ public class ThreeDInstanceResponse
 /**
 * UPLOAD CLASSES
 */
+
+[Serializable]
+public class UploadDataChunksPost
+{
+ public int chunk_number;
+ public string md5_checksum;
+}
 
 [Serializable]
 public class UploadDataPost

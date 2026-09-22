@@ -1,0 +1,13 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/USS/texture-window.uss?fileID=7433441132597879392&amp;guid=d2f1888a11718634bb047c67ff172193&amp;type=3#texture-window"/>
+    <Style src="project://database/Assets/UI/USS/slider.uss?fileID=7433441132597879392&amp;guid=570cb522d851bce45b69d741b87cbf03&amp;type=3#slider"/>
+    <Style src="project://database/Assets/UI/USS/toggles.uss?fileID=7433441132597879392&amp;guid=90afb3149b0812d4fab365be35e4652f&amp;type=3#toggles"/>
+    <ui:VisualElement name="Background" style="flex-grow: 1; background-color: rgb(255, 249, 249); width: 100%; height: 100%;">
+        <ui:VisualElement name="Header" style="flex-grow: 0; flex-shrink: 0; height: 10%; background-color: rgba(18, 171, 195, 0.87); min-height: 80px; color: rgb(18, 171, 195);">
+            <ui:Label text="Ring view" name="header-text" selectable="false" focusable="false" style="height: 100%; color: rgb(0, 0, 0); -unity-text-align: middle-center; font-size: 50px;"/>
+        </ui:VisualElement>
+        <ui:ScrollView name="modes-list" mode="Vertical" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Auto" mouse-wheel-scroll-size="40" touch-scroll-behavior="Clamped" touch-scroll-type="Clamped" nested-interaction-kind="Default" style="width: 100%;">
+            <ui:VisualElement name="visualization-container" style="flex-grow: 1;"/>
+        </ui:ScrollView>
+    </ui:VisualElement>
+</ui:UXML>

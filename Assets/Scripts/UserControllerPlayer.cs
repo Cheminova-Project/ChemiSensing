@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using Unity.XR.CoreUtils;
 using Unity.Netcode;
 using UnityEngine.XR.Interaction.Toolkit.Inputs;
+using UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation;
 
 public struct MovementData
 {
@@ -38,15 +39,19 @@ public class UserControllerPlayer : NetworkBehaviour
     public static event EventHandler<bool> OnMove2User;
     public static event Action<ulong> OnInvitationReceived;
     public static event Action OnRoomClosingWarning;
+    public static event Action<ulong, int> OnAnnotationInviteReceived;
 
     private void Awake()
     {
         actualUser = gameObject;
         CheckPlatform();
-        
-        xrOrigin = GetComponentInChildren<XROrigin>(true);
-        if (xrOrigin == null)
-            Debug.LogWarning("No XROrigin found.");
+
+        if (platform.Equals(PlayerCharacterType.VR))
+        {
+            xrOrigin = GetComponentInChildren<XROrigin>(true);
+            if (xrOrigin == null)
+                Debug.LogWarning("No XROrigin found.");
+        }
     }
 
     void Start()
@@ -264,75 +269,48 @@ public class UserControllerPlayer : NetworkBehaviour
     
     public IEnumerator MoveUserCoroutine(Vector3 userScale, Vector3 posFeet, Vector3 cameraUp, Vector3 cameraForward)
     {
-        if (XRFade.Instance != null)
-        {
-            XRFade.Instance.FadeOut();
-            yield return new WaitForSeconds(fadeDuration);
-        }
-        else
-        {
-            if (fadeImage != null) fadeImage.gameObject.SetActive(true);
-            float timer = 0.0f;
-            while (timer < fadeDuration)
-            {
-                timer += Time.deltaTime;
-                SetAlpha(Mathf.Clamp01(timer / fadeDuration)); 
-                yield return null;
-            }
-            SetAlpha(1.0f); 
-        }
-
-        yield return new WaitForSeconds(0.1f); 
         MoveXR(userScale, cameraUp, cameraForward, posFeet);
-        yield return new WaitForSeconds(0.2f);
-
-        if (XRFade.Instance != null)
-        {
-            XRFade.Instance.FadeIn();
-            yield return new WaitForSeconds(fadeDuration);
-        }
-        else
-        {
-            float timer = 0.0f;
-            while (timer < fadeDuration)
-            {
-                timer += Time.deltaTime;
-                SetAlpha(Mathf.Clamp01(1.0f - (timer / fadeDuration)));
-                yield return null;
-            }
-            SetAlpha(0.0f);
-            if (fadeImage != null) fadeImage.gameObject.SetActive(false); 
-        }
-    }
-
-    private void SetAlpha(float alpha)
-    {
-        if (fadeImage != null)
-        {
-            Color c = fadeImage.color;
-            c.a = alpha;
-            fadeImage.color = c;
-        }
+        yield break;
     }
     
     void MoveXR(Vector3 scale, Vector3 up, Vector3 forward, Vector3 posFeet)
     {
         if (xrOrigin == null)
             return;
-        
+    
         xrOrigin.transform.localScale = scale;
-        
+    
         float targetYaw = Quaternion.LookRotation(forward, Vector3.up).eulerAngles.y;
         float cameraLocalYaw = xrOrigin.Camera.transform.localEulerAngles.y;
         float desiredOriginYaw = targetYaw - cameraLocalYaw;
-        xrOrigin.transform.rotation = Quaternion.Euler(0, desiredOriginYaw, 0);
-        
+        Quaternion targetRotation = Quaternion.Euler(0, desiredOriginYaw, 0);
+    
         Vector3 cameraWorldOffset = xrOrigin.Camera.transform.position - xrOrigin.transform.position;
-        
+    
         Vector3 targetOriginPos = posFeet;
         targetOriginPos.x -= cameraWorldOffset.x;
         targetOriginPos.z -= cameraWorldOffset.z;
-        xrOrigin.transform.position = targetOriginPos;
+
+        TeleportationProvider teleportProvider = xrOrigin.GetComponentInChildren<TeleportationProvider>();
+        if (teleportProvider == null)
+            teleportProvider = FindAnyObjectByType<TeleportationProvider>();
+
+        if (teleportProvider != null)
+        {
+            TeleportRequest request = new TeleportRequest()
+            {
+                destinationPosition = targetOriginPos,
+                destinationRotation = targetRotation,
+                matchOrientation = MatchOrientation.TargetUpAndForward
+            };
+        
+            teleportProvider.QueueTeleportRequest(request);
+        }
+        else
+        {
+            xrOrigin.transform.rotation = targetRotation;
+            xrOrigin.transform.position = targetOriginPos;
+        }
     }
     
     public void BackToLastPos()
@@ -432,6 +410,28 @@ public class UserControllerPlayer : NetworkBehaviour
     private void ReceiveRoomCloseWarningClientRpc()
     {
         OnRoomClosingWarning?.Invoke(); 
+    }
+    
+    public void SendGlobalAnnotationInvitation(int annotationId)
+    {
+        if (IsOwner)
+            SendGlobalAnnotationInvitationServerRpc(annotationId);
+    }
+
+    [ServerRpc]
+    private void SendGlobalAnnotationInvitationServerRpc(int annotationId)
+    {
+        ReceiveGlobalAnnotationInvitationClientRpc(OwnerClientId, annotationId);
+    }
+
+    [ClientRpc]
+    private void ReceiveGlobalAnnotationInvitationClientRpc(ulong senderClientId, int annotationId)
+    {
+        ulong myClientId = NetworkManager.Singleton.LocalClientId;
+        if (senderClientId == myClientId)
+            return;
+
+        OnAnnotationInviteReceived?.Invoke(senderClientId, annotationId);
     }
     
     public PlayerCharacterType GetPlatform()

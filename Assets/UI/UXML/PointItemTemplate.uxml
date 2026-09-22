@@ -1,0 +1,7 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:VisualElement name="item" style="flex-shrink: 0; background-color: rgb(249, 223, 170); border-radius: 4px; padding: 15px 20px; flex-direction: row; justify-content: space-between; align-items: center; border-width: 1px; border-color: rgba(0, 0, 0, 0.1); margin-bottom: 10px; border-radius: 20px; border-width: 0;">
+        <ui:Label name="point-label" text="Point" style="font-size: 40px; color: rgb(80, 80, 80); white-space: normal; flex-grow: 1; margin-right: 20px;"/>
+        <ui:Toggle name="is-closed-toggle" label="Close line" style="font-size: 30px; display: none; color: rgb(80, 80, 80); flex-direction: row-reverse; align-items: center; margin-right: 30px;"/>
+        <ui:Button name="btn-remove-point" style="background-color: transparent; border-width: 0; width: 80px; height: 80px; background-image: url(&quot;project://database/Assets/Images/Icons/delete.png?fileID=21300000&amp;guid=c14ceb17f8f5e5a43bf255afdf677f7c&amp;type=3#delete&quot;); -unity-background-scale-mode: scale-to-fit; cursor: link; flex-shrink: 0; -unity-background-image-tint-color: rgb(0, 0, 0);"/>
+    </ui:VisualElement>
+</ui:UXML>

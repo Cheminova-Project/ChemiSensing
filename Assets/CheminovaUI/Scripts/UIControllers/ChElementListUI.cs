@@ -128,6 +128,7 @@ namespace UIControllers
                 {
                     if (ev.button == 0)
                     {
+                        GlobalVariables.Instance.SetSelectedCHElementData(chElement);
                         UIDocumentManager.Instance.SwitchContext("e3ds", scripts =>
                         {
                             foreach (var script in scripts)

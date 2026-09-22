@@ -56,12 +56,16 @@ public static class AnnotationDB
 
         if (request.result == UnityWebRequest.Result.Success)
         {
-           //Debug.Log("Successful elimination of annotation: " + request.downloadHandler.text);
-            ErrorMessage errorMessage = JsonConvert.DeserializeObject<ErrorMessage>(request.downloadHandler.text);
+            string responseText = request.downloadHandler.text;
+            ErrorMessage errorMessage = null;
+
+            if (!string.IsNullOrWhiteSpace(responseText))
+                errorMessage = JsonConvert.DeserializeObject<ErrorMessage>(responseText);
             
-            if (string.IsNullOrEmpty(errorMessage.error))
+            // Si no hay objeto de error (respuesta vacía) o no hay mensaje de error, es un éxito
+            if (errorMessage == null || string.IsNullOrEmpty(errorMessage.error))
             {
-               //Debug.Log("Element deleted");
+                //Debug.Log("Element deleted");
                 onCompleted?.Invoke(null, true);
             }
             else

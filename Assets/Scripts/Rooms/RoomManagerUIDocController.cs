@@ -33,6 +33,7 @@ public class RoomManagerUIDocController : BaseUI
     public event Action<Room> OnRoomSelected;
 
     private int selectedRoomPort = -1;
+    private int selectedE3DmodelID = -1;
     private Coroutine refreshCoroutine;
 
     /// <summary>
@@ -169,6 +170,7 @@ public class RoomManagerUIDocController : BaseUI
         errorRoomPanel.style.display = DisplayStyle.None;
         creatingRoomPanel.style.display = DisplayStyle.None;
         UIDocumentManager.Instance.SwitchContext("mode-selector");
+        GlobalVariables.Instance.SetSelectedCHElementData(null);
         GlobalVariables.Instance.SetSelectedE3DModelData(null);
         currentRooms.Clear();
     }
@@ -205,7 +207,7 @@ public class RoomManagerUIDocController : BaseUI
     /// <summary>
     /// Adds a new room to the UI
     /// </summary>
-    public void AddRoom(string roomName, string creatorName, int port, string ip, int chelementID, bool hasAudio, List<string> usuariosAceptados, int jugadoresActuales)
+    public void AddRoom(string roomName, string creatorName, int port, string ip, int chelementID, int e3dModelID, bool hasAudio, List<string> usuariosAceptados, int jugadoresActuales)
     {
         if (roomsScrollView == null)
         {
@@ -226,7 +228,7 @@ public class RoomManagerUIDocController : BaseUI
         }
         
         // Create room data
-        Room room = new Room(roomName, creatorName, (ushort)port, ip, chelementID, hasAudio, usuariosAceptados, jugadoresActuales);
+        Room room = new Room(roomName, creatorName, (ushort)port, ip, chelementID, e3dModelID, hasAudio, usuariosAceptados, jugadoresActuales);
         currentRooms.Add(room);
         
         // Create visual element from template
@@ -331,7 +333,19 @@ public class RoomManagerUIDocController : BaseUI
         GlobalVariables.Instance.SetIsAudioRoom(room.getHasAudio());
         OnRoomSelected?.Invoke(room);
         selectedRoomPort = room.getPort();
-        StartCoroutine(E3DModelDB.GetE3DModelByID(OnE3DInfoReceived, room.getCHElementID()));
+        selectedE3DmodelID = room.getE3DModelID();
+        StartCoroutine(CHElementDB.GetCHElementByID(OnCHElementInfoReceived, room.getCHElementID()));
+    }
+    
+    private void OnCHElementInfoReceived(CHElementData chElementData, bool success)
+    {
+        if(success)
+        {
+            GlobalVariables.Instance.SetSelectedCHElementData(chElementData);
+            StartCoroutine(E3DModelDB.GetE3DModelByID(OnE3DInfoReceived, selectedE3DmodelID));
+        }
+        else
+            Debug.LogError("[RoomManagerUIDocController] Failed to retrieve CHElementData for selected room");
     }
 
     private void OnE3DInfoReceived(E3DModelData e3dModelData, bool success)

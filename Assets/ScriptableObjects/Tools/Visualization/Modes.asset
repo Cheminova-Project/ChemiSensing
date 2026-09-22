@@ -15,9 +15,17 @@ MonoBehaviour:
   Id: visualization-modes
   DisplayName: Modes
   Icon: {fileID: 21300000, guid: 733ad7e6e22a8c44ba5489ee07a894a0, type: 3}
+  ActiveIcon: {fileID: 0}
+  BehaviourType: 0
+  isPersistent: 0
+  isAudioTool: 0
   SupportedPlatforms: 03000000020000000100000004000000
-  IsSubmenu: 0
+  IsSubmenu: 1
   WindowAsset: {fileID: 0}
   ScriptsContainer: {fileID: 0}
-  SubmenuTools: []
-  disabled: 1
+  SubmenuTools:
+  - {fileID: 11400000, guid: 73c88a21e96217448b8d556e951c903d, type: 2}
+  - {fileID: 11400000, guid: 33726d323f62b874d874335f44eab241, type: 2}
+  - {fileID: 11400000, guid: 198f22321b533a547aa8b9c60c8c7fa8, type: 2}
+  - {fileID: 11400000, guid: f092c2b8545aecf4a94c01ac0c8ff2ce, type: 2}
+  disabled: 0

@@ -1,4 +1,6 @@
+using System;
 using System.Collections;
+using System.Net;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Unity.Netcode;
@@ -24,6 +26,33 @@ public class ShutdownManager : MonoBehaviour
     {
         if (NetworkManager.Singleton != null)
         {
+            if (RoomState.CurrentRoomPort != -1)
+            {
+                try
+                {
+                    string uname = GlobalManagement.Instance != null ? GlobalManagement.Instance.username : "Unknown";
+                    string serverIP = NetworkServerConfiguration.Instance.GetServerIP();
+                    string apiPrefix = NetworkServerConfiguration.Instance.GetApiPrefix();
+                    string safeToken = GlobalManagement.Instance != null ? GlobalManagement.Instance.token : "";
+                    
+                    string url = "https://" + serverIP + apiPrefix + "/room/exit";
+                    string jsonSalida = $"{{\"port\":{RoomState.CurrentRoomPort},\"user\":\"{uname}\"}}";
+
+                    using (var client = new WebClient())
+                    {
+                        client.Headers[HttpRequestHeader.ContentType] = "application/json";
+                        if (!string.IsNullOrEmpty(safeToken))
+                            client.Headers[HttpRequestHeader.Authorization] = "Bearer " + safeToken;
+                        
+                        client.UploadString(url, "POST", jsonSalida);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.LogWarning("[ShutdownManager] Error enviando salida síncrona: " + e.Message);
+                }
+            }
+            
             PlayerPrefs.DeleteAll();
             NetworkManager.Singleton.Shutdown();
         }
@@ -53,6 +82,7 @@ public class LifecycleSceneCleanerRunner : MonoBehaviour
     {
         if (GlobalVariables.Instance != null)
         {
+            GlobalVariables.Instance.SetSelectedCHElementData(null);
             GlobalVariables.Instance.SetSelectedE3DModelData(null);
         }
 

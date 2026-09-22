@@ -42,6 +42,7 @@ public struct SharedSegmentData : INetworkSerializable, IEquatable<SharedSegment
     public int EndPoint;
     public bool DirectConnection;
     public bool IsSharing;
+    public float Distance;
 
     public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
     {
@@ -49,12 +50,14 @@ public struct SharedSegmentData : INetworkSerializable, IEquatable<SharedSegment
         serializer.SerializeValue(ref EndPoint);
         serializer.SerializeValue(ref DirectConnection);
         serializer.SerializeValue(ref IsSharing);
+        serializer.SerializeValue(ref Distance);
     }
 
     public bool Equals(SharedSegmentData other)
     {
         return StartPoint == other.StartPoint && EndPoint == other.EndPoint &&
-               DirectConnection == other.DirectConnection && IsSharing == other.IsSharing;
+               DirectConnection == other.DirectConnection && IsSharing == other.IsSharing
+               && Mathf.Approximately(Distance, other.Distance);
     }
 }
 
@@ -64,6 +67,7 @@ public struct SharedAngleData : INetworkSerializable, IEquatable<SharedAngleData
     public int VertexPoint;
     public int EndPoint;
     public bool IsSharing;
+    public float AngleValue;
 
     public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
     {
@@ -71,12 +75,14 @@ public struct SharedAngleData : INetworkSerializable, IEquatable<SharedAngleData
         serializer.SerializeValue(ref VertexPoint);
         serializer.SerializeValue(ref EndPoint);
         serializer.SerializeValue(ref IsSharing);
+        serializer.SerializeValue(ref AngleValue);
     }
 
     public bool Equals(SharedAngleData other)
     {
         return StartPoint == other.StartPoint && VertexPoint == other.VertexPoint &&
-               EndPoint == other.EndPoint && IsSharing == other.IsSharing;
+               EndPoint == other.EndPoint && IsSharing == other.IsSharing && 
+               Mathf.Approximately(AngleValue, other.AngleValue);
     }
 }
 
@@ -145,7 +151,18 @@ public class NetworkedRulerSync : NetworkBehaviour
 
     private void OnSharedSegmentChanged(SharedSegmentData previous, SharedSegmentData current)
     {
-        if (!IsOwner) return;
+        if (!IsOwner)
+            return;
+        
+        if (current.IsSharing)
+        {
+            string connectionType = current.DirectConnection ? "Direct Distance" : "Path Distance";
+            string message = $"Shared measurement: {connectionType} ({current.StartPoint}-{current.EndPoint}): {current.Distance * 100f:F2} cm";
+
+            if (ToolMessageHandler.Instance != null)
+                ToolMessageHandler.Instance.ShowMessage(message, 4f, MessageType.Info);
+        }
+        
         if (rulerComponent != null && rulerComponent.gameObject.activeInHierarchy)
             rulerComponent.ApplySharedSegmentFromNetwork(current);
     }
@@ -155,11 +172,25 @@ public class NetworkedRulerSync : NetworkBehaviour
         if (!IsOwner)
             return;
         
+        if (current.IsSharing)
+        {
+            if (ToolMessageHandler.Instance != null)
+                ToolMessageHandler.Instance.ShowMessage($"Shared Angle ({current.StartPoint+1}-{current.VertexPoint+1}-{current.EndPoint+1}): {current.AngleValue:F2}°", 4f, MessageType.Info);
+        }
+        
         if (rulerComponent != null && rulerComponent.gameObject.activeInHierarchy)
         {
-            if (rulerComponent is ScreenAngleRuler angleRuler)
+            if (rulerComponent is ScreenAngleRuler screenAngleRuler)
             {
-                angleRuler.ApplySharedAngleFromNetwork(new ScreenAngleRuler.AngleData(
+                screenAngleRuler.ApplySharedAngleFromNetwork(new AngleRuler.AngleData(
+                    current.StartPoint, 
+                    current.VertexPoint, 
+                    current.EndPoint, 
+                    current.IsSharing));
+            }
+            else if (rulerComponent is AngleRuler angleRuler)
+            {
+                angleRuler.ApplySharedAngleFromNetwork(new AngleRuler.AngleData(
                     current.StartPoint, 
                     current.VertexPoint, 
                     current.EndPoint, 
@@ -189,8 +220,8 @@ public class NetworkedRulerSync : NetworkBehaviour
     private void ResetRulerServerRpc()
     {
         var newData = new SyncedRulerData { MeasuredObjectId = 0, Points = new Vector3[0] };
-        var emptySegment = new SharedSegmentData { IsSharing = false };
-        var emptyAngle = new SharedAngleData { IsSharing = false };
+        var emptySegment = new SharedSegmentData { IsSharing = false, Distance = 0f };
+        var emptyAngle = new SharedAngleData { IsSharing = false, AngleValue = 0f };
         var allSyncs = FindObjectsByType<NetworkedRulerSync>(FindObjectsSortMode.None);
         foreach (var sync in allSyncs)
         {
@@ -200,22 +231,22 @@ public class NetworkedRulerSync : NetworkBehaviour
         }
     }
 
-    public void RequestShareSegment(int start, int end, bool direct, bool isSharing) => ShareSegmentServerRpc(start, end, direct, isSharing);
+    public void RequestShareSegment(int start, int end, bool direct, bool isSharing, float distance) => ShareSegmentServerRpc(start, end, direct, isSharing, distance);
 
     [ServerRpc(RequireOwnership = false)]
-    private void ShareSegmentServerRpc(int start, int end, bool direct, bool isSharing)
+    private void ShareSegmentServerRpc(int start, int end, bool direct, bool isSharing, float distance)
     {
-        var newData = new SharedSegmentData { StartPoint = start, EndPoint = end, DirectConnection = direct, IsSharing = isSharing };
+        var newData = new SharedSegmentData { StartPoint = start, EndPoint = end, DirectConnection = direct, IsSharing = isSharing, Distance = distance };
         var allSyncs = FindObjectsByType<NetworkedRulerSync>(FindObjectsSortMode.None);
         foreach (var sync in allSyncs) sync.sharedSegment.Value = newData;
     }
     
-    public void RequestShareAngle(int start, int vertex, int end, bool isSharing) => ShareAngleServerRpc(start, vertex, end, isSharing);
+    public void RequestShareAngle(int start, int vertex, int end, bool isSharing, float angleValue) => ShareAngleServerRpc(start, vertex, end, isSharing, angleValue);
 
     [ServerRpc(RequireOwnership = false)]
-    private void ShareAngleServerRpc(int start, int vertex, int end, bool isSharing)
+    private void ShareAngleServerRpc(int start, int vertex, int end, bool isSharing, float angleValue)
     {
-        var newData = new SharedAngleData { StartPoint = start, VertexPoint = vertex, EndPoint = end, IsSharing = isSharing };
+        var newData = new SharedAngleData { StartPoint = start, VertexPoint = vertex, EndPoint = end, IsSharing = isSharing, AngleValue = angleValue };
         var allSyncs = FindObjectsByType<NetworkedRulerSync>(FindObjectsSortMode.None);
         foreach (var sync in allSyncs) sync.sharedAngle.Value = newData;
     }

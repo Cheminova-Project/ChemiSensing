@@ -85,10 +85,17 @@ public class AngleRuler : Ruler
 
     public void SyncSharedAngle(int indexA, int indexVertex, int indexC, bool isSharing)
     {
+        float angleVal = GetAngle(indexA, indexVertex, indexC);
+        
         if (rulerSync != null && rulerSync.IsSpawned && NetworkManager.Singleton.IsConnectedClient)
-            rulerSync.RequestShareAngle(indexA, indexVertex, indexC, isSharing);
+            rulerSync.RequestShareAngle(indexA, indexVertex, indexC, isSharing, angleVal);
         else
+        {
+            if (isSharing && ToolMessageHandler.Instance != null)
+                ToolMessageHandler.Instance.ShowMessage($"Shared Angle ({indexA+1}-{indexVertex+1}-{indexC+1}): {angleVal:F2}°", 4f, MessageType.Info);
+            
             ApplySharedAngleFromNetwork(new AngleData(indexA, indexVertex, indexC, isSharing));
+        }
     }
     
     public void ApplySharedAngleFromNetwork(AngleData data)
@@ -101,14 +108,8 @@ public class AngleRuler : Ruler
             angleHighlightCoroutine = null;
         }
 
-        if (!data.isSharing || measuredObject == null) return;
-
-        float angleVal = GetAngle(data.pointA, data.vertex, data.pointC);
-        
-        if (ToolMessageHandler.Instance != null)
-        {
-            ToolMessageHandler.Instance.ShowMessage($"Shared Angle ({data.pointA+1}-{data.vertex+1}-{data.pointC+1}): {angleVal:F2}°", 4f, MessageType.Info);
-        }
+        if (!data.isSharing || measuredObject == null)
+            return;
 
         angleHighlightCoroutine = StartCoroutine(AnimateAngleTracing(data.pointA, data.vertex, data.pointC, sharedSegmentLineRenderer, true));
     }
