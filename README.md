@@ -12,7 +12,7 @@ The main dependencies of the project are:
   - DOTween (HOTween v2)
   - Native Camera for Android & iOS
   - Native Gallery for Android & iOS
-2. Not included but necessary for its operation:
+2. *Not included but necessary for its operation:*
   - PDF Renderer: https://assetstore.unity.com/packages/tools/gui/pdf-renderer-32815
   - vInspector 1.0: https://assetstore.unity.com/packages/tools/utilities/vinspector-1-0-245000
   - vRuler: https://assetstore.unity.com/packages/tools/utilities/vruler-249760
