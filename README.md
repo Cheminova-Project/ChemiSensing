@@ -3,7 +3,7 @@ It will use an Augmented Reality (AR) view with virtual replicas of objects, all
 It will also facilitate the transmission of video images from local AR devices and aims to combine the shared space visualization of Mixed Reality (MR) with video streams from Unmanned Aerial Vehicles (UAVs). 
 This enables comprehensive and dynamic monitoring and documentation. 
 
-The project was created in Unity 6.3 LTS (6000.3.5f2)
+The project was created in **Unity 6.3 LTS (6000.3.5f2)**
 
 **DEPENDENCIES**
 The main dependencies of the project are:
