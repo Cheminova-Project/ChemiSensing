@@ -6,6 +6,7 @@ This enables comprehensive and dynamic monitoring and documentation.
 The project was created in **Unity 6.3 LTS (6000.3.5f2)**
 
 **DEPENDENCIES**
+
 The main dependencies of the project are:
 1. *Included in the project:*
   - DOTween (HOTween v2)
