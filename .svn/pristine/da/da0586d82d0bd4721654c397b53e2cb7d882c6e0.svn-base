@@ -1,7 +1,0 @@
-var struct_client_info =
-[
-    [ "ClientInfo", "struct_client_info.html#a5d49891b4d46fd9abc05e9ae565c9468", null ],
-    [ "ClientId", "struct_client_info.html#a0fa4f1d9b98aa598ddbdff2df9223e2f", null ],
-    [ "NetworkObjectId", "struct_client_info.html#ae04a37e1d33770276a10017c76b9d067", null ],
-    [ "Username", "struct_client_info.html#a268aeb5c15258e03d3d5f63588e23cc3", null ]
-];

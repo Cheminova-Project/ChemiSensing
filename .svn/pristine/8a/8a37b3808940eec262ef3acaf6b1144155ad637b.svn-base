@@ -1,7 +1,0 @@
-var struct_matrix4x4_serializable =
-[
-    [ "Matrix4x4Serializable", "struct_matrix4x4_serializable.html#afdfe6a25236224be3ddfcb6156d72bd3", null ],
-    [ "NetworkSerialize< T >", "struct_matrix4x4_serializable.html#ab46d4704d16a2c1fbb8dec723f641b2a", null ],
-    [ "ToMatrix4x4", "struct_matrix4x4_serializable.html#ae15fadad25a6b50e11447a96d56890ad", null ],
-    [ "elements", "struct_matrix4x4_serializable.html#a0d6454dcbc9a1a10dc51ccd91da89377", null ]
-];

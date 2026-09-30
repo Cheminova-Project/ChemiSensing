@@ -1,8 +1,0 @@
-:root {
-
-}
-
-#segments-container #unity-content-container {
-    min-height: 100%;
-    justify-content: flex-start;
-}

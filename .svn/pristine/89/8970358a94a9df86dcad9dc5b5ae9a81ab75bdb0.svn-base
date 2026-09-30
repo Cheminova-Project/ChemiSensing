@@ -1,7 +1,0 @@
-var dir_bfbb11789f67865835f7f6915e564e50 =
-[
-    [ "AutoDestroyableObject.cs", "_auto_destroyable_object_8cs.html", "_auto_destroyable_object_8cs" ],
-    [ "ClickDebugger.cs", "_click_debugger_8cs.html", "_click_debugger_8cs" ],
-    [ "MissingScriptsFinder.cs", "_missing_scripts_finder_8cs.html", null ],
-    [ "MultiplayerHelper.cs", "_multiplayer_helper_8cs.html", "_multiplayer_helper_8cs" ]
-];

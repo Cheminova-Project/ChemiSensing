@@ -1,7 +1,0 @@
-var _rooms_manager_8cs =
-[
-    [ "Mensaje", "class_mensaje.html", "class_mensaje" ],
-    [ "RespuestaServidor", "class_respuesta_servidor.html", "class_respuesta_servidor" ],
-    [ "Servicio", "class_servicio.html", "class_servicio" ],
-    [ "RoomsManager", "class_rooms_manager.html", "class_rooms_manager" ]
-];

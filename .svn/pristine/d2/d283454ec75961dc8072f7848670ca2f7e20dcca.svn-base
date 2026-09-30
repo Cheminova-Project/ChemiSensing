@@ -1,7 +1,0 @@
-var class_unity_1_1_netcode_1_1_network_server_configuration =
-[
-    [ "getMatchmakingServerIP", "class_unity_1_1_netcode_1_1_network_server_configuration.html#a6d13622e5f94fec4569422e13e807fc9", null ],
-    [ "connectMode", "class_unity_1_1_netcode_1_1_network_server_configuration.html#a6a65245198b10285b53a6881691bc2ab", null ],
-    [ "localIP", "class_unity_1_1_netcode_1_1_network_server_configuration.html#a1b4bc3ce3474dfb25b0d5ab81289d7e9", null ],
-    [ "remoteIP", "class_unity_1_1_netcode_1_1_network_server_configuration.html#a24ccf60c36aaa691bcf6f9be4b53d238", null ]
-];

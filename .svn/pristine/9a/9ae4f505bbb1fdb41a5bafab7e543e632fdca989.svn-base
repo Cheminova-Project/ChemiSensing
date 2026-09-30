@@ -1,9 +1,0 @@
-var dir_d0d096f1a91d649da2040cb8db920817 =
-[
-    [ "ARAnchorDebugVisualizer.cs", "_a_r_anchor_debug_visualizer_8cs.html", "_a_r_anchor_debug_visualizer_8cs" ],
-    [ "ARPlaceObject.cs", "_a_r_place_object_8cs.html", "_a_r_place_object_8cs" ],
-    [ "ARRaycastHitEventAsset.cs", "_a_r_raycast_hit_event_asset_8cs.html", "_a_r_raycast_hit_event_asset_8cs" ],
-    [ "EventAsset.cs", "_event_asset_8cs.html", "_event_asset_8cs" ],
-    [ "RaycastEventController.cs", "_raycast_event_controller_8cs.html", "_raycast_event_controller_8cs" ],
-    [ "VisualClonesManager.cs", "_visual_clones_manager_8cs.html", "_visual_clones_manager_8cs" ]
-];

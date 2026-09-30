@@ -1,7 +1,0 @@
-var searchData=
-[
-  ['ghosttransform_0',['GhostTransform',['../class_transform_handles_1_1_ghost.html#a526faf706491e6a6997ea2155880fb05',1,'TransformHandles::Ghost']]],
-  ['group_1',['group',['../class_auto_size_label.html#aa767158de2d6067b33ce9927eedfea2e',1,'AutoSizeLabel']]],
-  ['groupghost_2',['GroupGhost',['../class_transform_handles_1_1_transform_group.html#a3d7b6da6fa51f0fc36d2ff4a4bf6563d',1,'TransformHandles::TransformGroup']]],
-  ['grouphandle_3',['GroupHandle',['../class_transform_handles_1_1_transform_group.html#a3b11b10b69da1e78497c0f4f7172fe66',1,'TransformHandles::TransformGroup']]]
-];

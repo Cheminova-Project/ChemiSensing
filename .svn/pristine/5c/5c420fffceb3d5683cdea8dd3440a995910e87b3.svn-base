@@ -1,9 +1,0 @@
-var class_alteration_event_d_b =
-[
-    [ "DeleteAlterationEventFromApi", "class_alteration_event_d_b.html#a53e3609d1a2c78d346f82d36253efda1", null ],
-    [ "GetAlterationEventByID", "class_alteration_event_d_b.html#a161ccb2a9038f12908c6b55557f4db0d", null ],
-    [ "PutAlterationEventFromApi", "class_alteration_event_d_b.html#a0ff9b6d3c549b2fe1d072cd767022e54", null ],
-    [ "config", "class_alteration_event_d_b.html#ac537b21693a1b7352129c9f5e67e14eb", null ],
-    [ "ApiUrl", "class_alteration_event_d_b.html#a1132442169990a70a5908d338743daff", null ],
-    [ "Config", "class_alteration_event_d_b.html#ab77eb8c433a9b5178a06530bafef83f8", null ]
-];

@@ -1,5 +1,0 @@
-var _event_manager_8cs =
-[
-    [ "AppEvent", "class_app_event.html", null ],
-    [ "EventManager", "class_event_manager.html", "class_event_manager" ]
-];

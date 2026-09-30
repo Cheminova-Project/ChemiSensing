@@ -1,9 +1,0 @@
-var class_unity_1_1_netcode_1_1_platform_controller =
-[
-    [ "BuildTypeToCharacterType", "class_unity_1_1_netcode_1_1_platform_controller.html#a2d9a49493f5b90a439480e416b0c58f4", null ],
-    [ "GetPlayerCharacterType", "class_unity_1_1_netcode_1_1_platform_controller.html#a9cf72b615ede48ea0464911f634ea4c4", null ],
-    [ "LoadBuildType", "class_unity_1_1_netcode_1_1_platform_controller.html#aab183c43dffe9d71d0601ecee0e709fc", null ],
-    [ "SetPlayerCharacterType", "class_unity_1_1_netcode_1_1_platform_controller.html#aea3e23e6ec1f059812fd27c5eb0d8fe1", null ],
-    [ "SingletonAwakened", "class_unity_1_1_netcode_1_1_platform_controller.html#a9f4bbdf8a8651faa95f6f24ee2590c8c", null ],
-    [ "m_PlayerCharacterType", "class_unity_1_1_netcode_1_1_platform_controller.html#ae62b35a26fb89b1052909cab963e2c89", null ]
-];

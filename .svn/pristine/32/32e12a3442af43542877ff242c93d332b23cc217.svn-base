@@ -1,9 +1,0 @@
-var class_client_d_b =
-[
-    [ "DeleteClientFromApi", "class_client_d_b.html#a8d0cfe4dbe3496206e49d92036354aa4", null ],
-    [ "GetClientByID", "class_client_d_b.html#a120489df9f1826994377036e2b9c1420", null ],
-    [ "PostNewClient", "class_client_d_b.html#ad0ca283faed0670e89ec6c866bd82577", null ],
-    [ "config", "class_client_d_b.html#abb6d17b725b8c239e73503c27832cf0e", null ],
-    [ "ApiUrl", "class_client_d_b.html#aa6be2a4e52e2060640f2ec61d59adc23", null ],
-    [ "Config", "class_client_d_b.html#ab916317b8841a95323338ea97b4cf373", null ]
-];

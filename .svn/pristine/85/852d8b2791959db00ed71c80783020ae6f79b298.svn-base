@@ -1,9 +1,0 @@
-var class_watch_list_d_b =
-[
-    [ "DeleteWatchListFromApi", "class_watch_list_d_b.html#ac5e9017be7bea719f2934da84808e217", null ],
-    [ "GetWatchListList", "class_watch_list_d_b.html#ac1d0895977c12208599f4e3b6fdca03d", null ],
-    [ "PostNewWatchList", "class_watch_list_d_b.html#a5ba727698d44ec6d2c09c31e73be5122", null ],
-    [ "config", "class_watch_list_d_b.html#a8c4da3b82f15c4d7d5989d62a2865418", null ],
-    [ "ApiUrl", "class_watch_list_d_b.html#aaefd48bb7f7b1737bf8c4511f27436d5", null ],
-    [ "Config", "class_watch_list_d_b.html#a6bd3e7efcb12feda172b6a6911973bf6", null ]
-];

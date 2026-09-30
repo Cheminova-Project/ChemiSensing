@@ -1,6 +1,0 @@
-var namespace_unity_engine_1_1_x_r_1_1_a_r_foundation =
-[
-    [ "Samples", "namespace_unity_engine_1_1_x_r_1_1_a_r_foundation_1_1_samples.html", "namespace_unity_engine_1_1_x_r_1_1_a_r_foundation_1_1_samples" ],
-    [ "ARPlaneDebugVisualizer", "class_unity_engine_1_1_x_r_1_1_a_r_foundation_1_1_a_r_plane_debug_visualizer.html", "class_unity_engine_1_1_x_r_1_1_a_r_foundation_1_1_a_r_plane_debug_visualizer" ],
-    [ "DebugInfoDisplayController", "class_unity_engine_1_1_x_r_1_1_a_r_foundation_1_1_debug_info_display_controller.html", "class_unity_engine_1_1_x_r_1_1_a_r_foundation_1_1_debug_info_display_controller" ]
-];

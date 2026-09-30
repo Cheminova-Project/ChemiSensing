@@ -1,7 +1,0 @@
-var _snapping_type_8cs =
-[
-    [ "TransformHandles.SnappingType", "namespace_transform_handles.html#abe33c915ad05225e4629266160c12596", [
-      [ "TransformHandles.SnappingType.Absolute", "namespace_transform_handles.html#abe33c915ad05225e4629266160c12596ab51ca26c6c89cfc9bec338f7a0d3e0c8", null ],
-      [ "TransformHandles.SnappingType.Relative", "namespace_transform_handles.html#abe33c915ad05225e4629266160c12596a2ca9469819fb0fb61ff98e914a7ccca0", null ]
-    ] ]
-];

@@ -1,7 +1,0 @@
-var _visual_clones_manager_8cs =
-[
-    [ "VisualClonesManager", "class_visual_clones_manager.html", "class_visual_clones_manager" ],
-    [ "ClonedCharacter", "class_cloned_character.html", "class_cloned_character" ],
-    [ "ClonedTransform", "struct_cloned_transform.html", "struct_cloned_transform" ],
-    [ "HierarchyUtils", "class_hierarchy_utils.html", "class_hierarchy_utils" ]
-];

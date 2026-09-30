@@ -1,8 +1,0 @@
-var class_global_management =
-[
-    [ "Awake", "class_global_management.html#a8a47a99cbabf17f47832f4a689622327", null ],
-    [ "GetUsername", "class_global_management.html#a3f95bc5e0d2e4b29777c11535f0c9248", null ],
-    [ "token", "class_global_management.html#ad6ad9b8b2a2c0c931f9156e9a4204209", null ],
-    [ "username", "class_global_management.html#ab7e8ade99ac8dbe6f7b840c1a54c8f17", null ],
-    [ "Instance", "class_global_management.html#a74eb2e3f33b4ac7975e8a1835bc1d315", null ]
-];

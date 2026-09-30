@@ -1,9 +1,0 @@
-var namespace_unity_1_1_netcode =
-[
-    [ "NetworkServerConfiguration", "class_unity_1_1_netcode_1_1_network_server_configuration.html", "class_unity_1_1_netcode_1_1_network_server_configuration" ],
-    [ "PlatformController", "class_unity_1_1_netcode_1_1_platform_controller.html", "class_unity_1_1_netcode_1_1_platform_controller" ],
-    [ "ConnectMode", "namespace_unity_1_1_netcode.html#a2e04cb8fb3c5ab179d9e1a698cab5b3a", [
-      [ "LOCAL", "namespace_unity_1_1_netcode.html#a2e04cb8fb3c5ab179d9e1a698cab5b3aa54b4c4075463b2e02cd69f5cd139b5b2", null ],
-      [ "REMOTE", "namespace_unity_1_1_netcode.html#a2e04cb8fb3c5ab179d9e1a698cab5b3aa62f728a9642195060871a70b9b60c937", null ]
-    ] ]
-];

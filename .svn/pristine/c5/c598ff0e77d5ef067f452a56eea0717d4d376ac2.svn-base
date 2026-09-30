@@ -1,6 +1,0 @@
-var class_event_manager =
-[
-    [ "AddListener< T >", "class_event_manager.html#a9c90459e90b69fc037a28cbd3600fc6c", null ],
-    [ "m_EventLookups", "class_event_manager.html#a4404eb4498783f2391dfd88eca184501", null ],
-    [ "m_Events", "class_event_manager.html#a957544cdd38e7fed6eac37f855a32fbd", null ]
-];

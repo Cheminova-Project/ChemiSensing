@@ -1,6 +1,0 @@
-var searchData=
-[
-  ['managecharacterobjects_0',['ManageCharacterObjects',['../class_a_r_character.html#aa111b3cd47ed07a82e723ff21760dcd5',1,'ARCharacter.ManageCharacterObjects()'],['../class_desktop_character.html#abb17cb83608267956c7c7fcebb79757b',1,'DesktopCharacter.ManageCharacterObjects()'],['../class_mobile_character.html#a681237b2b5f2732fb6631ed3fe366fdf',1,'MobileCharacter.ManageCharacterObjects()'],['../class_general_character.html#ad70d3157f88cdc77dc5ace0f2a9f6d34',1,'GeneralCharacter.ManageCharacterObjects()'],['../class_v_r_character.html#af51972c9d49d1b46e98a0c59615c378d',1,'VRCharacter.ManageCharacterObjects()']]],
-  ['matrix4x4serializable_1',['Matrix4x4Serializable',['../struct_matrix4x4_serializable.html#afdfe6a25236224be3ddfcb6156d72bd3',1,'Matrix4x4Serializable']]],
-  ['municipalityresponse_2',['MunicipalityResponse',['../class_municipality_response.html#a1743dac7223a7fd735631f9ec5372ee2',1,'MunicipalityResponse']]]
-];

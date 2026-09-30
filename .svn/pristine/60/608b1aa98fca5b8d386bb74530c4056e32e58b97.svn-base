@@ -1,8 +1,0 @@
-var class_country_d_b =
-[
-    [ "GetCountryByID", "class_country_d_b.html#aba59718f08a47af6bdcf3e6ba6226486", null ],
-    [ "GetCountryList", "class_country_d_b.html#a64b71016e9b094d95096107c640e954b", null ],
-    [ "config", "class_country_d_b.html#a1148d14f97f13519ab2f77b0271c67e4", null ],
-    [ "ApiUrl", "class_country_d_b.html#aefe8b91f3e08e631fc890aff1b7dad28", null ],
-    [ "Config", "class_country_d_b.html#ae3f25287a8e32dfd1f41b90983e807e8", null ]
-];

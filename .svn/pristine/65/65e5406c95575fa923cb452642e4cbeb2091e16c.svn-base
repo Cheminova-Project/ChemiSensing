@@ -1,9 +1,0 @@
-var class_reticle_material_manager =
-[
-    [ "SetDefaultColor", "class_reticle_material_manager.html#a930b7f3d0db82ca234f48e60181710bd", null ],
-    [ "SetHighlightColor", "class_reticle_material_manager.html#a89322256e24342a806c715854083c005", null ],
-    [ "Start", "class_reticle_material_manager.html#a3d66a6a8e2ec5da292ef2c795285d31f", null ],
-    [ "defaultColor", "class_reticle_material_manager.html#ac70bb6ea8d056d06eeed9245fc4758e0", null ],
-    [ "highlightColor", "class_reticle_material_manager.html#a0d5b7381fb84d1ad05b80edf75bc727c", null ],
-    [ "reticleMaterial", "class_reticle_material_manager.html#a1dda84712b27a13f7f1667beaf0a71bc", null ]
-];

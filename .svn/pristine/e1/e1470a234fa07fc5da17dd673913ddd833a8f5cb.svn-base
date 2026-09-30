@@ -1,8 +1,0 @@
-var class_parent_texture_layer =
-[
-    [ "ParentTextureLayer", "class_parent_texture_layer.html#a91b059263baaf2d1033e48e6f938476e", null ],
-    [ "entity_type", "class_parent_texture_layer.html#ae5a0696800ab274c14ceadae67b4f476", null ],
-    [ "id", "class_parent_texture_layer.html#a64806678621b968ada9851127cc47f3e", null ],
-    [ "name", "class_parent_texture_layer.html#ab7380b61ba2d814c8d19555c3ee69e90", null ],
-    [ "parent", "class_parent_texture_layer.html#a9fa4ae8b82d6a65c25257590da54ad73", null ]
-];

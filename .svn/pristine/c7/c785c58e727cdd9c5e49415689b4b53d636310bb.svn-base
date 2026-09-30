@@ -1,9 +1,0 @@
-<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <ui:VisualElement name="room-warning-panel" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.85); align-items: center; justify-content: center;">
-        <ui:VisualElement style="width: 750px; background-color: rgb(235, 94, 85); border-radius: 12px; border-width: 2px; border-color: rgb(40, 40, 40); padding: 24px; height: 300px; justify-content: center;">
-            <ui:Label text="SERVER WARNING" style="color: rgb(255, 255, 255); -unity-font-style: bold; font-size: 50px; -unity-text-align: middle-center; margin-bottom: 15px; -unity-text-outline-color: rgb(0, 0, 0); -unity-text-outline-width: 1px;"/>
-            <ui:Label text="The host has decided to close the session." style="color: rgb(255, 255, 255); font-size: 30px; -unity-text-align: middle-center; white-space: normal; margin-bottom: 10px;"/>
-            <ui:Label name="countdown-message" text="The room will close in 3 seconds..." style="color: rgb(255, 255, 255); -unity-font-style: bold; font-size: 35px; -unity-text-align: middle-center; white-space: normal;"/>
-        </ui:VisualElement>
-    </ui:VisualElement>
-</ui:UXML>

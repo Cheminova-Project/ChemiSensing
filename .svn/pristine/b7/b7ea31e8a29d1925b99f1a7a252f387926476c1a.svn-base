@@ -1,9 +1,0 @@
-var searchData=
-[
-  ['text_0',['Text',['../class_custom_download.html#ac7fc128a4ddffe667001cb2e538f9250',1,'CustomDownload.Text'],['../class_custom_texture_download.html#a997483cd5dfef8f34927e14fa4b03980',1,'CustomTextureDownload.Text'],['../class_empty_download.html#a77da4dc3c168119b7885fe8cf3cf6c65',1,'EmptyDownload.Text'],['../class_empty_texture_download.html#abee66e028e8c629ed7ee1ae95ab0f3f6',1,'EmptyTextureDownload.Text']]],
-  ['texture_1',['Texture',['../class_custom_texture_download.html#a7d4bfbc0e63a5e92ecc0fcddef23071f',1,'CustomTextureDownload.Texture'],['../class_empty_texture_download.html#aa14ae208a32ef3aefb70a28df5c2bd18',1,'EmptyTextureDownload.Texture']]],
-  ['this_5bint_20aindex_5d_2',['this[int aIndex]',['../class_simple_j_s_o_n_1_1_j_s_o_n_node.html#a324dc650c3ee295d4dd4612a6ce4aa5c',1,'SimpleJSON.JSONNode.this[int aIndex]'],['../class_simple_j_s_o_n_1_1_j_s_o_n_array.html#a22e27bd71076fbb2d75b734c57d1ba42',1,'SimpleJSON.JSONArray.this[int aIndex]'],['../class_simple_j_s_o_n_1_1_j_s_o_n_class.html#a2afaf70a2a4a77dec6c7780250eb8310',1,'SimpleJSON.JSONClass.this[int aIndex]']]],
-  ['this_5bstring_20akey_5d_3',['this[string aKey]',['../class_simple_j_s_o_n_1_1_j_s_o_n_node.html#aac9ed3d645601272f968ece96a5ff605',1,'SimpleJSON.JSONNode.this[string aKey]'],['../class_simple_j_s_o_n_1_1_j_s_o_n_array.html#ad57c99e0025a1ee3e36704f5c174f049',1,'SimpleJSON.JSONArray.this[string aKey]'],['../class_simple_j_s_o_n_1_1_j_s_o_n_class.html#a99beeac5e3f448671c4d17e4e5827706',1,'SimpleJSON.JSONClass.this[string aKey]']]],
-  ['trackabletype_4',['trackableType',['../class_unity_engine_1_1_x_r_1_1_a_r_foundation_1_1_samples_1_1_raycast_event_controller.html#a478853b584e5233dc54f203f8be96cc9',1,'UnityEngine::XR::ARFoundation::Samples::RaycastEventController']]],
-  ['transforms_5',['Transforms',['../class_transform_handles_1_1_transform_group.html#a43222e1590101a752beebffde12ed32b',1,'TransformHandles::TransformGroup']]]
-];

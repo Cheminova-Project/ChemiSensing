@@ -1,7 +1,0 @@
-var class_offline_state =
-[
-    [ "Enter", "class_offline_state.html#ad61278fbc708f05b621ff9a090dc3b14", null ],
-    [ "Exit", "class_offline_state.html#a3e769c987cbfd9fccf16ad836b255dd6", null ],
-    [ "StartClient", "class_offline_state.html#a900c0de5123da02875d407222fb12d75", null ],
-    [ "StartServerIP", "class_offline_state.html#ad33e0c26d15c99a34fc2ae5f1b26f1e7", null ]
-];

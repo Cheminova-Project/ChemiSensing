@@ -1,8 +1,0 @@
-var namespaces_dup =
-[
-    [ "SimpleJSON", "namespace_simple_j_s_o_n.html", "namespace_simple_j_s_o_n" ],
-    [ "TransformHandles", "namespace_transform_handles.html", "namespace_transform_handles" ],
-    [ "UIControllers", "namespace_u_i_controllers.html", "namespace_u_i_controllers" ],
-    [ "Unity", "namespace_unity.html", "namespace_unity" ],
-    [ "UnityEngine", "namespace_unity_engine.html", "namespace_unity_engine" ]
-];

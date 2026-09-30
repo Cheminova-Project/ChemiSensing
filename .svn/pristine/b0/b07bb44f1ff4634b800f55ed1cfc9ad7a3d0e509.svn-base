@@ -1,7 +1,0 @@
-var class_dropdown_uss_debugger =
-[
-    [ "Awake", "class_dropdown_uss_debugger.html#a88f5e311f729fa0fce0c3c715297d795", null ],
-    [ "LogClassNames", "class_dropdown_uss_debugger.html#a4565350487b9c7564e07cb28cfdc92e4", null ],
-    [ "dropdown", "class_dropdown_uss_debugger.html#a3c353ecc521ae06c454a31e70c301f1d", null ],
-    [ "logOnAwake", "class_dropdown_uss_debugger.html#a87383935f32b917d7efba4dd5d0b9bf2", null ]
-];

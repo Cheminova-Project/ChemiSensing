@@ -1,8 +1,0 @@
-var class_municipality_d_b =
-[
-    [ "GetMunicipalityByID", "class_municipality_d_b.html#a2149277b232fd517d5dd812d3756a3f8", null ],
-    [ "GetMunicipalityList", "class_municipality_d_b.html#a82558f78e54a9ac2dab44ac3c4eee2e6", null ],
-    [ "config", "class_municipality_d_b.html#afe08084b649c2dd41d9ba58c7fd456a3", null ],
-    [ "ApiUrl", "class_municipality_d_b.html#a8d08f28cdb532e7707578ca06f211013", null ],
-    [ "Config", "class_municipality_d_b.html#a8b57dd59dc4b1399e041ebba42b3f82b", null ]
-];

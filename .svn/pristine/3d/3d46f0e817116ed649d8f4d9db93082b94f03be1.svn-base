@@ -1,6 +1,0 @@
-var _pos_rot_scale_8cs =
-[
-    [ "TransformHandles.PosRotScale", "struct_transform_handles_1_1_pos_rot_scale.html", "struct_transform_handles_1_1_pos_rot_scale" ],
-    [ "Quaternion", "_pos_rot_scale_8cs.html#a3115aee88de19f0e23050e8650bc3153", null ],
-    [ "Vector3", "_pos_rot_scale_8cs.html#af3326292fdd04d2b384b6d781d9594f6", null ]
-];

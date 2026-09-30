@@ -1,8 +1,0 @@
-:root {
-}
-
-/* Selecciona el contenedor interno nativo del ScrollView */
-#texture-list #unity-content-container {
-    min-height: 100%;
-    justify-content: flex-start;
-}

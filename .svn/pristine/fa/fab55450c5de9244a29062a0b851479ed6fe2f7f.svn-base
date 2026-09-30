@@ -1,9 +1,0 @@
-var class_spatial_relation_d_b =
-[
-    [ "DeleteSpatialRelationFromApi", "class_spatial_relation_d_b.html#a99d98e4e6717081dc2c1f72435a0f45b", null ],
-    [ "GetSpatialRelationByID", "class_spatial_relation_d_b.html#abbd61c42da9d47335415ba8f2d3f8da4", null ],
-    [ "PutSpatialRelationFromApi", "class_spatial_relation_d_b.html#a69c7b6363a67e6b1e7311325717d0f9a", null ],
-    [ "config", "class_spatial_relation_d_b.html#ac2a064f4ce9fbbb18d730eec2c7683c8", null ],
-    [ "ApiUrl", "class_spatial_relation_d_b.html#a0b4885e2efbc8ba44458e52ec19f0245", null ],
-    [ "Config", "class_spatial_relation_d_b.html#a5252397bbd1975e54d8749ca55a6a708", null ]
-];

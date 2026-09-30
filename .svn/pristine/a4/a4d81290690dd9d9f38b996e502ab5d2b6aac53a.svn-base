@@ -1,9 +1,0 @@
-var class_upload_d_b =
-[
-    [ "DeleteUploadFromApi", "class_upload_d_b.html#a2be4b7ec3e7b8cadbbe7943dd72078dd", null ],
-    [ "PostNewUpload", "class_upload_d_b.html#a0785d07ef0c9fa489eb7d842b62b8925", null ],
-    [ "PostNewUploadComplete", "class_upload_d_b.html#a5dd8a1e84513d03540f04c7c6f930ee0", null ],
-    [ "config", "class_upload_d_b.html#a6252843859d953da38f578405068be61", null ],
-    [ "ApiUrl", "class_upload_d_b.html#a541e522f17ddcecd58dc5d3eb7c0a96e", null ],
-    [ "Config", "class_upload_d_b.html#a9a8697fdb8a963951be6742e61431e0d", null ]
-];

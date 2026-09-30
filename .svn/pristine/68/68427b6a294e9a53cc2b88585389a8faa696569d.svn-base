@@ -1,5 +1,0 @@
-var class_connection_events =
-[
-    [ "onConnected", "class_connection_events.html#af0cef7e6b902bdd86a07e79a8b5e81ad", null ],
-    [ "onDisconnected", "class_connection_events.html#a7ffeb35cf319cb474afb91e318d6a45e", null ]
-];

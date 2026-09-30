@@ -1,7 +1,0 @@
-var class_base_u_i =
-[
-    [ "InitializeUI", "class_base_u_i.html#ab030479243300fd1bc2b8a1e73c13e6c", null ],
-    [ "OnEnable", "class_base_u_i.html#ad65d2702af77816c032d06860c4105e3", null ],
-    [ "rootElement", "class_base_u_i.html#ae6a0fe0ea78e102622b1aed2f6d9e08e", null ],
-    [ "uiDocument", "class_base_u_i.html#a02f274ce22c303bdcec9577cd9500d1a", null ]
-];

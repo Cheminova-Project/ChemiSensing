@@ -1,9 +1,0 @@
-var class_annex_data_file_d_b =
-[
-    [ "DeleteAnnexDataFileFromApi", "class_annex_data_file_d_b.html#a4ae9a632aae8f98fbb96c68d2e869d8a", null ],
-    [ "GetAnnexDataFileByID", "class_annex_data_file_d_b.html#acddec18959df7ac70f316c4d468f8363", null ],
-    [ "PutAnnexDataFileFromApi", "class_annex_data_file_d_b.html#aab03c459750a01295f0b565a999a462f", null ],
-    [ "config", "class_annex_data_file_d_b.html#aa3c6f9c75d438cca230824dabe4e91ff", null ],
-    [ "ApiUrl", "class_annex_data_file_d_b.html#a6f83c147eef4666a42e18685ced2bca3", null ],
-    [ "Config", "class_annex_data_file_d_b.html#affb3497ad24e82316a4fcf0842adada5", null ]
-];

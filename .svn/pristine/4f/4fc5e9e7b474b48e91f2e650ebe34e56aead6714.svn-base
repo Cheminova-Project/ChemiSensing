@@ -1,6 +1,0 @@
-var class_audio_slider_drag_handler =
-[
-    [ "OnPointerDown", "class_audio_slider_drag_handler.html#a3130cebad2c07943da1eb8910f1a9f06", null ],
-    [ "OnPointerUp", "class_audio_slider_drag_handler.html#a7ec12d1cd9132426964b704debb6ee71", null ],
-    [ "audioController", "class_audio_slider_drag_handler.html#a2d31300f392256f3a1ba15d72791d709", null ]
-];

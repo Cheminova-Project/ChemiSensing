@@ -1,7 +1,0 @@
-var class_respuesta_servidor =
-[
-    [ "comandos_validos", "class_respuesta_servidor.html#a6805a4b350bed0faf20daef65b20a3dc", null ],
-    [ "mensaje", "class_respuesta_servidor.html#af926766baa17904b01baa99d9ed28d2b", null ],
-    [ "puerto", "class_respuesta_servidor.html#acd93f484da68eeba48e5fa26cf7e7255", null ],
-    [ "status", "class_respuesta_servidor.html#a70650dac3ebd2fa0b02d5144017a9c9a", null ]
-];

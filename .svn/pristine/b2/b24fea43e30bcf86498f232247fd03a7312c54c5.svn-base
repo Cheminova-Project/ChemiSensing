@@ -1,9 +1,0 @@
-var class_condition_report_file_d_b =
-[
-    [ "DeleteConditionReportFileFromApi", "class_condition_report_file_d_b.html#a7a0ea5ab77112fa03db55b214f9b4384", null ],
-    [ "GetConditionReportFileByID", "class_condition_report_file_d_b.html#aa82836875f03b627c54d1ef12f8a3131", null ],
-    [ "PutConditionReportFromApi", "class_condition_report_file_d_b.html#a994b136499363392c2033120f7b35781", null ],
-    [ "config", "class_condition_report_file_d_b.html#a57dd4097aa46537a5fa9b01387395838", null ],
-    [ "ApiUrl", "class_condition_report_file_d_b.html#a75509ff14b430bcd4939b55f19e73357", null ],
-    [ "Config", "class_condition_report_file_d_b.html#aaba27c40a25abad6e37c7ec601a38716", null ]
-];

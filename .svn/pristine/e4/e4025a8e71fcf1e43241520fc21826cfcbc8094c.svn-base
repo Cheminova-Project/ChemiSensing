@@ -1,8 +1,0 @@
-var class_e3_d_selection_handler =
-[
-    [ "Awake", "class_e3_d_selection_handler.html#ae356fd734da2bd297362c89a7171c84b", null ],
-    [ "OnE3DModelSelected", "class_e3_d_selection_handler.html#a1755bf9f1bcc383c2b624302cbb6a82f", null ],
-    [ "e3DListUI", "class_e3_d_selection_handler.html#a02b46281a1e790eacd45bfadf1870847", null ],
-    [ "sceneToLoadAfterSelection", "class_e3_d_selection_handler.html#a1502504fded553b27a5624db29af45f8", null ],
-    [ "selectedObject", "class_e3_d_selection_handler.html#a845af0bac205fdda203692c21dab7f59", null ]
-];

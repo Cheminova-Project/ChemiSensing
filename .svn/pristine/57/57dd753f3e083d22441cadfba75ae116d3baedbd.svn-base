@@ -1,8 +1,0 @@
-var class_unity_services_authenticator =
-[
-    [ "TryInitServicesAsync", "class_unity_services_authenticator.html#af5e36a61724b65a3fe17828e3ec5efc8", null ],
-    [ "TrySignInAsync", "class_unity_services_authenticator.html#ab4b094fc5ecca8232691d528c6553b5c", null ],
-    [ "isAuthenticated", "class_unity_services_authenticator.html#a3cf2905064eb2394cbf878200400c358", null ],
-    [ "k_InitializationTimeout", "class_unity_services_authenticator.html#adca0ec61b29441ba08510af88d96a2e1", null ],
-    [ "s_IsSigningIn", "class_unity_services_authenticator.html#a64a14b0a1ddf9e81dfdee3c1e909e912", null ]
-];

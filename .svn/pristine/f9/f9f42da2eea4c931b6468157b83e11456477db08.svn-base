@@ -1,8 +1,0 @@
-var class_cloned_character =
-[
-    [ "ClonedCharacter", "class_cloned_character.html#a9458eb9b1c5029f40a76422fecb52c3e", null ],
-    [ "AddClonedTransform", "class_cloned_character.html#ae87063961be2a827a20e72c43c22f892", null ],
-    [ "GetClonedTransforms", "class_cloned_character.html#a6e5b94d189b0ad7e5393671100f4931f", null ],
-    [ "IsAlreadyCloned", "class_cloned_character.html#a2377285895d5bb481c33f0f1481a6b27", null ],
-    [ "ClonedTransforms", "class_cloned_character.html#ad2664dad952e830113d6405302f8b36d", null ]
-];

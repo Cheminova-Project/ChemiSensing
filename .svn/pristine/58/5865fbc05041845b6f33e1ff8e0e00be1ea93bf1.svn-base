@@ -1,9 +1,0 @@
-var dir_bf53d0db9048da6b5c95efa9fb059aa7 =
-[
-    [ "AR", "dir_72568f984a3c07d10940dc029d1e169c.html", "dir_72568f984a3c07d10940dc029d1e169c" ],
-    [ "DesktopMobile", "dir_00b2ab0a7e2159a145f132b0e5000f51.html", "dir_00b2ab0a7e2159a145f132b0e5000f51" ],
-    [ "Tools", "dir_ce5cddfbdde2ca8acdeef3d6ad781633.html", "dir_ce5cddfbdde2ca8acdeef3d6ad781633" ],
-    [ "VR", "dir_167720ea035ca57e4ec6543bb63ee60f.html", "dir_167720ea035ca57e4ec6543bb63ee60f" ],
-    [ "GeneralCharacter.cs", "_general_character_8cs.html", "_general_character_8cs" ],
-    [ "ICharacter.cs", "_i_character_8cs.html", null ]
-];

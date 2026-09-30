@@ -1,7 +1,0 @@
-var class_laser_tool =
-[
-    [ "OnDisable", "class_laser_tool.html#ad483d5a6923e94ccb34b80e24a8c86dc", null ],
-    [ "OnEnable", "class_laser_tool.html#a14c98faa6029f46a036180d79233b9e7", null ],
-    [ "screenRaycaster", "class_laser_tool.html#a02047035daf0150a2483c669bd33a49c", null ],
-    [ "vrRaycaster", "class_laser_tool.html#a94b82156e2b9a4cc9e88cb6ed76b3c4b", null ]
-];

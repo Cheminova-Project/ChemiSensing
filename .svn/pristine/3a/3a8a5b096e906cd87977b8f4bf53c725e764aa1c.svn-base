@@ -1,8 +1,0 @@
-var class_parent_e3_d_model =
-[
-    [ "ParentE3DModel", "class_parent_e3_d_model.html#a8ea724266a8e9686b864dccff3c4403a", null ],
-    [ "entity_type", "class_parent_e3_d_model.html#af802ff9255fbe12e8d73750995678452", null ],
-    [ "id", "class_parent_e3_d_model.html#a3d8de20206db19a0d58dd5790c08464c", null ],
-    [ "name", "class_parent_e3_d_model.html#ac442a049d469f800f3060b750d898ba6", null ],
-    [ "parent", "class_parent_e3_d_model.html#af65fa94423381672277fd5af213cb56b", null ]
-];

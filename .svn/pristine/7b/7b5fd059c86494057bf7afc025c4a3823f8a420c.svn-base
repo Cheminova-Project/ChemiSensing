@@ -1,8 +1,0 @@
-var class_download_d_b =
-[
-    [ "GetDownloadByID", "class_download_d_b.html#a67230c94eb47c4317b9b0e038873b0da", null ],
-    [ "GetGenerateDownloadCodeByID", "class_download_d_b.html#a6b4f7c7bf3bd755746c6eb6e0ee75b11", null ],
-    [ "config", "class_download_d_b.html#a5c2f17af302ed17c986b3ee87deb9066", null ],
-    [ "ApiUrl", "class_download_d_b.html#a0a54c1b6b436354f97e69af9329c1ab1", null ],
-    [ "Config", "class_download_d_b.html#a5ed7b61cdda55c5c990da9c94c8ce34b", null ]
-];
